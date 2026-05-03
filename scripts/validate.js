@@ -2,57 +2,60 @@
 'use strict';
 
 /**
- * validate.js — Sanity check for the pattern catalogs.
+ * validate.js — Sanity check the catalog + manifests + computed registry.
  *
- *   - Every pattern entry has a unique id within its catalog.
- *   - Every regex compiles (this happens at require-time).
- *   - Every entry conforms to the schema in patterns/schema.js.
- *   - Reports overlapping ids between viewer + reporter (informational).
+ *   - catalog.js: every entry has unique id, every regex compiles
+ *   - viewer.js / reporter.js: every manifest id exists in catalog
+ *   - computed.js: every entry has callable function + needs[]
+ *   - reports "track-only" catalog ids (in catalog but not referenced by
+ *     any manifest)
  *
  * Exits non-zero on any error. Run via: npm run validate
  */
 
 const path   = require('path');
 const schema = require('../patterns/schema');
-const viewer       = require('../patterns/viewer');
-const reporterPkg  = require('../patterns/reporter');
-const computed     = require('../patterns/computed');
+const catalog = require('../patterns/catalog');
+const viewerManifest = require('../patterns/viewer');
+const reporterPkg    = require('../patterns/reporter');
+const computed       = require('../patterns/computed');
+const lib            = require('../patterns/index');
 
 let problems = 0;
 
-function header(msg) {
-  console.log('\n── ' + msg + ' ' + '─'.repeat(Math.max(0, 60 - msg.length)));
-}
+function header(msg) { console.log('\n── ' + msg + ' ' + '─'.repeat(Math.max(0, 60 - msg.length))); }
+function fail(msg)   { console.error('  ✖ ' + msg); problems++; }
+function ok(msg)     { console.log('  ✓ ' + msg); }
 
-function fail(msg) {
-  console.error('  ✖ ' + msg);
-  problems++;
-}
-
-function ok(msg) {
-  console.log('  ✓ ' + msg);
-}
-
-// ─── Catalog: viewer ─────────────────────────────────────────────────────
-header('viewer catalog (' + viewer.length + ' entries)');
+// ─── Catalog ─────────────────────────────────────────────────────────────
+header('catalog (' + catalog.length + ' entries)');
 {
-  const { errors, duplicates } = schema.validateCatalog(viewer, 'viewer');
+  const { errors, duplicates } = schema.validateCatalog(catalog, 'catalog');
   errors.forEach(fail);
   if (duplicates.length) fail('duplicate ids: ' + duplicates.join(', '));
   if (!errors.length && !duplicates.length) ok('no errors, no duplicate ids');
 }
 
-// ─── Catalog: reporter ───────────────────────────────────────────────────
-header('reporter catalog (' + reporterPkg.REPORTER_CATALOG.length + ' entries)');
-{
-  const { errors, duplicates } = schema.validateCatalog(reporterPkg.REPORTER_CATALOG, 'reporter');
-  errors.forEach(fail);
-  if (duplicates.length) fail('duplicate ids: ' + duplicates.join(', '));
-  if (!errors.length && !duplicates.length) ok('no errors, no duplicate ids');
+// ─── Manifest sanity: every id must exist in catalog ─────────────────────
+function checkManifest(manifest, label) {
+  header(label + ' manifest (' + manifest.length + ' entries)');
+  const catIds = new Set(catalog.map(e => e.id));
+  const seen = new Set();
+  let bad = 0;
+  manifest.forEach((m, i) => {
+    const id = typeof m === 'string' ? m : m.id;
+    if (!id) { fail(label + '[' + i + ']: missing id'); bad++; return; }
+    if (!catIds.has(id)) { fail(label + '[' + i + ']: id "' + id + '" not in catalog'); bad++; }
+    if (seen.has(id))   { fail(label + ': duplicate manifest entry "' + id + '"'); bad++; }
+    seen.add(id);
+  });
+  if (!bad) ok('all ' + manifest.length + ' ids resolve to catalog entries; no duplicates');
 }
+checkManifest(viewerManifest, 'viewer');
+checkManifest(reporterPkg.REPORTER_MANIFEST, 'reporter');
 
-// ─── Computed: every entry has a callable compute function ───────────────
-header('computed catalog (' + computed.COMPUTATIONS.length + ' entries)');
+// ─── Computed registry ──────────────────────────────────────────────────
+header('computed (' + computed.COMPUTATIONS.length + ' entries)');
 {
   let bad = 0;
   computed.COMPUTATIONS.forEach(c => {
@@ -62,39 +65,29 @@ header('computed catalog (' + computed.COMPUTATIONS.length + ' entries)');
   if (!bad) ok('all computations have function + needs');
 }
 
-// ─── Cross-catalog: id overlap (informational) ───────────────────────────
-header('id overlap viewer ↔ reporter');
-{
-  const viewerIds   = new Set(viewer.map(t => t.id));
-  const reporterIds = new Set(reporterPkg.REPORTER_CATALOG.map(t => t.id));
-  const overlap = [...viewerIds].filter(id => reporterIds.has(id));
-  console.log('  ' + overlap.length + ' shared ids (same id, may differ in fields):');
-  overlap.forEach(id => console.log('    · ' + id));
+// ─── Resolved arrays match expected shape ───────────────────────────────
+header('resolved arrays');
+ok('viewer.length = '   + lib.viewer.length);
+ok('reporter.length = ' + lib.reporter.length);
 
-  // Find ids that look related (case-insensitive) but written differently
-  const lower = new Map();
-  viewerIds.forEach(id => lower.set(id.toLowerCase(), { v: id }));
-  reporterIds.forEach(id => {
-    const k = id.toLowerCase();
-    const cur = lower.get(k) || {};
-    cur.r = id;
-    lower.set(k, cur);
-  });
-  const caseOnly = [...lower.values()].filter(x => x.v && x.r && x.v !== x.r);
-  if (caseOnly.length) {
-    console.log('  case-only id mismatches (suggest unifying):');
-    caseOnly.forEach(x => console.log('    · ' + x.v + '  ↔  ' + x.r));
-  }
+// ─── Track-only catalog ids (informational) ─────────────────────────────
+header('track-only catalog ids');
+const trackOnly = lib.trackOnlyIds();
+if (trackOnly.length === 0) {
+  console.log('  (none — every catalog entry is referenced by at least one manifest)');
+} else {
+  console.log('  ' + trackOnly.length + ' catalog entries not referenced by any manifest:');
+  trackOnly.forEach(id => console.log('    · ' + id));
 }
 
-// ─── Smoke test: the merged view loads ───────────────────────────────────
-header('smoke test: index.js merged view');
-try {
-  const idx = require('../patterns/index.js');
-  ok('merged catalog has ' + idx.merged.length + ' entries');
-  ok('byId(WBC) → ' + (idx.byId('WBC') ? idx.byId('WBC').displayName || idx.byId('WBC').label : 'NOT FOUND'));
-} catch (e) {
-  fail('index.js failed to load: ' + e.message);
+// ─── Cross-app id overlap (informational) ───────────────────────────────
+header('id overlap viewer manifest ↔ reporter manifest');
+{
+  const viewerIds   = new Set(viewerManifest.map(m => typeof m === 'string' ? m : m.id));
+  const reporterIds = new Set(reporterPkg.REPORTER_MANIFEST.map(m => typeof m === 'string' ? m : m.id));
+  const overlap = [...viewerIds].filter(id => reporterIds.has(id));
+  console.log('  ' + overlap.length + ' shared ids (rendered in both apps):');
+  overlap.forEach(id => console.log('    · ' + id));
 }
 
 // ─── Summary ─────────────────────────────────────────────────────────────

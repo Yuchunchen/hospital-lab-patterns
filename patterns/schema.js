@@ -1,116 +1,43 @@
 'use strict';
 
 /**
- * schema.js — Shared field documentation for pattern catalog entries.
- *
- * This module exports nothing executable. It exists to keep the
- * authoritative description of pattern entry fields in one place, and to
- * provide a runtime helper (validateEntry) used by scripts/validate.js.
- *
- * ─── ENTRY SHAPE (superset of viewer + reporter fields) ─────────────────
- *
- *  // Identity
- *  id                  string   unique within its catalog
- *
- *  // Detection
- *  pattern             RegExp   capture-group 1 = numeric value (or null
- *                               for purely-computed entries)
- *  orderNameFilter     RegExp?  if set, only orders whose orderName matches
- *                               this regex are considered (e.g. /,/ for
- *                               composite dialysis panels, or /^BUN$/i for
- *                               standalone post-dialysis BUN)
- *  orderNameMatch      RegExp?  for `kind:'text'` entries — selects which
- *                               imaging / endoscopy order to render
- *  hospitalScope       string?  'tt' | 'yl' | undefined (both)
- *
- *  // Display
- *  displayName         string   long bilingual form (e.g. "白血球 (WBC)")
- *  shortLabel          string?  short form (e.g. "WBC") — reporter prefers
- *                               this; viewer uses displayName
- *  unit                string?  display unit (e.g. "mg/dL")
- *  ref                 string?  human-readable reference range
- *
- *  // Numeric thresholds (used for high/low colouring)
- *  refLo               number?  numeric lower bound of normal range
- *  refHi               number?  numeric upper bound of normal range
- *  hi                  number?  alarm threshold (value > hi → red)
- *  lo                  number?  alarm threshold (value < lo → blue)
- *
- *  // Categorisation / layout
- *  category            string?  e.g. "血液", "腎功能"
- *  categoryId          string?  short id for code use, e.g. "CBC", "RENAL"
- *  section             string?  viewer section title (often = category)
- *  page                number?  1 or 2  — viewer printout layout
- *  col                 number?  1–4    — viewer printout layout
- *
- *  // Filters / scope
- *  gender              string?  'M' | 'F' | undefined (both)
- *  hivOnly             bool?    viewer: only show when HIV checkbox is on
- *  dialysisFilter      string?  'composite' | 'standalone_bun' — used by
- *                               reporter to pair pre/post-dialysis BUN
- *  qualitative         bool?    value is text not number (e.g. Reactive)
- *  singleValue         bool?    show only single most-recent value
- *
- *  // Value transform
- *  normalize           function?  (n: number) => number, applied after
- *                                 regex capture (e.g. WBC 6700 → 6.7)
- *
- *  // Computed entries
- *  computed            string?  computation key — consumer maps to function
- *                               (e.g. 'eGFR' → CKD-EPI formula)
- *  needs               string[]?  ids of source entries this computation
- *                                  depends on (reporter style)
- *
- *  // Patient-facing explanation
- *  meaning             string?  plain-language note shown on handout
- *
- *  // Text-block entries (viewer page 2 — endoscopy / sono / DEXA)
- *  kind                string?  'text' marks special text-form entries
- *  rows                array?   row definitions for the text-block layout
- *
- *  // Hint flags
- *  tags                string[]?  arbitrary tags for filtering
- *
- * ─── CONVENTIONS ────────────────────────────────────────────────────────
- *
- *  - Capture group 1 of `pattern` is the numeric value. Use non-capturing
- *    groups `(?:...)` for everything else.
- *  - For label variants, prefer one regex with alternation over multiple
- *    catalog entries. Example:
- *        /(?:Glucose(?:\([^)]*\))?|GLU[\s-]*(?:AC)?|Sugar):\s*([\d.]+)/i
- *  - For values containing comparison operators ("< 0.1", ">= 50"), use
- *    `[<>=]?\s*` before `[\d.]+` in the capture.
- *  - Negative lookaheads `(?!...)` are useful to reject unwanted matches
- *    (e.g. WBC 0–5 from urine routine vs WBC: 6.87 from CBC).
- *  - Document every non-trivial regex with a short comment on intent.
+ * schema.js — Shared field documentation + runtime validators for the
+ * pattern catalog. See ../docs/pattern-spec.md for the full spec.
  */
 
-// ─── Allowed field names ────────────────────────────────────────────────
 const ALLOWED_FIELDS = new Set([
-  'id', 'pattern', 'orderNameFilter', 'orderNameMatch', 'hospitalScope',
+  // Identity
+  'id',
+  // Detection
+  'pattern', 'orderNameFilter', 'orderNameMatch', 'hospitalScope',
+  // Display
   'displayName', 'shortLabel', 'unit', 'ref',
   'refLo', 'refHi', 'hi', 'lo',
+  // Categorisation / layout
   'category', 'categoryId', 'section', 'page', 'col',
+  // Filters / scope
   'gender', 'hivOnly', 'dialysisFilter', 'qualitative', 'singleValue',
+  // Value transform
   'normalize',
+  // Computed entries
   'computed', 'needs',
+  // Patient-facing explanation
   'meaning',
+  // Text-block entries
   'kind', 'rows',
-  'tags',
-  // Reporter legacy aliases (kept for backwards compat in this phase)
+  // Hint flags
+  'tags', 'notes',
+  // Reporter legacy aliases
   'cat', 'label', 'filter',
 ]);
 
 const REQUIRED_FIELDS = ['id'];
 
 const VALID_HOSPITAL_SCOPES = new Set([undefined, 'tt', 'yl']);
-const VALID_GENDERS        = new Set([undefined, 'M', 'F']);
-const VALID_DIALYSIS       = new Set([undefined, 'composite', 'standalone_bun']);
+const VALID_GENDERS         = new Set([undefined, 'M', 'F']);
+const VALID_DIALYSIS        = new Set([undefined, 'composite', 'standalone_bun']);
 
-/**
- * Validate a single entry. Returns array of error strings (empty = valid).
- */
-function validateEntry(entry, opts = {}) {
+function validateEntry(entry) {
   const errs = [];
   const id = entry.id || '<no-id>';
 
@@ -134,12 +61,10 @@ function validateEntry(entry, opts = {}) {
   if ('gender' in entry && !VALID_GENDERS.has(entry.gender)) {
     errs.push(`${id}: invalid gender "${entry.gender}"`);
   }
-  // dialysisFilter OR legacy `filter`
   const dfilter = entry.dialysisFilter !== undefined ? entry.dialysisFilter : entry.filter;
   if (dfilter !== undefined && !VALID_DIALYSIS.has(dfilter)) {
     errs.push(`${id}: invalid dialysisFilter "${dfilter}"`);
   }
-
   if (entry.normalize !== undefined && typeof entry.normalize !== 'function') {
     errs.push(`${id}: normalize must be a function`);
   }
@@ -147,10 +72,6 @@ function validateEntry(entry, opts = {}) {
   return errs;
 }
 
-/**
- * Validate a whole catalog (array of entries).
- * Returns { errors: string[], duplicates: string[] }.
- */
 function validateCatalog(entries, label = 'catalog') {
   const errors = [];
   const seenIds = new Set();

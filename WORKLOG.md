@@ -14,6 +14,47 @@ Each entry should include:
 
 ---
 
+## 2026-05-03 — Centralised catalog + thin manifests (v0.2 architecture)
+
+- Author: claude (with YC)
+- Hospital scope: both
+- Change: refactored repo from "two parallel catalogs" to "one master
+  catalog + per-app manifests".
+- New file: `patterns/catalog.js` — 69 unique entries, every test
+  definition lives here. Universal fields only (pattern, displayName,
+  unit, ref, refLo/refHi, hi/lo, qualitative, normalize, computed, etc.).
+  No app-specific layout (page/col/section/cat).
+- Rewritten as thin manifests:
+  - `patterns/viewer.js` — 56 entries; each is `{id, page, col, section,
+    ...overrides}`. Picks subset of catalog for the outpatient handout.
+  - `patterns/reporter.js` — 37 entries; each is `{id, cat, label,
+    ...overrides}`. Picks subset for the dialysis table view.
+- `patterns/index.js` resolves each manifest against the catalog (manifest
+  fields override catalog defaults). Exposes resolved `viewer` and
+  `reporter` arrays so consumers see the same shape as before.
+- `scripts/validate.js` updated: validates catalog + checks every manifest
+  id resolves + lists "track-only" catalog ids (entries not referenced by
+  any manifest — these get pattern detection but no UI rendering).
+- Both apps' sync scripts rewritten to bundle catalog + manifest +
+  resolver into one self-contained output:
+  - `hospital-lab-viewer/mapping.js` — catalog + viewer manifest +
+    resolver inlined; exposes `TEST_MAP` and `VIEWER_CATALOG`.
+  - `hospital-lab-reporter/hospital-lab-data.html` — same content
+    inlined between `__HOSPITAL_LAB_PATTERNS_BEGIN/END__` markers; the
+    resolver produces `LAB_TESTS`, `LAB_CATEGORIES`, `COMPUTED_TESTS`.
+- Verification (validate.js): 69 catalog ids, 56 viewer resolved,
+  37 reporter resolved, 25 shared between manifests. WBC viewer-specific
+  override (5.0–10.0) and reporter default (4.0–11.0) both verified
+  via `node -e` smoke tests.
+- ID renames in viewer manifest (case normalisation; safe — no code
+  references): `Glucose` → `GluAC`, `HbA1C` → `HbA1c`, `NA` → `Na`,
+  `FE` → `Fe`, `ALKP` → `ALP`. Reporter ids unchanged.
+- "Track-only" patterns (catalog entries not in any manifest): currently
+  just `Mg` (Magnesium — kept in catalog for future re-use, removed from
+  viewer's nutrition column on user request earlier today). Add more by
+  defining them in `catalog.js` without listing them in any manifest.
+- patterns/index.js exposes `version: '0.2.0'`.
+
 ## 2026-05-03 — Viewer further trimmed: drop 腎功能（透析） section + Mg
 
 - Author: claude (with YC)

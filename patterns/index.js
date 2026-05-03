@@ -3,67 +3,84 @@
 /**
  * index.js — Entry point for the hospital-lab-patterns library.
  *
- * Works in three environments without a build step:
- *   - Node (CommonJS)        require('hospital-lab-patterns')
- *   - Chrome MV3 extension   include each patterns/*.js as a separate
- *                            <script> in popup.html (NOT this file)
- *   - Standalone browser     <script src="patterns/index.js"></script>
- *                            then read window.HospitalLabPatterns
+ * Architecture (v0.2):
+ *   - catalog.js  — master list of every test we know how to detect
+ *   - viewer.js   — viewer manifest (ids + page/col/section overrides)
+ *   - reporter.js — reporter manifest (ids + cat/label overrides)
+ *   - computed.js — derived-value formulas
  */
 
-let viewer, reporterPkg, computed;
+let catalog, viewerManifest, reporterPkg, computed;
 
 if (typeof require === 'function') {
-  viewer       = require('./viewer');
-  reporterPkg  = require('./reporter');
-  computed     = require('./computed');
+  catalog        = require('./catalog');
+  viewerManifest = require('./viewer');
+  reporterPkg    = require('./reporter');
+  computed       = require('./computed');
 } else if (typeof window !== 'undefined') {
-  viewer       = window.HOSPITAL_LAB_PATTERNS_VIEWER       || [];
-  reporterPkg  = window.HOSPITAL_LAB_PATTERNS_REPORTER     || { CATEGORIES:[], REPORTER_CATALOG:[], REPORTER_COMPUTED:[] };
-  computed     = window.HOSPITAL_LAB_PATTERNS_COMPUTED     || { COMPUTATIONS:[], HELPERS:{} };
+  catalog        = window.HOSPITAL_LAB_PATTERNS_CATALOG          || [];
+  viewerManifest = window.HOSPITAL_LAB_PATTERNS_VIEWER_MANIFEST  || [];
+  reporterPkg    = window.HOSPITAL_LAB_PATTERNS_REPORTER_PKG     ||
+                   { CATEGORIES:[], REPORTER_MANIFEST:[], REPORTER_COMPUTED:[] };
+  computed       = window.HOSPITAL_LAB_PATTERNS_COMPUTED         ||
+                   { COMPUTATIONS:[], HELPERS:{} };
 }
 
-const reporter = reporterPkg.REPORTER_CATALOG;
+// Resolve a manifest entry against the catalog by id; manifest fields
+// override catalog fields. Returns merged entries; warns on unknown ids.
+function resolveManifest(manifest, cat) {
+  var byId = new Map(cat.map(function (e) { return [e.id, e]; }));
+  var out = [];
+  manifest.forEach(function (m) {
+    var id = typeof m === 'string' ? m : m.id;
+    var base = byId.get(id);
+    if (!base) {
+      var msg = '[hospital-lab-patterns] manifest references unknown id: "' + id + '"';
+      if (typeof console !== 'undefined') console.warn(msg);
+      return;
+    }
+    out.push(typeof m === 'string'
+      ? Object.assign({}, base)
+      : Object.assign({}, base, m));
+  });
+  return out;
+}
 
-// ─── Helpers ─────────────────────────────────────────────────────────────
+var viewer   = resolveManifest(viewerManifest, catalog);
+var reporter = resolveManifest(reporterPkg.REPORTER_MANIFEST, catalog);
+
 function byId(id, scope) {
-  const cat = scope === 'reporter' ? reporter : viewer;
-  return cat.find(t => t.id === id) || null;
+  if (scope === 'catalog')  return catalog.find(function (t) { return t.id === id; }) || null;
+  if (scope === 'reporter') return reporter.find(function (t) { return t.id === id; }) || null;
+  return viewer.find(function (t) { return t.id === id; }) || null;
 }
 
-// Merged view: viewer wins on id conflict (it has richer display fields)
-const merged = (() => {
-  const m = new Map();
-  reporter.forEach(t => m.set(t.id, t));
-  viewer.forEach(t => m.set(t.id, t));
-  return Array.from(m.values());
-})();
-
-function filterByHospital(catalog, hospital /* 'tt' | 'yl' */) {
-  return catalog.filter(t => !t.hospitalScope || t.hospitalScope === hospital);
+function filterByHospital(cat, hospital) {
+  return cat.filter(function (t) { return !t.hospitalScope || t.hospitalScope === hospital; });
 }
 
-const exported = {
-  // Catalogs
-  viewer,
-  reporter,
+function trackOnlyIds() {
+  var inUse = new Set();
+  viewerManifest.forEach(function (m) { inUse.add(typeof m === 'string' ? m : m.id); });
+  reporterPkg.REPORTER_MANIFEST.forEach(function (m) { inUse.add(typeof m === 'string' ? m : m.id); });
+  return catalog.filter(function (e) { return !inUse.has(e.id); }).map(function (e) { return e.id; });
+}
+
+var exported = {
+  catalog: catalog,
+  viewer: viewer,
+  reporter: reporter,
   reporterCategories: reporterPkg.CATEGORIES,
   reporterComputed:   reporterPkg.REPORTER_COMPUTED,
   computed:           computed.COMPUTATIONS,
   computedHelpers:    computed.HELPERS,
-
-  // Merged
-  merged,
-
-  // Helpers
-  byId,
-  filterByHospital,
-
-  // Version (bump on every change)
-  version: '0.1.0',
+  byId: byId,
+  filterByHospital: filterByHospital,
+  resolveManifest: resolveManifest,
+  trackOnlyIds: trackOnlyIds,
+  version: '0.2.0',
 };
 
-// ─── Exports ─────────────────────────────────────────────────────────────
 if (typeof module !== 'undefined' && module.exports) {
   module.exports = exported;
 }
