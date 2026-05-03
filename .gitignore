@@ -20,6 +20,7 @@ Thumbs.db
 *.swp
 *.tmp.*
 
-# Build artefacts (none yet)
-dist/
+# Build artefacts
+# dist/patterns.json is COMMITTED — that's how OPD extensions auto-update.
+# Other build outputs (if any) are still ignored.
 build/
