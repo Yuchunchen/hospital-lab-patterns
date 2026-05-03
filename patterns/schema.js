@@ -1,43 +1,32 @@
 'use strict';
 
 /**
- * schema.js — Shared field documentation + runtime validators for the
- * pattern catalog. See ../docs/pattern-spec.md for the full spec.
+ * schema.js — Field documentation + runtime validators.
  */
 
 const ALLOWED_FIELDS = new Set([
-  // Identity
   'id',
-  // Detection
   'pattern', 'orderNameFilter', 'orderNameMatch', 'hospitalScope',
-  // Display
   'displayName', 'shortLabel', 'unit', 'ref',
   'refLo', 'refHi', 'hi', 'lo',
-  // Categorisation / layout
   'category', 'categoryId', 'section', 'page', 'col',
-  // Filters / scope
   'gender', 'hivOnly', 'dialysisFilter', 'qualitative', 'singleValue',
-  // Value transform
   'normalize',
-  // Computed entries
   'computed', 'needs',
-  // Patient-facing explanation
   'meaning',
-  // Text-block entries
   'kind', 'rows',
-  // Hint flags
   'tags', 'notes',
   // Reporter legacy aliases
   'cat', 'label', 'filter',
 ]);
 
 const REQUIRED_FIELDS = ['id'];
-
 const VALID_HOSPITAL_SCOPES = new Set([undefined, 'tt', 'yl']);
 const VALID_GENDERS         = new Set([undefined, 'M', 'F']);
 const VALID_DIALYSIS        = new Set([undefined, 'composite', 'standalone_bun']);
 
-function validateEntry(entry) {
+function validateEntry(entry, ctx) {
+  ctx = ctx || {};
   const errs = [];
   const id = entry.id || '<no-id>';
 
@@ -65,14 +54,25 @@ function validateEntry(entry) {
   if (dfilter !== undefined && !VALID_DIALYSIS.has(dfilter)) {
     errs.push(`${id}: invalid dialysisFilter "${dfilter}"`);
   }
-  if (entry.normalize !== undefined && typeof entry.normalize !== 'function') {
-    errs.push(`${id}: normalize must be a function`);
+
+  // normalize: function OR string-name (must exist in normalizers if ctx provided)
+  if (entry.normalize !== undefined) {
+    if (typeof entry.normalize === 'function') {
+      // function literal — fine
+    } else if (typeof entry.normalize === 'string') {
+      if (ctx.normalizers && !(entry.normalize in ctx.normalizers)) {
+        errs.push(`${id}: normalize references unknown normalizer "${entry.normalize}"`);
+      }
+    } else {
+      errs.push(`${id}: normalize must be a function or a string name`);
+    }
   }
 
   return errs;
 }
 
-function validateCatalog(entries, label = 'catalog') {
+function validateCatalog(entries, label, ctx) {
+  label = label || 'catalog';
   const errors = [];
   const seenIds = new Set();
   const duplicates = [];
@@ -93,7 +93,7 @@ function validateCatalog(entries, label = 'catalog') {
     if (seenIds.has(e.id)) duplicates.push(e.id);
     seenIds.add(e.id);
 
-    const entryErrs = validateEntry(e);
+    const entryErrs = validateEntry(e, ctx);
     entryErrs.forEach(msg => errors.push(`${label}: ${msg}`));
   });
 

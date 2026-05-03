@@ -4,13 +4,13 @@
 /**
  * validate.js — Sanity check the catalog + manifests + computed registry.
  *
- *   - catalog.js: every entry has unique id, every regex compiles
+ *   - catalog.js: every entry has unique id; every regex compiles; any
+ *     `normalize` that is a string references a known normalizer.
  *   - viewer.js / reporter.js: every manifest id exists in catalog
  *   - computed.js: every entry has callable function + needs[]
- *   - reports "track-only" catalog ids (in catalog but not referenced by
- *     any manifest)
+ *   - reports "track-only" catalog ids
  *
- * Exits non-zero on any error. Run via: npm run validate
+ * Run via: npm run validate
  */
 
 const path   = require('path');
@@ -18,25 +18,27 @@ const schema = require('../patterns/schema');
 const catalog = require('../patterns/catalog');
 const viewerManifest = require('../patterns/viewer');
 const reporterPkg    = require('../patterns/reporter');
+const normalizers    = require('../patterns/normalizers');
 const computed       = require('../patterns/computed');
 const lib            = require('../patterns/index');
 
 let problems = 0;
-
 function header(msg) { console.log('\n── ' + msg + ' ' + '─'.repeat(Math.max(0, 60 - msg.length))); }
 function fail(msg)   { console.error('  ✖ ' + msg); problems++; }
 function ok(msg)     { console.log('  ✓ ' + msg); }
 
-// ─── Catalog ─────────────────────────────────────────────────────────────
+const ctx = { normalizers };
+
+// Catalog
 header('catalog (' + catalog.length + ' entries)');
 {
-  const { errors, duplicates } = schema.validateCatalog(catalog, 'catalog');
+  const { errors, duplicates } = schema.validateCatalog(catalog, 'catalog', ctx);
   errors.forEach(fail);
   if (duplicates.length) fail('duplicate ids: ' + duplicates.join(', '));
-  if (!errors.length && !duplicates.length) ok('no errors, no duplicate ids');
+  if (!errors.length && !duplicates.length) ok('no errors, no duplicate ids, all normalizer refs resolve');
 }
 
-// ─── Manifest sanity: every id must exist in catalog ─────────────────────
+// Manifest sanity
 function checkManifest(manifest, label) {
   header(label + ' manifest (' + manifest.length + ' entries)');
   const catIds = new Set(catalog.map(e => e.id));
@@ -54,7 +56,11 @@ function checkManifest(manifest, label) {
 checkManifest(viewerManifest, 'viewer');
 checkManifest(reporterPkg.REPORTER_MANIFEST, 'reporter');
 
-// ─── Computed registry ──────────────────────────────────────────────────
+// Normalizers
+header('normalizers (' + Object.keys(normalizers).length + ' defined)');
+ok('names: ' + Object.keys(normalizers).join(', '));
+
+// Computed
 header('computed (' + computed.COMPUTATIONS.length + ' entries)');
 {
   let bad = 0;
@@ -65,32 +71,21 @@ header('computed (' + computed.COMPUTATIONS.length + ' entries)');
   if (!bad) ok('all computations have function + needs');
 }
 
-// ─── Resolved arrays match expected shape ───────────────────────────────
+// Resolved arrays (with rehydrated normalizers)
 header('resolved arrays');
 ok('viewer.length = '   + lib.viewer.length);
 ok('reporter.length = ' + lib.reporter.length);
+const wbcViewer = lib.byId('WBC');
+ok('viewer WBC.normalize is fn: ' + (typeof wbcViewer.normalize === 'function'));
+ok('viewer WBC.normalize(6700): ' + (wbcViewer.normalize ? wbcViewer.normalize(6700) : 'n/a'));
 
-// ─── Track-only catalog ids (informational) ─────────────────────────────
+// Track-only
 header('track-only catalog ids');
 const trackOnly = lib.trackOnlyIds();
-if (trackOnly.length === 0) {
-  console.log('  (none — every catalog entry is referenced by at least one manifest)');
-} else {
-  console.log('  ' + trackOnly.length + ' catalog entries not referenced by any manifest:');
-  trackOnly.forEach(id => console.log('    · ' + id));
-}
+if (trackOnly.length === 0) console.log('  (none)');
+else { console.log('  ' + trackOnly.length + ' not referenced by any manifest:'); trackOnly.forEach(id => console.log('    · ' + id)); }
 
-// ─── Cross-app id overlap (informational) ───────────────────────────────
-header('id overlap viewer manifest ↔ reporter manifest');
-{
-  const viewerIds   = new Set(viewerManifest.map(m => typeof m === 'string' ? m : m.id));
-  const reporterIds = new Set(reporterPkg.REPORTER_MANIFEST.map(m => typeof m === 'string' ? m : m.id));
-  const overlap = [...viewerIds].filter(id => reporterIds.has(id));
-  console.log('  ' + overlap.length + ' shared ids (rendered in both apps):');
-  overlap.forEach(id => console.log('    · ' + id));
-}
-
-// ─── Summary ─────────────────────────────────────────────────────────────
+// Summary
 console.log('');
 if (problems === 0) {
   console.log('✅  validate: all checks passed');

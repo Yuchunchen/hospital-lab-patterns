@@ -4,30 +4,49 @@
  * index.js — Entry point for the hospital-lab-patterns library.
  *
  * Architecture (v0.2):
- *   - catalog.js  — master list of every test we know how to detect
- *   - viewer.js   — viewer manifest (ids + page/col/section overrides)
- *   - reporter.js — reporter manifest (ids + cat/label overrides)
- *   - computed.js — derived-value formulas
+ *   - catalog.js      — master list of every test (universal fields only)
+ *   - viewer.js       — viewer manifest (ids + page/col/section overrides)
+ *   - reporter.js     — reporter manifest (ids + cat/label overrides)
+ *   - normalizers.js  — named value-transform functions referenced by id
+ *   - computed.js     — derived-value formulas
  */
 
-let catalog, viewerManifest, reporterPkg, computed;
+let catalog, viewerManifest, reporterPkg, normalizers, computed;
 
 if (typeof require === 'function') {
   catalog        = require('./catalog');
   viewerManifest = require('./viewer');
   reporterPkg    = require('./reporter');
+  normalizers    = require('./normalizers');
   computed       = require('./computed');
 } else if (typeof window !== 'undefined') {
   catalog        = window.HOSPITAL_LAB_PATTERNS_CATALOG          || [];
   viewerManifest = window.HOSPITAL_LAB_PATTERNS_VIEWER_MANIFEST  || [];
   reporterPkg    = window.HOSPITAL_LAB_PATTERNS_REPORTER_PKG     ||
                    { CATEGORIES:[], REPORTER_MANIFEST:[], REPORTER_COMPUTED:[] };
+  normalizers    = window.HOSPITAL_LAB_PATTERNS_NORMALIZERS      || {};
   computed       = window.HOSPITAL_LAB_PATTERNS_COMPUTED         ||
                    { COMPUTATIONS:[], HELPERS:{} };
 }
 
+// If `normalize` is a string name, replace it with the actual function.
+function rehydrateNormalize(entry) {
+  if (typeof entry.normalize === 'string') {
+    var fn = normalizers[entry.normalize];
+    if (typeof fn === 'function') {
+      entry.normalize = fn;
+    } else {
+      if (typeof console !== 'undefined') {
+        console.warn('[hospital-lab-patterns] unknown normalizer "' + entry.normalize + '" referenced by ' + entry.id);
+      }
+      delete entry.normalize;
+    }
+  }
+  return entry;
+}
+
 // Resolve a manifest entry against the catalog by id; manifest fields
-// override catalog fields. Returns merged entries; warns on unknown ids.
+// override catalog fields. Returns merged entries with rehydrated normalizers.
 function resolveManifest(manifest, cat) {
   var byId = new Map(cat.map(function (e) { return [e.id, e]; }));
   var out = [];
@@ -35,13 +54,16 @@ function resolveManifest(manifest, cat) {
     var id = typeof m === 'string' ? m : m.id;
     var base = byId.get(id);
     if (!base) {
-      var msg = '[hospital-lab-patterns] manifest references unknown id: "' + id + '"';
-      if (typeof console !== 'undefined') console.warn(msg);
+      if (typeof console !== 'undefined') {
+        console.warn('[hospital-lab-patterns] manifest references unknown id: "' + id + '"');
+      }
       return;
     }
-    out.push(typeof m === 'string'
+    var merged = typeof m === 'string'
       ? Object.assign({}, base)
-      : Object.assign({}, base, m));
+      : Object.assign({}, base, m);
+    rehydrateNormalize(merged);
+    out.push(merged);
   });
   return out;
 }
@@ -72,13 +94,15 @@ var exported = {
   reporter: reporter,
   reporterCategories: reporterPkg.CATEGORIES,
   reporterComputed:   reporterPkg.REPORTER_COMPUTED,
+  normalizers:        normalizers,
   computed:           computed.COMPUTATIONS,
   computedHelpers:    computed.HELPERS,
   byId: byId,
   filterByHospital: filterByHospital,
   resolveManifest: resolveManifest,
+  rehydrateNormalize: rehydrateNormalize,
   trackOnlyIds: trackOnlyIds,
-  version: '0.2.0',
+  version: '0.3.0',
 };
 
 if (typeof module !== 'undefined' && module.exports) {

@@ -30,7 +30,7 @@ const CATALOG = [
     unit:'×10³/µL', category:'血液',
     ref:'4.0–11.0 ×10³/µL',
     refLo:4.0, refHi:11.0, hi:11, lo:4,
-    normalize: v => v > 100 ? +(v / 1000).toFixed(1) : v,
+    normalize: 'wbcCount',
     notes:'Negative lookahead in pattern rejects urine routine "WBC: 0-5". Normalize handles /µL (e.g. 6700) → ×10³/µL (6.7).' },
 
   { id:'RBC',
@@ -68,7 +68,7 @@ const CATALOG = [
     unit:'×10³/µL', category:'血液',
     ref:'150–400 ×10³/µL',
     refLo:150, refHi:400, hi:400, lo:150,
-    normalize: v => v > 1000 ? +(v / 1000).toFixed(0) : v,
+    normalize: 'plateletCount',
     notes:'Normalize handles /µL (e.g. 250000) → ×10³/µL (250).' },
 
   // ═══════════════════════════════════════════════════════════════════════
