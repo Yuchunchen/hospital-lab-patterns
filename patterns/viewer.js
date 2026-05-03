@@ -87,19 +87,9 @@ const VIEWER_CATALOG = [
     displayName:'血尿素氮 (BUN)', ref:'男 8.9–20.6，女 7.0–18.7 mg/dL',
     meaning:'', hi:25.7, lo:null },
 
-  { id:'BUNPre',
-    pattern: /BUN:\s*([\d.]+)/,
-    orderNameFilter: /,/,
-    page:1, col:2, section:'腎功能（透析）',
-    displayName:'BUN 洗前', ref:'7–25 mg/dL',
-    meaning:'透析前', hi:null, lo:null },
-
-  { id:'BUNPost',
-    pattern: /BUN:\s*([\d.]+)/,
-    orderNameFilter: /^BUN$/i,
-    page:1, col:2, section:'腎功能（透析）',
-    displayName:'BUN 洗後', ref:'7–25 mg/dL',
-    meaning:'透析後', hi:null, lo:null },
+  // 2026-05-03: BUNPre / BUNPost (section 腎功能（透析）) removed from viewer
+  // catalog. Pre/post-dialysis BUN tracking + URR computation are
+  // dialysis-specific and live in patterns/reporter.js for the dialysis app.
 
   { id:'CREAT',
     pattern: /(?:Creatinine\(serum\)|CREAT):\s*([\d.]+)/i,
@@ -194,12 +184,9 @@ const VIEWER_CATALOG = [
     hi:400, lo:150 },
 
   // ── Col 3 │ 營養／電解質 ──────────────────────────────────────────────
-  { id:'TP',
-    pattern: /Total protein\(serum\):\s*([\d.]+)/i,
-    page:1, col:3, section:'營養／電解質',
-    displayName:'總蛋白 (Total Protein)', ref:'6.0–8.3 g/dL',
-    meaning:'', hi:8.3, lo:6.0 },
-
+  // 2026-05-03: pruned to outpatient-relevant nutrition markers per user
+  // request. Removed entries (TP, Cl, Ca, P, TIBC, TSAT, Ferritin, iPTH)
+  // remain available in patterns/reporter.js for the dialysis project.
   { id:'Albumin',
     // Boundary requirement so we don't match "U-Albumin:" / "Microalbumin:"
     pattern: /(?:^|[\s;])Albumin(?:\([^)]*\))?:\s*([\d.]+)/i,
@@ -219,65 +206,17 @@ const VIEWER_CATALOG = [
     displayName:'鉀 (K)', ref:'3.5–5.1 mmol/L',
     meaning:'', hi:5.1, lo:3.5 },
 
-  { id:'Cl',
-    pattern: /Cl\(Serum\):\s*([\d.]+)/,
-    page:1, col:3, section:'營養／電解質',
-    displayName:'氯 (Cl)', ref:'98–107 mmol/L',
-    meaning:'', hi:107, lo:98 },
-
-  { id:'Ca',
-    pattern: /Calcium\(Serum\):\s*([\d.]+)/,
-    page:1, col:3, section:'營養／電解質',
-    displayName:'鈣 (Ca)', ref:'8.6–10.2 mg/dL',
-    meaning:'', hi:10.2, lo:8.6 },
-
   { id:'FreeCa',
     pattern: /Free Ca\+\+:\s*([\d.]+)/,
     page:1, col:3, section:'營養／電解質',
     displayName:'游離鈣 (Free Ca)', ref:'1.15–1.32 mmol/L',
     meaning:'', hi:1.32, lo:1.15 },
 
-  { id:'P',
-    pattern: /Phosphorus:\s*([\d.]+)/,
-    page:1, col:3, section:'營養／電解質',
-    displayName:'磷 (P)', ref:'2.5–5.0 mg/dL',
-    meaning:'', hi:5.0, lo:2.5 },
-
   { id:'FE',
     pattern: /FE:\s*([\d.]+)/,
     page:1, col:3, section:'營養／電解質',
     displayName:'血清鐵 (Fe)', ref:'男 65–175，女 50–170 µg/dL',
     meaning:'', hi:175, lo:65 },
-
-  { id:'TIBC',
-    pattern: /TIBC:\s*([\d.]+)/,
-    page:1, col:3, section:'營養／電解質',
-    displayName:'總鐵結合力 (TIBC)', ref:'男 134–415，女 120–480 µg/dL',
-    meaning:'', hi:415, lo:134 },
-
-  { id:'TSAT',
-    pattern: /SAT:\s*([\d.]+)/,
-    page:1, col:3, section:'營養／電解質',
-    displayName:'鐵飽和度 (TSAT)', ref:'20–45 %',
-    meaning:'', hi:45, lo:20 },
-
-  { id:'Ferritin',
-    pattern: /(?:Ferritin|FERRITIN):\s*([<>]?\s*[\d.]+)/i,
-    page:1, col:3, section:'營養／電解質',
-    displayName:'鐵蛋白 (Ferritin)', ref:'男 21.81–274.66，女 4.63–204.00 ng/mL',
-    meaning:'', hi:274.66, lo:21.81 },
-
-  { id:'iPTH',
-    pattern: /i-PTH:\s*([\d.]+)/,
-    page:1, col:3, section:'營養／電解質',
-    displayName:'副甲狀腺素 (iPTH)', ref:'15–68.3 pg/mL',
-    meaning:'', hi:68.3, lo:15 },
-
-  { id:'MG',
-    pattern: /MG:\s*([\d.]+)/,
-    page:1, col:3, section:'營養／電解質',
-    displayName:'鎂 (Magnesium, Mg)', ref:'1.6–2.6 mg/dL',
-    meaning:'', hi:2.6, lo:1.6 },
 
   { id:'VitB12',
     pattern: /(?:Vit(?:amin)?\.?\s*B12|VIT\.?\s*B12|B12):\s*([\d.]+)/i,
