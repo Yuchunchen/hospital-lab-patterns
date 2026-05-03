@@ -1,0 +1,25 @@
+# Real patient data — NEVER commit
+examples/
+*.real.html
+*.real.json
+*.real.txt
+*-chartno-*.html
+*-chartno-*.json
+
+# Common
+node_modules/
+.DS_Store
+Thumbs.db
+*.log
+.env
+.env.*
+
+# Editors
+.vscode/
+.idea/
+*.swp
+*.tmp.*
+
+# Build artefacts (none yet)
+dist/
+build/

@@ -1,0 +1,18 @@
+{
+  "name": "hospital-lab-patterns",
+  "version": "0.1.0",
+  "description": "Centralized regex pattern catalog for ernode lab/imaging report parsing (vhtt + vhyl)",
+  "private": true,
+  "main": "patterns/index.js",
+  "scripts": {
+    "validate": "node scripts/validate.js"
+  },
+  "files": [
+    "patterns/",
+    "docs/",
+    "README.md",
+    "WORKLOG.md"
+  ],
+  "author": "yuchunchen",
+  "license": "UNLICENSED"
+}
