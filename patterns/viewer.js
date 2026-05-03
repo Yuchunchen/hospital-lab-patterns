@@ -66,7 +66,6 @@ const VIEWER_MANIFEST = [
   { id:'WBC',      page:1, col:3, section:'血液',
     hi:10, lo:5.0, ref:'5.0–10.0 ×10³/µL' },
   { id:'Hb',       page:1, col:3, section:'血液' },
-  { id:'HCT',      page:1, col:3, section:'血液' },
   { id:'MCV',      page:1, col:3, section:'血液' },
   { id:'Platelet', page:1, col:3, section:'血液' },
 
