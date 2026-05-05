@@ -14,6 +14,57 @@ Each entry should include:
 
 ---
 
+## 2026-05-05 — vhyl 5 條 regex 放寬（HBsAg / AntiHCV / AFP / TSAT / Fe）
+
+- 作者：claude（與 YC 共同）
+- 範圍：catalog
+- 變更：修改
+- 測試 ID：HBsAg、AntiHCV、AFP、TSAT、Fe
+
+**觸發：** 使用者回報 vhyl 病人 000151649A 的 HBsAg / Anti-HCV / AFP、000051055E 的 Fe
+在 reporter 漏顯示。連帶發現 TSAT 舊 regex `/SAT:/` 對 vhyl 的 `TS:` label 不命中。
+
+**根因：** vhyl lab text 把同一項目的「數值滴度行」與「定性結果行」黏在同一行
+（例：`HBsAg: 0.21HBsAg (YL): Non-Reactive (Non-Reactive)`）；lab name 後固定加
+`(YL)` suffix；TSAT vhyl 寫成 `TS:`。詳見 TASK_BRIEF.md。
+
+**修改 patterns/catalog.js（只改 pattern 欄位）：**
+
+| testId | 舊 → 新 |
+|---|---|
+| HBsAg | `/HBsAg(?:\(TT\))?:\s*(\S+)/` → `/HBsAg\s*(?:\((?:TT|YL)\))?:\s*([^\s\d]\S*)/` |
+| AntiHCV | `/(?:HCV Ab\(TT\)|Anti-HCV):\s*(\S+)/` → `/(?:HCV Ab|Anti-HCV)\s*(?:\((?:TT|YL)\))?:\s*([^\s\d]\S*)/` |
+| AFP | `/AFP:\s*([<>]?[\d.]+)/` → `/AFP\s*(?:\((?:TT|YL)\))?:\s*([<>]?\s*[\d.]+)/` |
+| TSAT | `/SAT:\s*([\d.]+)/` → `/(?<![A-Za-z])(?:TSAT|TS|SAT):\s*([\d.]+)/` |
+| Fe | `/FE:\s*([\d.]+)/` → `/(?:Fe|Iron)\s*(?:\((?:TT|YL)\))?:\s*([\d.]+)/i` |
+
+設計關鍵：HBsAg / AntiHCV 的 capture 改成 `[^\s\d]\S*`，讓引擎在 `(YL):` 那行才命中，
+自動跳過前面的 `0.21` / `0.12` 數值；統一支援 `(TT|YL)` 兩家醫院 + 無 suffix；
+TSAT lookbehind 防 `DESAT:` 誤命中、但允許 `267.00TS:` 命中（前一字是數字）；
+Fe 加 `i` flag 與 `Iron` alternation。
+
+每個 entry 上方加註解標記 vhyl 原始樣本，便於日後追溯。
+
+**驗證：**
+- `npm run release` 全綠：catalog 69、viewer manifest 54、reporter manifest 37、
+  `dist/patterns.json` 36.6 KB 重 build 成功。
+- 暫存的 `scripts/regex-spot-check.js` 把 TASK_BRIEF §5 全部 18 條樣本灌進新 pattern：
+  - HBsAg：4/4（含 vhyl 黏連字串 `HBsAg: 0.21HBsAg (YL): Non-Reactive ...` → `Non-Reactive`）
+  - AntiHCV：3/3（含 vhyl 黏連字串）
+  - AFP：3/3（`AFP(YL): < 2.00` → `< 2.00`）
+  - TSAT：4/4（`267.00TS: 22` → `22`；`DESAT: 95` 正確不命中）
+  - Fe：4/4（`FE: 58`、`Fe (YL): 58`、`Iron: 100` 命中；`FERRITIN: 234` 正確不命中）
+  - 18 pass · 0 fail；spot-check 檔已刪除。
+
+**影響：**
+- catalog 異動 → sibling repo 必須重 sync：
+  - `hospital-lab-viewer` 跑 `node sync-patterns.js` 並重新發布（OPD 端另外
+    24h 內透過 `dist/patterns.json` 自動拿到最新版）。
+  - `hospital-lab-reporter` 跑 `node sync-patterns.js` 並重新發布。
+- 預期：reporter 重 fetch 000151649A 後，HBsAg / Anti-HCV / AFP / TSAT 都會出值。
+
+---
+
 ## 2026-05-03 — Runtime auto-update via dist/patterns.json (v0.3)
 
 - Author: claude (with YC)
