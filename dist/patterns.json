@@ -1,6 +1,6 @@
 {
   "version": "0.3.0",
-  "synced_at": "2026-05-05T21:05:17.970Z",
+  "synced_at": "2026-05-05T21:11:20.424Z",
   "catalog": [
     {
       "id": "WBC",
@@ -1647,22 +1647,34 @@
       "section": "肝炎"
     },
     {
-      "id": "HBsAg",
+      "id": "HBsAgDisplay",
       "page": 1,
       "col": 4,
-      "section": "肝炎",
-      "computed": "HBsAg",
-      "pattern": null,
-      "singleValue": true
+      "section": "肝炎"
     },
     {
-      "id": "AntiHBs",
+      "id": "AntiHBsDisplay",
       "page": 1,
       "col": 4,
-      "section": "肝炎",
-      "computed": "AntiHBs",
-      "pattern": null,
-      "singleValue": true
+      "section": "肝炎"
+    },
+    {
+      "id": "HBsAg"
+    },
+    {
+      "id": "HBsAgTiter"
+    },
+    {
+      "id": "AntiHBs"
+    },
+    {
+      "id": "AntiHBsTiter"
+    },
+    {
+      "id": "AntiHCV"
+    },
+    {
+      "id": "AntiHCVTiter"
     },
     {
       "id": "BoneDensity",
