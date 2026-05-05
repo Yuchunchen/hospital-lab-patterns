@@ -95,16 +95,28 @@ const VIEWER_MANIFEST = [
 
   // ── Col 4 │ 肝炎 ─────────────────────────────────────────────────────
   // Bilirubin numerics rendered alongside the qualitative hepatitis tests.
-  // HCV / HBsAg / AntiHBs use computed wrappers (singleValue: true) to
-  // produce patient-friendly verdicts. report.js's findHepatitis() handles
-  // this by id when `computed` is set on the resolved entry.
-  { id:'DBIL', page:1, col:4, section:'肝炎' },
-  { id:'TBIL', page:1, col:4, section:'肝炎' },
-  { id:'HCV',     page:1, col:4, section:'肝炎' },                  // catalog entry already computed
-  { id:'HBsAg',   page:1, col:4, section:'肝炎',
-    computed:'HBsAg',  pattern:null, singleValue:true },             // override raw → computed
-  { id:'AntiHBs', page:1, col:4, section:'肝炎',
-    computed:'AntiHBs', pattern:null, singleValue:true },
+  // HCV / HBsAgDisplay / AntiHBsDisplay are computed wrappers from
+  // catalog (singleValue:true) — they consume raw qualitative + raw titer
+  // entries (extract-only entries below) and produce 帶原/正常/有抗體 +
+  // (label titer) verdict tuples. Phase 2 (viewer): report.js will gain
+  // a small dispatcher that runs PATTERNS_COMPUTED.{HCV,HBsAgDisplay,
+  // AntiHBsDisplay} against `map` and writes back the verdict entries.
+  { id:'DBIL',           page:1, col:4, section:'肝炎' },
+  { id:'TBIL',           page:1, col:4, section:'肝炎' },
+  { id:'HCV',            page:1, col:4, section:'肝炎' },
+  { id:'HBsAgDisplay',   page:1, col:4, section:'肝炎' },
+  { id:'AntiHBsDisplay', page:1, col:4, section:'肝炎' },
+
+  // Extract-only entries — no page/col so render skips them, but the
+  // parse loop in viewer report.js (which iterates the resolved manifest)
+  // populates map[id] with regex matches. Required so HCV /
+  // HBsAgDisplay / AntiHBsDisplay computed wrappers have inputs.
+  { id:'HBsAg' },
+  { id:'HBsAgTiter' },
+  { id:'AntiHBs' },
+  { id:'AntiHBsTiter' },
+  { id:'AntiHCV' },
+  { id:'AntiHCVTiter' },
 
   // ═══════════════════════════════════════════════════════════════════════
   // PAGE 2 — text-block entries (DEXA / endoscopy / sono)

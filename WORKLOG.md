@@ -14,6 +14,61 @@ Each entry should include:
 
 ---
 
+## 2026-05-06 — viewer manifest 切換到肝炎 *Display(Item B Phase 1.5)
+
+- 作者：claude(與 YC 共同)
+- 範圍:viewer-manifest、runtime-snapshot
+- 變更:viewer manifest 把 `HBsAg`、`AntiHBs` 兩條改成 `HBsAgDisplay`、
+  `AntiHBsDisplay`(套 catalog 預設,不再用 manifest 端 `computed:'HBsAg'` /
+  `pattern:null` / `singleValue:true` override);新增 6 條 raw extract-only
+  entry(`HBsAg`、`HBsAgTiter`、`AntiHBs`、`AntiHBsTiter`、`AntiHCV`、
+  `AntiHCVTiter`)讓 viewer 的 parse loop 抓得到原始定性 + 滴度供
+  computed wrappers 取用。HCV 條目不動(catalog 端已補 needs)。
+- 測試 ID:HBsAgDisplay、AntiHBsDisplay、HCV、HBsAg、HBsAgTiter、
+  AntiHBs、AntiHBsTiter、AntiHCV、AntiHCVTiter
+
+**觸發:** Phase 1 已把 catalog + computed 改好,但 viewer 端 manifest
+還指向舊 id。本輪只動 patterns repo 的 viewer 端 manifest,讓 OPD viewer
+透過 `dist/patterns.json` 24h 內拿到新映射。viewer repo 端的 `report.js`
+findHepatitis / findAntiHBs 拆除 + dispatcher 加上,留到 Phase 2 viewer
+那一輪做(因為改到 viewer code 必須在 sibling repo 內)。
+
+**設計重點:**
+
+- viewer 的 `pattern-loader.js` `buildTestMap` 只 resolve viewer manifest
+  ✕ catalog,所以不在 manifest 內的 catalog entry 不會被抓。確認後決定
+  把 6 條 raw entry 加到 manifest;為了讓它們不被 render,沿用 viewer
+  既有的 page-filter 慣例(`tests.filter(t => t.page === pageNum)`,
+  report.js:752)— 不寫 `page` 就會自動跳過 render,但 parse loop 仍會
+  跑 `text.match(test.pattern)`(report.js:141-173 不依賴 page)。比
+  brief 提的 `extractOnly:true` 字面欄位更乾淨,不需新增 schema 欄位。
+- HBsAgDisplay / AntiHBsDisplay 的 manifest entry 從原本的「全 override」
+  退化成只指定 `page:1, col:4, section:'肝炎'`;catalog 已備好 `computed`、
+  `needs`、`singleValue:true`、`pattern:null`,沿用即可。
+
+**驗證:**
+
+- `npm run release` 全綠:74 catalog · 60 viewer · 37 reporter
+  (viewer 從 54 → 60:+8 新加,-2 舊的 HBsAg/AntiHBs);track-only
+  從 6 條剩 1 條(只剩 Mg,5 條肝炎相關全進了 viewer manifest)。
+- `node -e` 直接打 resolved entry 確認 `lib.byId('HBsAgDisplay').needs`
+  = `['HBsAg','HBsAgTiter']`、`AntiHBsDisplay.needs` =
+  `['AntiHBs','AntiHBsTiter']`、`HCV.needs` = `['AntiHCV','AntiHCVTiter']`,
+  `computed` 欄位也都有。
+- dist/patterns.json 重 build(39.3 KB)。
+
+**影響:**
+
+- 這次 push 之後 OPD viewer 會在 24h 內拿到新 viewer manifest。但 viewer
+  端 `report.js` 還用 `findHepatitis()` / `findAntiHBs()` 用舊 id
+  (`map['HBsAg']` / `map['AntiHBs']`)寫結果;新 manifest 已改用
+  `HBsAgDisplay` / `AntiHBsDisplay` 渲染 → **這段時間若沒同步更新
+  viewer code,肝炎欄會渲染空白**。
+- 因此 Phase 1.5 push 完不要等 24h,**馬上接 Phase 2**(進 viewer repo
+  改 report.js + 重打包)。否則 OPD 端會出現短暫渲染破損。
+
+---
+
 ## 2026-05-06 — 肝炎顯示集中化(Item B Phase 1)
 
 - 作者：claude（與 YC 共同）
