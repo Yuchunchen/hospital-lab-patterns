@@ -113,14 +113,18 @@ const CATALOG = [
     displayName:'丙胺酸轉氨酶 (GPT / ALT)', shortLabel:'GPT/ALT',
     unit:'U/L', category:'肝功能',
     ref:'男<45，女<34 U/L',
-    refLo:7, refHi:45, hi:45, lo:null },
+    refLo:7, refHi:45,
+    hiM:45, hiF:34,
+    hi:45, lo:null },
 
   { id:'RGT',
     pattern: /(?:r-?GT|R-?GT|γ-?GT|GGT|RGT):\s*([\d.]+)/i,
     displayName:'γ-麩胺醯轉移酶 (r-GT / GGT)', shortLabel:'r-GT',
     unit:'U/L', category:'肝功能',
     ref:'男 < 55，女 < 38 U/L',
-    refLo:0, refHi:55, hi:55, lo:null,
+    refLo:0, refHi:55,
+    hiM:55, hiF:38,
+    hi:55, lo:null,
     notes:'Pattern matches r-GT, R-GT, γ-GT, GGT, RGT — hospitals use various labels.' },
 
   { id:'ALP',
@@ -207,7 +211,10 @@ const CATALOG = [
     displayName:'血尿素氮 (BUN)', shortLabel:'BUN',
     unit:'mg/dL', category:'腎功能',
     ref:'男 8.9–20.6，女 7.0–18.7 mg/dL',
-    refLo:7, refHi:25, hi:25.7, lo:null },
+    refLo:7, refHi:25,
+    hiM:20.6, hiF:18.7,
+    hi:25.7, lo:null,
+    notes:'Fallback hi:25.7 is the original soft buffer for unknown gender; known-gender uses hiM/hiF for precision.' },
 
   // BUN_pre / BUN_post — dialysis-specific. Only the reporter uses these.
   // The orderNameFilter discriminates pre-dialysis (composite panel
@@ -237,7 +244,9 @@ const CATALOG = [
     displayName:'肌酸酐 (Creatinine, Cr)', shortLabel:'Cr',
     unit:'mg/dL', category:'腎功能',
     ref:'男 0.6–1.2，女 0.5–1.0 mg/dL',
-    refLo:0.5, refHi:1.3, hi:1.2, lo:null,
+    refLo:0.5, refHi:1.3,
+    hiM:1.2, hiF:1.0,
+    hi:1.2, lo:null,
     notes:'Pattern matches "Creatinine(serum):" and "CREAT:" but NOT "Creatinine(24hrs Urine):".' },
 
   { id:'UA',
@@ -245,7 +254,9 @@ const CATALOG = [
     displayName:'尿酸 (Uric acid, UA)', shortLabel:'UA',
     unit:'mg/dL', category:'腎功能',
     ref:'男 3.3–7.7，女 2.5–6.2 mg/dL',
-    refLo:2.5, refHi:7.7, hi:7.7, lo:null },
+    refLo:2.5, refHi:7.7,
+    hiM:7.7, hiF:6.2,
+    hi:7.7, lo:null },
 
   { id:'eGFR',
     pattern: /(?:Creatinine\(serum\)|CREAT):\s*([\d.]+)/i,

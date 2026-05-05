@@ -14,6 +14,63 @@ Each entry should include:
 
 ---
 
+## 2026-05-06 — GPT/RGT/BUN/CREAT/UA 加 gender-aware hi（沿用 SOP G）
+
+- 作者：claude（與 YC 共同）
+- 範圍：catalog、runtime-snapshot
+- 變更：5 條 entry 補 `hiM` / `hiF`（不加 lo 系列）
+- 測試 ID：GPT、RGT、BUN、CREAT、UA
+
+**觸發：** 收尾 2026-05-05 Issue 1 backlog 第 1 條。剩下 5 條 catalog entry
+原本 `hi` 鎖男性、`lo:null`，女性中段值會「漏 alarm」（不誤判但少警示）。
+本輪沿用 5 月 5 日已建好的 schema 機制（loM/hiM/loF/hiF + lo/hi fallback）
+把它們補上，只動 patterns repo。
+
+**設計重點：**
+
+- 5 條原本都 `lo:null`、只 alarm 高邊；本輪維持醫學意圖**只加 `hiM`/`hiF`**，
+  不引入低值 alarm。
+- BUN 的 fallback `hi:25.7` 是原作者對「男性 ULN 20.6」加的軟緩衝，unknown
+  gender 時保留；已知性別則精準用 `hiM:20.6` / `hiF:18.7`（這是預期的設計
+  緊縮，不是 regression）。
+- 其他 4 條的 fallback `hi` 等於男性 hi，跟原值一致，unknown gender 行為不變。
+
+| ID | hiM | hiF | hi (fallback) | lo |
+|---|---|---|---|---|
+| GPT | 45 | 34 | 45 | null |
+| RGT | 55 | 38 | 55 | null |
+| BUN | 20.6 | 18.7 | **25.7（軟緩衝保留）** | null |
+| CREAT | 1.2 | 1.0 | 1.2 | null |
+| UA | 7.7 | 6.2 | 7.7 | null |
+
+**驗證：**
+
+- `npm run release` 全綠：69 catalog · 54 viewer · 37 reporter；
+  dist/patterns.json 重 build（37.3 KB）。
+- 暫存 spec `scripts/gender-threshold-2.js` 跑 15 個樣本 + 5 條欄位存在性檢查
+  → 20/20 PASS：
+  - 男 GPT 40 → NORMAL；男 GPT 50 → HIGH
+  - 女 GPT 30 → NORMAL；女 GPT 40 → **HIGH（關鍵 case，本輪修補）**
+  - 男 BUN 25 → HIGH（gender-aware 緊縮：hiM=20.6）
+  - 男 BUN 19 → NORMAL；女 BUN 19 → HIGH
+  - unknown gender BUN 25 → NORMAL（fallback 25.7 軟緩衝）；BUN 26 → HIGH
+  - CREAT/UA 同模式抽驗通過
+- spec script 通過後已刪除（CLAUDE.md 暫存物清理慣例）。
+
+**不動的東西：** schema.js（5 月 5 日已加四欄 optional）、viewer / reporter
+manifest（這 5 條不需 override）、normalizers / computed。
+
+**影響：**
+
+- patterns repo push 後 OPD viewer 24 小時內透過 dist/patterns.json 自動拿到
+  新 hiM/hiF 欄位；report.js valueStyle() 已是 gender-aware，直接吃。
+- sibling repo (`hospital-lab-viewer` / `hospital-lab-reporter`) 應重跑
+  `node sync-patterns.js` 把 5 條 entry 的 hiM/hiF 同步進 mapping.js / inline
+  pattern block，再各自重新打包推送。**本輪只動 patterns repo，sync 由 Phase
+  B / C 在 sibling repo 執行。**
+
+---
+
 ## 2026-05-05 — schema 加性別感知 threshold（loM/hiM/loF/hiF, Phase 1 patterns repo）
 
 - 作者：claude（與 YC 共同）
