@@ -1,6 +1,6 @@
 {
   "version": "0.3.0",
-  "synced_at": "2026-05-05T20:51:51.381Z",
+  "synced_at": "2026-05-05T21:05:17.970Z",
   "catalog": [
     {
       "id": "WBC",
@@ -1045,7 +1045,7 @@
       "id": "AntiHBs",
       "pattern": {
         "__regex": [
-          "Anti-HBs(?:\\(TT\\))?:\\s*(\\S+)",
+          "Anti-HBs\\s*(?:\\((?:TT|YL)\\))?:\\s*([^\\s\\d]\\S*)",
           ""
         ]
       },
@@ -1070,15 +1070,91 @@
       "notes": "vhtt uses \"HCV Ab(TT):\", vhyl uses \"Anti-HCV:\"."
     },
     {
+      "id": "HBsAgTiter",
+      "pattern": {
+        "__regex": [
+          "HBsAg:\\s*([\\d.]+)",
+          ""
+        ]
+      },
+      "displayName": "HBsAg 滴度",
+      "shortLabel": "HBsAg titer",
+      "unit": "",
+      "category": "肝炎 / 感染",
+      "notes": "Numeric titer for HBsAg. Consumed by HBsAgDisplay computed wrapper."
+    },
+    {
+      "id": "AntiHBsTiter",
+      "pattern": {
+        "__regex": [
+          "Anti-HBs:\\s*([\\d.]+)",
+          ""
+        ]
+      },
+      "displayName": "Anti-HBs 滴度",
+      "shortLabel": "Anti-HBs titer",
+      "unit": "",
+      "category": "肝炎 / 感染",
+      "notes": "Numeric titer for Anti-HBs. Consumed by AntiHBsDisplay computed wrapper."
+    },
+    {
+      "id": "AntiHCVTiter",
+      "pattern": {
+        "__regex": [
+          "(?:HCV Ab|Anti-HCV):\\s*([\\d.]+)",
+          ""
+        ]
+      },
+      "displayName": "Anti-HCV 滴度",
+      "shortLabel": "Anti-HCV titer",
+      "unit": "",
+      "category": "肝炎 / 感染",
+      "notes": "Numeric titer for Anti-HCV. Consumed by HCV computed wrapper."
+    },
+    {
+      "id": "HBsAgDisplay",
+      "computed": "HBsAgDisplay",
+      "pattern": null,
+      "needs": [
+        "HBsAg",
+        "HBsAgTiter"
+      ],
+      "displayName": "B型肝炎(顯示)",
+      "shortLabel": "HBsAg",
+      "category": "肝炎 / 感染",
+      "qualitative": true,
+      "singleValue": true,
+      "notes": "Computed display wrapper. viewer 用此 id 顯示;reporter 用 raw HBsAg。"
+    },
+    {
+      "id": "AntiHBsDisplay",
+      "computed": "AntiHBsDisplay",
+      "pattern": null,
+      "needs": [
+        "AntiHBs",
+        "AntiHBsTiter"
+      ],
+      "displayName": "B肝抗體(顯示)",
+      "shortLabel": "Anti-HBs",
+      "category": "肝炎 / 感染",
+      "qualitative": true,
+      "singleValue": true,
+      "notes": "Anti-HBs polarity 與 HBsAg/HCV 相反:Reactive=有抗體=normal。"
+    },
+    {
       "id": "HCV",
       "computed": "HCV",
       "pattern": null,
+      "needs": [
+        "AntiHCV",
+        "AntiHCVTiter"
+      ],
       "displayName": "C型肝炎",
       "shortLabel": "HCV",
       "category": "肝炎 / 感染",
       "qualitative": true,
       "singleValue": true,
-      "notes": "Computed display wrapper around AntiHCV raw data."
+      "notes": "Computed display wrapper around AntiHCV raw + AntiHCVTiter numeric."
     },
     {
       "id": "HIV",

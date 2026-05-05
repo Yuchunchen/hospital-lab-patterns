@@ -14,6 +14,65 @@ Each entry should include:
 
 ---
 
+## 2026-05-06 — 肝炎顯示集中化(Item B Phase 1)
+
+- 作者：claude（與 YC 共同）
+- 範圍：catalog、computed、runtime-snapshot
+- 變更：新增 5 條 entry（3 raw titer + 2 computed display）+ 補 HCV.needs
+  + AntiHBs regex 對齊到 vhyl 樣式;computed.js 新增 _hepatitisDisplay
+  helper 與 HBsAgDisplay/AntiHBsDisplay/HCV 三個函式並註冊到 COMPUTATIONS。
+- 測試 ID：HBsAg、AntiHBs、AntiHCV、HBsAgTiter、AntiHBsTiter、AntiHCVTiter、
+  HBsAgDisplay、AntiHBsDisplay、HCV
+
+**觸發：** TASK_BRIEF.B.md — viewer `report.js` 的 `findHepatitis()` 與
+`findAntiHBs()` 硬編了一套跟 catalog 重複的肝炎 regex,vhyl/vhtt 變體要兩邊
+同步維護(2026-05-05 Issue 1 收尾的 backlog 第 2 條)。本輪 Phase 1 把所有
+肝炎 regex 集中到 catalog,並把顯示邏輯(Reactive→帶原 / 正常 / 有抗體)
+寫進 patterns/computed.js,作為單一來源。viewer 端的搬遷留到 Phase 2。
+
+**設計重點：**
+
+- catalog 改為「raw qualitative + raw numeric titer + computed display」
+  三層結構。reporter 維持用 raw qualitative 顯示原始 `Non-Reactive` 文字;
+  viewer 的 manifest 改指向 computed display 條目(Phase 2 才動)。
+- Anti-HBs 的 polarity 與 HBsAg / Anti-HCV 相反:Reactive=有抗體=`normal`,
+  Non-Reactive=無抗體=`warning`。`_hepatitisDisplay` 用 `polarity:'antibody'`
+  / `'antigen'` 參數切換,共用一份字串組合邏輯。
+- AntiHBs 原本 regex `/Anti-HBs(?:\(TT\))?:\s*(\S+)/` 抓不掉 vhyl
+  「Anti-HBs: 245.5Anti-HBs (YL): Reactive」這種黏連格式(會抓到
+  `245.5Anti-HBs`)。本輪對齊到 HBsAg / AntiHCV 同款
+  `/Anti-HBs\s*(?:\((?:TT|YL)\))?:\s*([^\s\d]\S*)/`,vhyl 與 vhtt 都正確。
+- HBsAgTiter / AntiHBsTiter / AntiHCVTiter 用 `[\d.]+` 自然停在後接的字母
+  `H` / `A`(vhyl 的 "0.21HBsAg"、"0.12Anti-HCV" 黏連格式)。
+- 5 條新 entry 暫時不在任何 manifest 內,validate 顯示為 track-only
+  (預期行為,Phase 2 viewer 接手後 5 條全進 viewer manifest)。
+- HCV 既有 catalog entry 補 `needs:['AntiHCV','AntiHCVTiter']`,把原本
+  「name 在 catalog,實作在 viewer」的斷裂修起來。
+
+**驗證：**
+
+- `npm run release` 全綠:74 catalog · 54 viewer · 37 reporter;
+  dist/patterns.json 重 build(39.2 KB)。
+- 暫存 spec `scripts/hep-display-spec.js` 跑 26 個 assertion(vhyl 9 +
+  vhtt 9 + 邊界 8)全 PASS,涵蓋:
+  - vhyl 黏連格式 "HBsAg: 0.21HBsAg (YL): Non-Reactive"
+    → HBsAgDisplay = `正常 (HBsAg 0.21)` tag:normal
+  - vhtt 樣式 "HBsAg(TT): Reactive" → `帶原 (HBsAg 1.85)` tag:warning
+  - antibody polarity:Reactive → `有抗體` tag:normal
+  - titer 缺值不附括號;異常文字 → caution 帶原文;qualitative 空 → null
+- 全 PASS 後依 brief 指示已刪除 spec 檔。
+
+**影響：**
+
+- viewer 與 reporter 兩個 sibling repo 的 `sync-patterns.js` 都應該
+  重跑(catalog 與 computed.js 都改了)並重新打包推送。
+- OPD viewer 24h 內透過 `dist/patterns.json` 自動拿到新 catalog,但
+  **viewer 端 report.js 的 `findHepatitis()` / `findAntiHBs()` 仍硬編
+  舊 regex**,這部分要等 Phase 2 viewer 改完才會徹底切過去。Phase 1
+  本身對既有 viewer 行為無破壞性。
+
+---
+
 ## 2026-05-06 — GPT/RGT/BUN/CREAT/UA 加 gender-aware hi（沿用 SOP G）
 
 - 作者：claude（與 YC 共同）
