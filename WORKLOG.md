@@ -14,6 +14,32 @@ Each entry should include:
 
 ---
 
+## 2026-05-06 — EarlyCKD 非 CKD 時回傳「正常」(視覺一致性)
+
+- 作者：claude（與 YC 共同）
+- 範圍：computed、runtime-snapshot
+- 變更：修改 `patterns/computed.js` 的 `EarlyCKD()`，把 `tw === '正常'`
+  分支從 `return null` 改成 `return '正常'`；其餘行為不動。
+- 測試 ID：EarlyCKD
+- 原因：使用者在 OPD 看到病患 000151649A 三筆紀錄裡，「慢性腎臟病分期」列
+  顯示 正常 / 第一期 / 正常，但「健保 CKD 分群」列顯示 空白 / P1 早期 / 空白，
+  兩列視覺不一致，誤以為系統漏抓。改後 EarlyCKD 在「沒抽 eGFR」時仍空白，
+  其餘狀態都會出值（正常 / P1早期 / P2中晚期）。
+- 驗證：`npm run release` 全綠（74 catalog · 60 viewer · 37 reporter ·
+  13 computed · dist/patterns.json 39.3 KB）；spec 抽樣：
+  `EarlyCKD({TaiwanCKD:'正常', eGFR:95})` → `'正常'`、
+  `EarlyCKD({TaiwanCKD:'第一期', eGFR:95})` → `'P1早期'`、
+  `EarlyCKD({TaiwanCKD:'第三期 3b', eGFR:35})` → `'P2中晚期'`、
+  `EarlyCKD({TaiwanCKD:null, eGFR:null})` → `null`。
+- 影響：viewer 與 reporter 都要重跑 `node sync-patterns.js` 以取得新版
+  `patterns-computed.js`；viewer 還需手改 `report.js` 的 client-side
+  pairing 迴圈（`if (!twCKD)` 分支多 push 一筆 EarlyCKD 正常 cell）並
+  更新 `CLAUDE.md` line 42 / `ckd_staging.svg` line 189 兩處說明，
+  以及重打包 zip + 寄發 viewer 更新通知 Draft。OPD 端 dist/patterns.json
+  推上 main 後 24 小時內自動拿到。
+
+---
+
 ## 2026-05-06 — viewer manifest 切換到肝炎 *Display(Item B Phase 1.5)
 
 - 作者：claude(與 YC 共同)
