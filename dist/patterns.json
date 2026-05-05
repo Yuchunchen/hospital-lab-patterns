@@ -1,6 +1,6 @@
 {
   "version": "0.3.0",
-  "synced_at": "2026-05-03T14:47:35.716Z",
+  "synced_at": "2026-05-05T15:03:53.677Z",
   "catalog": [
     {
       "id": "WBC",
@@ -713,8 +713,8 @@
       "id": "Fe",
       "pattern": {
         "__regex": [
-          "FE:\\s*([\\d.]+)",
-          ""
+          "(?:Fe|Iron)\\s*(?:\\((?:TT|YL)\\))?:\\s*([\\d.]+)",
+          "i"
         ]
       },
       "displayName": "血清鐵 (Fe)",
@@ -749,7 +749,7 @@
       "id": "TSAT",
       "pattern": {
         "__regex": [
-          "SAT:\\s*([\\d.]+)",
+          "(?<![A-Za-z])(?:TSAT|TS|SAT):\\s*([\\d.]+)",
           ""
         ]
       },
@@ -842,7 +842,7 @@
       "id": "AFP",
       "pattern": {
         "__regex": [
-          "AFP:\\s*([<>]?[\\d.]+)",
+          "AFP\\s*(?:\\((?:TT|YL)\\))?:\\s*([<>]?\\s*[\\d.]+)",
           ""
         ]
       },
@@ -996,7 +996,7 @@
       "id": "HBsAg",
       "pattern": {
         "__regex": [
-          "HBsAg(?:\\(TT\\))?:\\s*(\\S+)",
+          "HBsAg\\s*(?:\\((?:TT|YL)\\))?:\\s*([^\\s\\d]\\S*)",
           ""
         ]
       },
@@ -1024,7 +1024,7 @@
       "id": "AntiHCV",
       "pattern": {
         "__regex": [
-          "(?:HCV Ab\\(TT\\)|Anti-HCV):\\s*(\\S+)",
+          "(?:HCV Ab|Anti-HCV)\\s*(?:\\((?:TT|YL)\\))?:\\s*([^\\s\\d]\\S*)",
           ""
         ]
       },

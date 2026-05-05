@@ -347,8 +347,9 @@ const CATALOG = [
   // IRON METABOLISM
   // ═══════════════════════════════════════════════════════════════════════
 
+  // vhyl sample (2026-05-05): "更正報告 FE: 58TIBC: 267.00TS: 22"
   { id:'Fe',
-    pattern: /FE:\s*([\d.]+)/,
+    pattern: /(?:Fe|Iron)\s*(?:\((?:TT|YL)\))?:\s*([\d.]+)/i,
     displayName:'血清鐵 (Fe)', shortLabel:'Fe',
     unit:'µg/dL', category:'鐵代謝',
     ref:'男 65–175，女 50–170 µg/dL',
@@ -361,8 +362,9 @@ const CATALOG = [
     ref:'男 134–415，女 120–480 µg/dL',
     refLo:120, refHi:480, hi:415, lo:134 },
 
+  // vhyl sample (2026-05-05): "更正報告 FE: 58TIBC: 267.00TS: 22"
   { id:'TSAT',
-    pattern: /SAT:\s*([\d.]+)/,
+    pattern: /(?<![A-Za-z])(?:TSAT|TS|SAT):\s*([\d.]+)/,
     displayName:'鐵飽和度 (TSAT)', shortLabel:'TSAT',
     unit:'%', category:'鐵代謝',
     ref:'20–45 %',
@@ -407,8 +409,9 @@ const CATALOG = [
   // TUMOR MARKERS
   // ═══════════════════════════════════════════════════════════════════════
 
+  // vhyl sample (2026-05-05): "正式報告 AFP(YL): < 2.00"
   { id:'AFP',
-    pattern: /AFP:\s*([<>]?[\d.]+)/,
+    pattern: /AFP\s*(?:\((?:TT|YL)\))?:\s*([<>]?\s*[\d.]+)/,
     displayName:'甲胎蛋白 (AFP)', shortLabel:'AFP',
     unit:'ng/mL', category:'癌症指數',
     ref:'< 20 ng/mL（肝臟）',
@@ -483,8 +486,9 @@ const CATALOG = [
   // Viewer overrides these in its manifest with `computed: '<id>'` to render
   // a patient-friendly verdict (帶原 / 正常) via report.js helpers.
 
+  // vhyl sample (2026-05-05): "正式報告 HBsAg: 0.21HBsAg (YL): Non-Reactive (Non-Reactive)"
   { id:'HBsAg',
-    pattern: /HBsAg(?:\(TT\))?:\s*(\S+)/,
+    pattern: /HBsAg\s*(?:\((?:TT|YL)\))?:\s*([^\s\d]\S*)/,
     displayName:'B型肝炎表面抗原 (HBsAg)', shortLabel:'HBsAg',
     category:'肝炎 / 感染',
     qualitative:true,
@@ -497,8 +501,9 @@ const CATALOG = [
     qualitative:true,
     meaning:'疫苗免疫指標' },
 
+  // vhyl sample (2026-05-05): "正式報告 Anti-HCV: 0.12Anti-HCV (YL): Non-Reactive (Non-Reactive)"
   { id:'AntiHCV',
-    pattern: /(?:HCV Ab\(TT\)|Anti-HCV):\s*(\S+)/,
+    pattern: /(?:HCV Ab|Anti-HCV)\s*(?:\((?:TT|YL)\))?:\s*([^\s\d]\S*)/,
     displayName:'C型肝炎抗體 (Anti-HCV)', shortLabel:'Anti-HCV',
     category:'肝炎 / 感染',
     qualitative:true,
