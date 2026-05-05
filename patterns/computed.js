@@ -124,7 +124,7 @@ function TaiwanCKD({ eGFR, UACR, UPCR }) {
 // ─── Early CKD class (健保 P1 / P2) ─────────────────────────────────────
 function EarlyCKD({ TaiwanCKD: tw, eGFR }) {
   if (eGFR == null) return null;
-  if (tw === '正常') return null;
+  if (tw === '正常') return '正常';
   return eGFR >= 45 ? 'P1早期' : 'P2中晚期';
 }
 
