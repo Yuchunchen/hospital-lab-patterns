@@ -14,6 +14,96 @@ Each entry should include:
 
 ---
 
+## 2026-05-05 — schema 加性別感知 threshold（loM/hiM/loF/hiF, Phase 1 patterns repo）
+
+- 作者：claude（與 YC 共同）
+- 範圍：schema、catalog、runtime-snapshot
+- 變更：新增 schema 欄位 + 6 條 catalog 遷移
+- 測試 ID：RBC、Hb、HCT、Fe、TIBC、Ferritin
+
+**觸發：** 使用者回報 vhyl 病人 000151649A（女）在 viewer 顯示血清鐵 58 µg/dL
+被誤判過低 — Fe 的 `lo:65` 鎖在男性下限，女性正常下限是 50。盤點後共 6 個
+test 有同樣男女不同 reference range 的問題（女性中段值被當成過低）：
+
+| ID | 舊 lo/hi | 女性誤判區間 |
+|---|---|---|
+| Fe | 65–175 | 50 ≤ x < 65 µg/dL |
+| TIBC | 134–415 | 120 ≤ x < 134 µg/dL |
+| Ferritin | 21.81–274.66 | 4.63 ≤ x < 21.81 ng/mL |
+| RBC | 4.2–6.2 | 3.7 ≤ x < 4.2 ×10⁶/µL |
+| Hb | 14–18 | 12 ≤ x < 14 g/dL |
+| HCT | 39–53 | 33 ≤ x < 39 % |
+
+**設計（C 方案 — 混合）：**
+
+catalog schema 新增 4 個 optional 欄位 `loM` / `hiM` / `loF` / `hiF`，只在
+有男女差異的少數 test 上用。舊 `lo` / `hi` 保留，角色降為「fallback /
+unknown gender」並設成最寬包絡（= `min(loM,loF), max(hiM,hiF)`），確保
+unknown 性別不會被任何一邊誤判。
+
+Resolution rule（viewer / reporter Phase 2/3 會實作）：
+- entry 有 `loM/hiM/loF/hiF`（任一存在）：
+  - patient.gender 已知 → 用對應性別組
+  - unknown → fallback 到 `lo/hi`（wide envelope）
+- entry 沒有性別欄位 → 維持現有 `lo/hi` 邏輯
+
+**修改 patterns/schema.js：**
+
+1. `ALLOWED_FIELDS` 加入 `loM/hiM/loF/hiF`。
+2. 加 validate 規則：4 個欄位若存在必須是 number 或 null/undefined；若任一
+   存在，該 entry 必須**也有** `lo/hi` 作 fallback（不然 unknown 性別會炸）。
+   失敗訊息明確點出哪個 id 缺 fallback。
+3. 匯出 `GENDER_THRESHOLD_FIELDS` 常數讓 sibling repo 之後若需 introspect 可用。
+
+**修改 patterns/catalog.js（6 條 entry，欄位順序：refLo/refHi → loM/hiM/loF/hiF → lo/hi）：**
+
+| ID | loM/hiM | loF/hiF | lo/hi (fallback wide envelope) |
+|---|---|---|---|
+| RBC | 4.2–6.2 | 3.7–5.5 | 3.7–6.2 |
+| Hb | 14–18 | 12–16 | 12–18 |
+| HCT | 39–53 | 33–47 | 33–53 |
+| Fe | 65–175 | 50–170 | 50–175 |
+| TIBC | 134–415 | 120–480 | 120–480 |
+| Ferritin | 21.81–274.66 | 4.63–204.00 | 4.63–274.66 |
+
+其他欄位（pattern / displayName / unit / ref / refLo / refHi / 註解）一字未動。
+
+**驗證：**
+
+- `npm run release` 全綠：catalog 69 · viewer manifest 54 · reporter
+  manifest 37 · `dist/patterns.json` 37.0 KB 重 build 成功。新四欄位
+  全部進 JSON snapshot（都是 number，不需動 reviver / serialiser）。
+  `byId('Fe')` 結果含 `lo:50, hi:175, loM:65, hiM:175, loF:50, hiF:170`。
+- 暫存的 `scripts/gender-threshold-spec.js` 把 TASK_BRIEF §8 全 11 條
+  測試樣本灌進新 catalog（pickThresholds + classify 模擬 viewer/reporter
+  端的 alarm 邏輯）：
+  - Fe×5 case（含觸發 case：女性 58 → normal、男性 58 → low、unknown 58 → normal）
+  - Hb×3 case（女 13 → normal、女 11 → low、男 13 → low）
+  - Ferritin×3 case（男 25 → normal、女 25 → normal、女 250 → high）
+  - 11 PASS · 0 FAIL；spec 檔已刪除。
+
+**影響：**
+
+- catalog + dist/patterns.json 異動 → sibling repo 必須重 sync：
+  - viewer：`node sync-patterns.js` 重 sync mapping.js；接著 Phase 2 改
+    `report.js valueStyle()` 加 gender 參數 + threshold pick 邏輯，並把
+    patient gender 沿 render call chain 傳進去。viewer 對 RBC/Hb/HCT
+    無 manifest override，會直接吃 catalog 新欄位。
+  - reporter：`node sync-patterns.js` 重 sync inline pattern block；
+    Phase 3 改 `hospital-lab-data.html` (~line 2835) alarm 計算 + 決定
+    是否打開 6 條原本被 manifest `hi:null lo:null` 蓋掉的 alarm 顯示。
+- OPD 端 viewer popup 透過 `dist/patterns.json` 在 24h 內自動拿到新欄位
+  （pattern 已序列化），但 alarm 邏輯仍要等 viewer Phase 2 推送的
+  zip 才能生效（valueStyle 還沒讀新欄位）。
+
+**Backlog（本輪不處理，等使用者實際遇到再開新 brief）：**
+
+- GOT、GPT、RGT、BUN、CREAT、UA 6 個 test 的 `hi` 都鎖男性、`lo:null`，
+  女性中段值會漏 alarm（不是誤判）。優先級低，schema 機制相同，加
+  `hiM/hiF` 即可。
+
+---
+
 ## 2026-05-05 — vhyl 5 條 regex 放寬（HBsAg / AntiHCV / AFP / TSAT / Fe）
 
 - 作者：claude（與 YC 共同）

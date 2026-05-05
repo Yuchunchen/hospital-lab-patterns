@@ -9,6 +9,7 @@ const ALLOWED_FIELDS = new Set([
   'pattern', 'orderNameFilter', 'orderNameMatch', 'hospitalScope',
   'displayName', 'shortLabel', 'unit', 'ref',
   'refLo', 'refHi', 'hi', 'lo',
+  'loM', 'hiM', 'loF', 'hiF',
   'category', 'categoryId', 'section', 'page', 'col',
   'gender', 'hivOnly', 'dialysisFilter', 'qualitative', 'singleValue',
   'normalize',
@@ -19,6 +20,12 @@ const ALLOWED_FIELDS = new Set([
   // Reporter legacy aliases
   'cat', 'label', 'filter',
 ]);
+
+const GENDER_THRESHOLD_FIELDS = ['loM', 'hiM', 'loF', 'hiF'];
+
+function isNumberOrNullish(v) {
+  return v === null || v === undefined || typeof v === 'number';
+}
 
 const REQUIRED_FIELDS = ['id'];
 const VALID_HOSPITAL_SCOPES = new Set([undefined, 'tt', 'yl']);
@@ -53,6 +60,24 @@ function validateEntry(entry, ctx) {
   const dfilter = entry.dialysisFilter !== undefined ? entry.dialysisFilter : entry.filter;
   if (dfilter !== undefined && !VALID_DIALYSIS.has(dfilter)) {
     errs.push(`${id}: invalid dialysisFilter "${dfilter}"`);
+  }
+
+  // gender-aware thresholds: loM/hiM/loF/hiF must each be number or null/undefined.
+  // If any one is present (non-undefined), the entry must also carry lo/hi as
+  // an unknown-gender fallback (the wide envelope spanning both sex groups).
+  let hasGenderField = false;
+  for (const f of GENDER_THRESHOLD_FIELDS) {
+    if (f in entry) {
+      hasGenderField = true;
+      if (!isNumberOrNullish(entry[f])) {
+        errs.push(`${id}: ${f} must be a number or null/undefined`);
+      }
+    }
+  }
+  if (hasGenderField) {
+    if (!('lo' in entry) || !('hi' in entry)) {
+      errs.push(`${id}: gender-aware thresholds (loM/hiM/loF/hiF) require lo/hi as unknown-gender fallback`);
+    }
   }
 
   // normalize: function OR string-name (must exist in normalizers if ctx provided)
@@ -106,6 +131,7 @@ module.exports = {
   VALID_HOSPITAL_SCOPES,
   VALID_GENDERS,
   VALID_DIALYSIS,
+  GENDER_THRESHOLD_FIELDS,
   validateEntry,
   validateCatalog,
 };
