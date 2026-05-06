@@ -42,7 +42,7 @@ ping ernode.vghb12.<host>.gov.tw   # 替換成實際 hostname
 
 從 Anthropic 官網下載 desktop installer，安裝後用同一個 Anthropic 帳號登入。
 帳號層級的設定（plugins、connectors 部分）會自動同步；project instructions
-看版本，不一定同步（所以才有本 repo 的 `COWORK_PROJECT_INSTRUCTIONS.md`）。
+看版本，不一定同步（所以才有本 repo 的 `docs/cowork-project-instructions.md`）。
 
 **Claude in Chrome：** 如果要跑 SOP A（live-fetch），需要在新機器的 Chrome
 裝 Claude extension 並重新跟 Cowork/Claude Code 配對 — extension 配對是
@@ -70,7 +70,7 @@ git clone https://github.com/Yuchunchen/hospital-lab-reporter.git
 
 ```
 D:\self\hospital-lab\
-  ├── hospital-lab-patterns\        ← clone 完才有 PROJECT_CONTEXT.md / BOOTSTRAP.md / COWORK_PROJECT_INSTRUCTIONS.md
+  ├── hospital-lab-patterns\        ← clone 完才有 PROJECT_CONTEXT.md / docs/bootstrap.md 等
   ├── hospital-lab-viewer\
   └── hospital-lab-reporter\
 ```
@@ -82,7 +82,7 @@ D:\self\hospital-lab\
 1. 開 Cowork → 選 workspace folder → 指向 `D:\self\hospital-lab\`
 2. 開新 thread
 3. 打開 Cowork 的 **Project Instructions** UI
-4. 用編輯器打開 `hospital-lab-patterns/COWORK_PROJECT_INSTRUCTIONS.md`，找到
+4. 用編輯器打開 `hospital-lab-patterns/docs/cowork-project-instructions.md`，找到
    裡面那段以 ` ``` ` 包起來的內容（從 `# Project: Hospital Lab Data System`
    開始）
 5. 把那整段純文字複製貼進 Cowork Project Instructions UI（覆蓋掉原本內容
@@ -90,8 +90,8 @@ D:\self\hospital-lab\
 6. 把 `<workspace-root>` 改成你機器實際路徑（例如 `D:\self\hospital-lab\`）
 7. Save
 
-**驗證：** 在 Cowork 開新 thread 問「現有規則有幾條」，應該回 6 條（規則 #1
-到 #6）。
+**驗證：** 在 Cowork 開新 thread 問「現有規則有幾條」，應該回 7 條（規則 #1
+到 #7）。
 
 ---
 

@@ -14,6 +14,59 @@ Each entry should include:
 
 ---
 
+## 2026-05-07 — 文件大整理：BOOTSTRAP / COWORK_PI 搬進 docs/ + 規則 #6 重寫
+
+- 作者：claude（與 YC 共同）
+- 範圍：docs（檔案搬移 + 路徑引用校正 + 規則重寫）
+- 變更：搬移 2 + 修改 5
+- 測試 ID：—（純文件，無 catalog 異動）
+
+**觸發：** 收尾本日（2026-05-07）的文件大整理。前兩輪 commit（`6a4f6c8`
+v0.3 校正 + 新增 4 份 SOP；`19ee557` 加規則 #7）之後，發現 repo root
+還散著兩份「明明是 docs」的檔案（`BOOTSTRAP.md`、`COWORK_PROJECT_INSTRUCTIONS.md`），
+而且 `cowork-project-instructions` 內的規則 #6（TASK_BRIEF _done 改名）
+只寫了一行，沒涵蓋實務上的分層更新邏輯（CLAUDE.md / PROJECT_CONTEXT.md
+誰要動、其餘 docs 何時動）。本輪一口氣搬位置 + 重寫規則 #6 + 同步所有
+路徑引用。
+
+**設計重點：**
+
+- **搬移**：兩份檔搬進 `docs/`（git 自動偵測為 rename，history 保留）：
+  - `BOOTSTRAP.md` → `docs/bootstrap.md`
+  - `COWORK_PROJECT_INSTRUCTIONS.md` → `docs/cowork-project-instructions.md`
+- **規則 #6 重寫為分層更新策略**（取代原本一行式說明）。新版分 5 點：
+  (a) `_done` 改名 + 集中搬到 `hospital-lab-patterns/docs/task-briefs/`；
+  (b) brief 原在 sibling repo（gitignored）時的處理；
+  (c) 與當輪最後一個 commit 同一輪做掉；
+  (d) **同時更新** `CLAUDE.md`（若架構/行為變了）與 `PROJECT_CONTEXT.md`
+  （加 milestone）；(e) **其餘 `docs/` 文件留到 major revision 再整批校正**
+  — 避免每次小改都觸發大量周邊 doc 更新。
+- **路徑引用同步**：`README.md`、`PROJECT_CONTEXT.md`、`CLAUDE.md` 三檔
+  把對 `BOOTSTRAP.md` / `COWORK_PROJECT_INSTRUCTIONS.md` 的舊路徑全改成
+  `docs/bootstrap.md` / `docs/cowork-project-instructions.md`。
+- **SOP 文件小修**：`docs/sop-cowork-guide.md` / `docs/sop-claude-code-guide.md`
+  也順手對齊新路徑（前兩輪 commit 寫好的版本裡引用了舊 root 路徑）。
+- **不動 patterns**：純 docs commit，`patterns/*.js` / `dist/patterns.json`
+  零異動，sibling repo 不需 sync。
+
+**驗證：**
+
+- `npm run release` 全綠：74 catalog · 60 viewer · 37 reporter · 13
+  computed · 1 track-only（Mg）。dist/patterns.json 僅 synced_at 時間戳
+  差異，已 checkout 還原。
+- `git status` 顯示：兩個 `R` rename + 5 個 `M`，符合預期；BOOTSTRAP /
+  COWORK_PI 在 root 已不存在，docs/ 下出現對應新檔。
+
+**影響：**
+
+- repo 結構：root 只剩專案級 README / CLAUDE / PROJECT_CONTEXT / WORKLOG
+  / package.json 等，所有人類向操作手冊都收進 `docs/`。
+- Claude（本身）行為：下次依新版規則 #6 處理 TASK_BRIEF 完工搬遷 +
+  分層 doc 更新；不再每輪都被逼著校正所有周邊 docs。
+- sibling repo 不需 sync，OPD viewer 無變化。
+
+---
+
 ## 2026-05-07 — Cowork project instructions 加規則 #7（回覆加中文註解）
 
 - 作者：claude（與 YC 共同）

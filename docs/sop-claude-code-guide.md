@@ -12,7 +12,7 @@
 
 - 已安裝 Claude Desktop App 並啟用 Claude Code 模式
   （或安裝獨立的 `claude` CLI：`npm install -g @anthropic-ai/claude-code`）
-- 已 clone 三個 repos（見 `BOOTSTRAP.md` Phase 2）
+- 已 clone 三個 repos（見 `docs/bootstrap.md` Phase 2）
 - Git 已設定好 credential（能 push 到 github.com/Yuchunchen）
 
 ### 步驟 1 — 啟動 Claude Code

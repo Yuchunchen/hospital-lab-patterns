@@ -11,9 +11,9 @@ viewer additionally fetches `dist/patterns.json` at runtime from
 This repo is also the **bootstrap repo** for the whole project:
 
 - `PROJECT_CONTEXT.md` — cross-repo architecture, commands, SOP playbook (§9)
-- `COWORK_PROJECT_INSTRUCTIONS.md` — paste-able snapshot of Cowork project
+- `docs/cowork-project-instructions.md` — paste-able snapshot of Cowork project
   instructions (強制規則 + SOP triggers); update this whenever Cowork UI changes
-- `BOOTSTRAP.md` — step-by-step new-machine setup (e.g., 台東 vhtt desktop)
+- `docs/bootstrap.md` — step-by-step new-machine setup (e.g., 台東 vhtt desktop)
 
 Any new dev machine should clone this repo first to get those three docs.
 
