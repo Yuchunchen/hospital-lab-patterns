@@ -218,24 +218,45 @@ their respective `groups/<id>.js`.
 
 ### Mode split
 
-| Cowork (desktop app, default) | Claude Code (desktop app code mode) |
+| Cowork (desktop app, default) | Claude Code (從 workspace root 跑) |
 |---|---|
-| 思考、設計、code review | 多檔重構、批次修改 |
+| 思考、設計、code review | 多檔重構、批次修改（跨 repo 一次做完） |
 | Pattern learning via Claude in Chrome | git commit / push |
 | 規劃下一步、寫 TASK_BRIEF.md | 跑 sync-patterns / npm run release |
 | 比較方案、畫架構圖 | 跑 validate、瀏覽器手動測試 |
+
+### Claude Code 執行方式
+
+**永遠從 workspace root 啟動**，讓 Claude Code 自行切換三個 repo：
+
+```powershell
+cd D:\self\hospital-lab    # workspace root（有 CLAUDE.md）
+claude                     # 自動讀 workspace root 的 CLAUDE.md
+```
+
+Workspace root 的 `CLAUDE.md` 告訴 Claude Code 三個 repo 的位置、跨 repo
+工作順序（patterns → viewer → reporter）、以及所有強制規則。Claude Code 會
+自己 cd 到各 repo、讀各自的 `CLAUDE.md`、執行修改。
+
+**不要** `cd` 進單一 repo 跑 `claude` — 那樣只看到一個 repo，無法跨 repo 操作。
+
+Workspace root `CLAUDE.md` 不屬於任何 repo（不 git track）。新機器 clone 後
+需建立一次，見 `docs/bootstrap.md` Phase 2。Template 在
+`hospital-lab-patterns/docs/workspace-claude-md-template.md`。
 
 ### Hand-off pattern
 
 ```
 COWORK
-  └─ 討論 → 決定要做什麼 → 寫 TASK_BRIEF_<topic>.md 進對應 repo
+  └─ 討論 → 決定要做什麼 → 寫 TASK_BRIEF_<topic>.md
+     （或直接把修改指引貼給 Claude Code）
                                             │
                                             ▼
-CLAUDE CODE  (PowerShell, in repo root)
-  └─ claude → 讀 CLAUDE.md → 讀 TASK_BRIEF_<topic>.md → 實作
-              → 更新 WORKLOG.md → 提示 commit message
-              → 等你說 push → push
+CLAUDE CODE  (PowerShell, 從 workspace root)
+  └─ claude → 讀 workspace CLAUDE.md → 自行切換到各 repo
+              → 讀各 repo 的 CLAUDE.md → 實作
+              → 各 repo 分別更新 WORKLOG.md → 各自 commit
+              → 等你說 push → 一起 push
                                             │
                                             ▼
 COWORK

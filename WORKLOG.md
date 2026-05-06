@@ -14,6 +14,62 @@ Each entry should include:
 
 ---
 
+## 2026-05-07 — Claude Code 改為從 workspace root 啟動 + workspace CLAUDE.md template
+
+- 作者：claude（與 YC 共同）
+- 範圍：docs（新增 1 + 修改 4；workspace 機制定義）
+- 變更：新增 workspace-claude-md-template + 校正 4 份既有文件
+- 測試 ID：—（純文件，無 catalog 異動）
+
+**觸發：** 收尾本日（2026-05-07）的文件大整理。前面三輪 commit
+（`6a4f6c8` v0.3 校正 + 4 份 SOP；`19ee557` 加規則 #7；`a42f5be` 搬位置
++ 規則 #6 重寫）之後，發現操作層面還有一個漏洞：Claude Code 一直以來
+都是 `cd <single repo>` + `claude`，每次只能看一個 repo，跨 repo 改動
+要重複 cd / exit / re-enter。實務上 patterns + viewer + reporter 三個
+repo 經常一起改，這種逐個切換很沒效率。本輪定義「workspace root」
+機制 — Claude Code 永遠從 `D:\self\hospital-lab` 啟動，由其自行 cd
+到各 repo。
+
+**設計重點：**
+
+- **新增 workspace CLAUDE.md template**：`docs/workspace-claude-md-template.md`
+  作為 source of truth。內容包含 (a) 三個 repo 的角色說明；(b) 跨 repo
+  工作順序（patterns → viewer → reporter）；(c) full release + sync
+  cycle 範例命令；(d) 7 條強制規則摘要；(e) 指向 PROJECT_CONTEXT.md
+  的深度參考。**workspace root 的 CLAUDE.md 不屬於任何 repo**（不 git
+  track），是本機 workspace 設定。每台新機器 clone 完三個 repo 後從
+  template 複製一次。
+- **bootstrap.md Phase 2 加 workspace CLAUDE.md 步驟**：clone 完三個
+  repo 之後，從 template 複製成 workspace root 的 `CLAUDE.md`。
+- **PROJECT_CONTEXT.md §10.7 Mode split + Hand-off pattern 重寫**：
+  加 「Claude Code 執行方式」小節（強調永遠從 workspace root 啟動），
+  hand-off diagram 從「PowerShell, in repo root」改為「PowerShell, 從
+  workspace root」，並加註各 repo 分別 commit、一起 push 的 flow。
+- **cowork-project-instructions.md Modes 段同步**：「Claude Code — 從
+  workspace root 啟動，一次跨 3 repo 操作」（取代原本「git、跑
+  sync-patterns」單行說明）。
+- **sop-claude-code-guide.md 步驟 1 重寫**：刪掉「方法 A / 方法 B」
+  二選一寫法，改為「永遠從 workspace root 啟動」單一指令路徑，並警告
+  不要 cd 進單一 repo 跑 claude。
+
+**驗證：**
+
+- `npm run release` 全綠：74 catalog · 60 viewer · 37 reporter · 13
+  computed · 1 track-only（Mg）。dist/patterns.json 僅 synced_at 時間戳
+  差異，已 checkout 還原。
+- workspace CLAUDE.md 已實際運行測試：本輪 commit 就是從 workspace
+  root 啟動 Claude Code 跨 3 repo 操作完成的（自我驗證）。
+
+**影響：**
+
+- 新機器設定：bootstrap.md Phase 2 多一步「複製 template」，但省下後續
+  每次跨 repo 工作都要逐個 cd 的時間。
+- 既有機器：已存在 workspace root CLAUDE.md 的機器無變化；沒建立的
+  機器下次需依 bootstrap Phase 2 補建。
+- sibling repo 不需 sync，OPD viewer 無變化；patterns 沒動。
+
+---
+
 ## 2026-05-07 — 文件大整理：BOOTSTRAP / COWORK_PI 搬進 docs/ + 規則 #6 重寫
 
 - 作者：claude（與 YC 共同）

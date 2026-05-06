@@ -7,7 +7,7 @@
 帳號設定沒同步、或要在新機器快速重建環境，這份檔案就是 single source of
 truth。修改 project instructions 後**請同步更新本檔**，才不會 drift。
 
-**最後同步：** 2026-05-07（規則 #6 重寫 + 檔案搬移到 docs/）
+**最後同步：** 2026-05-07（規則 #6 重寫 + Modes 加 workspace root 說明）
 
 ---
 
@@ -41,7 +41,8 @@ All public on github.com/Yuchunchen.
 ## Modes
 
 - Cowork (this app) — 思考、設計、pattern learning、寫 TASK_BRIEF.md
-- Claude Code — 多檔重構、git、跑 sync-patterns
+- Claude Code — 從 workspace root 啟動，一次跨 3 repo 操作
+  （多檔重構、git、跑 sync-patterns；Claude Code 自行 cd 切換）
 
 ## Pattern-learning trigger（live-fetch SOP）
 
@@ -77,6 +78,7 @@ Follow these instructions when working in this project.
 | 2026-05-07 | 加入規則 #7（回覆加簡短中文註解） |
 | 2026-05-07 | 規則 #6 重寫（集中到 patterns/docs/task-briefs/ + 分層更新策略） |
 | 2026-05-07 | 本檔從 repo root 搬到 docs/cowork-project-instructions.md |
+| 2026-05-07 | Modes 加註 Claude Code 從 workspace root 啟動 |
 
 ## 若改了 Cowork UI 的規則
 
