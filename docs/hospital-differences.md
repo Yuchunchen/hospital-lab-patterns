@@ -15,10 +15,11 @@ The `hospitalScope` field on a pattern entry pins it to one site:
 
 ## Known differences
 
-> *(empty for now — populate as we discover them. The current catalogs
->  use cross-hospital patterns by default.)*
+The current catalogs use cross-hospital patterns by default. Divergences
+are handled via regex alternation so a single catalog entry covers both
+hospitals. The following have been confirmed as of 2026-05-05.
 
-### Format
+### Format (identical)
 
 | Aspect | vhtt | vhyl |
 |--------|------|------|
@@ -27,27 +28,27 @@ The `hospitalScope` field on a pattern entry pins it to one site:
 | Chartno format (`9 digits + 1 letter`) | same | same |
 | RESDTTM (`YYYYMMDDHHMMSS` Gregorian) | same | same |
 
-### Test labels
+### Test label differences (confirmed)
 
-(Document any labels that differ here as you find them. Examples of what
-to capture:)
+| Test | vhtt label | vhyl label | Catalog handling |
+|------|-----------|-----------|-----------------|
+| HBsAg | `HBsAg(TT):` | `HBsAg:` or `HBsAg(YL):` | alternation `(?:HBsAg(?:\((?:TT\|YL)\))?)` |
+| Anti-HCV | `HCV Ab(TT):` | `Anti-HCV:` | alternation `(?:HCV Ab\(TT\)\|Anti-HCV)` |
+| Anti-HBs | `Anti-HBs(TT):` | `Anti-HBs:` or `Anti-HBs(YL):` | alternation with optional suffix |
+| AFP | `AFP(TT):` | `AFP:` or `AFP(YL):` | alternation with optional suffix |
+| TSAT | `TSAT:` | may appear as `TSAT(YL):` | optional `(YL)` suffix in regex |
+| Fe (Iron) | `Fe:` | may appear with `(YL)` suffix or concatenated to previous line | regex handles concatenated format |
 
-```
-HBsAg label:
-  vhtt: "HBsAg(TT):"
-  vhyl: "HBsAg:"
-  → handled by /(?:HBsAg(?:\(TT\))?):/ in reporter.js (HBsAg)
+### Suffix patterns
 
-HCV antibody label:
-  vhtt: "HCV Ab(TT):"
-  vhyl: "Anti-HCV:"
-  → handled by /(?:HCV Ab\(TT\)|Anti-HCV)/ in reporter.js (AntiHCV)
-```
-
-### Observed special handling
-
-- The `(TT)` suffix on hepatitis labels at vhtt is folded into a single
-  pattern via alternation — neither hospital needs a separate entry.
+- **vhtt** uses `(TT)` suffix on hepatitis and some other lab labels.
+- **vhyl** uses `(YL)` suffix on some labels, but not consistently — some
+  labels appear without any suffix.
+- Both suffixes are folded into regex alternation, so neither hospital
+  needs a separate catalog entry.
+- The `(YL)` suffix was discovered during 2026-05-05 五批修正; some vhyl
+  labels also have a "concatenated" format where the value runs into the
+  previous line without a newline separator.
 
 ## How to add a divergence
 

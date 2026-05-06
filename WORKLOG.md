@@ -14,6 +14,55 @@ Each entry should include:
 
 ---
 
+## 2026-05-07 — 文件校正 + 新增 4 份中文 SOP（docs only，不動 patterns）
+
+- 作者：claude（與 YC 共同）
+- 範圍：docs（README、PROJECT_CONTEXT、learning-workflow、pattern-spec、
+  hospital-differences）+ 新增 docs/sop-cowork-guide.md、
+  docs/sop-claude-code-guide.md
+- 變更：修改既有文件 + 新增 2 份 SOP 檔（含 4 個 SOP）
+- 測試 ID：—（純文件變更，無 catalog / regex 異動）
+
+**觸發：** Cowork 端做完了一輪文件對齊：(a) 把 README / PROJECT_CONTEXT
+裡的 counts 從舊的 69/54 更新到 v0.3 實際數字 74 catalog · 60 viewer · 37
+reporter；(b) learning-workflow.md 從 v0.2 提到 v0.3 並把 quick refresher
+的數字、computed 條目數對齊；(c) pattern-spec.md 補上 2026-05-05 SOP G
+新加的 `loM` / `hiM` / `loF` / `hiF` 四個欄位、gender-aware fallback 規則
+與已遷移清單；(d) hospital-differences.md 把舊 "empty / TBD" 占位移除，
+列出 2026-05-05 五批修正期間實際確認的 6 筆 vhtt vs vhyl label 差異；
+(e) 新增兩份中文 SOP 文件：sop-cowork-guide.md（SOP-CW1 Cowork 基本操作 +
+SOP-CW2 pattern learning via Chrome）與 sop-claude-code-guide.md（SOP-CC1
+Claude Code 基本操作 + SOP-CC2 Cowork ↔ Claude Code hand-off 流程）。
+
+**設計重點：**
+
+- 純文件變更，不動 `patterns/*.js`，所以 `dist/patterns.json` 不需重 build
+  入庫（本輪 release 跑出來只有 `synced_at` 時間戳差異，已 checkout 還原，
+  避免污染 commit diff）。
+- 兩份新 SOP 只是把現有 PROJECT_CONTEXT.md §9 / CLAUDE.md 既定流程拆成
+  獨立、可單獨閱讀的中文操作手冊，方便新機器（如 vhtt 桌機）使用者直接
+  照步驟跑，不需先讀整份 PROJECT_CONTEXT。
+- pattern-spec.md 的 gender-aware 段落把 SOP G validate 規則明文化：
+  「若任一 `loM/hiM/loF/hiF` 存在，`lo/hi` 必須存在作 fallback」。
+
+**驗證：**
+
+- `npm run release` 全綠：74 catalog · 60 viewer · 37 reporter · 13
+  computed · 2 normalizers · 1 track-only（Mg）· dist/patterns.json
+  39.3 KB（內容無實質變化，僅 synced_at 時間戳，已還原）。
+- 文件交叉檢查：README、PROJECT_CONTEXT、learning-workflow 三處的 catalog
+  / viewer / reporter counts 一致（74 / 60 / 37）；pattern-spec 中列的
+  已遷移 entry 清單與 catalog 實際情形一致。
+
+**影響：**
+
+- 純 docs commit，**sibling repo 不需 sync**（catalog / computed /
+  normalizers / dist 全無異動），OPD viewer 不會有任何行為變化。
+- 兩份新 SOP 是對使用者（YC）的操作參考，不影響 Claude 自身行為（強制
+  規則仍以 Cowork Custom Instructions 與 per-repo CLAUDE.md 為準）。
+
+---
+
 ## 2026-05-06 — EarlyCKD 非 CKD 時回傳「正常」(視覺一致性)
 
 - 作者：claude（與 YC 共同）

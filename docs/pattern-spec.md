@@ -38,7 +38,16 @@ Authoritative field reference for entries in `patterns/viewer.js` and
 | Field | Type | Description |
 |-------|------|-------------|
 | `refLo` / `refHi` | `number?` | Numeric bounds of normal range. |
-| `lo` / `hi` | `number?` | Alarm thresholds. Often equal `refLo`/`refHi` but may diverge for clinical reasons (e.g. Hb has a wide normal range but the alarm threshold for dialysis patients is narrower). |
+| `lo` / `hi` | `number?` | Alarm thresholds (gender-neutral fallback). Often equal `refLo`/`refHi` but may diverge for clinical reasons. When gender-aware fields exist, `lo`/`hi` must be the wide envelope (`min(loM,loF)` / `max(hiM,hiF)`) for unknown-gender fallback. |
+| `loM` / `hiM` | `number?` | Male-specific alarm thresholds. |
+| `loF` / `hiF` | `number?` | Female-specific alarm thresholds. |
+
+**Gender-aware alarm logic (added 2026-05-05, SOP G):** When `loM`/`hiM`/`loF`/`hiF`
+are present, the viewer and reporter pick the threshold matching the patient's gender;
+if gender is unknown, they fall back to `lo`/`hi`. Validate enforces: if any gender
+field exists, `lo`/`hi` must also exist as fallback.
+
+Currently migrated: RBC, Hb, HCT, Fe, TIBC, Ferritin (full 4-field), GPT, RGT, BUN, CREAT, UA (hiM/hiF only).
 
 ## Categorisation / layout
 
