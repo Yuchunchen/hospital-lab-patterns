@@ -14,6 +14,23 @@ Each entry should include:
 
 ---
 
+## 2026-05-07 — gitignore 加 TASK_BRIEF / TASK_revision_BRIEF
+
+- 作者：claude（與 YC 共同）
+- 範圍：—（gitignore 一致性）
+- 變更：修改
+- 測試 ID：—
+- 原因：sibling `hospital-lab-viewer` / `hospital-lab-reporter` 兩端
+  `.gitignore` 都早已忽略 `TASK_BRIEF*.md` / `TASK_revision*_BRIEF*.md`
+  （per-task hand-off brief，不入庫）。本 repo 漏了這條，每次 cowork
+  寫 brief 進這裡都會以 untracked 浮現。本輪補齊一致性。
+- 驗證：`git status` 不再列出 root 的 `TASK_BRIEF_subpage_enrichment.md`。
+- 影響：完工 brief 仍依規則 #6 改名 `_done` 並搬到 `docs/task-briefs/`。
+  pattern 用 `/TASK_BRIEF*.md` 開頭錨定 repo root，所以
+  `docs/task-briefs/TASK_BRIEF_*_done.md` 不會被 ignore，可正常 commit。
+
+---
+
 ## 2026-05-07 — Claude Code 改為從 workspace root 啟動 + workspace CLAUDE.md template
 
 - 作者：claude（與 YC 共同）

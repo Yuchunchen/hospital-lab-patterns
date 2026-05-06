@@ -21,6 +21,12 @@ Thumbs.db
 *.swp
 *.tmp.*
 
+# Hand-off briefs from Cowork to Claude Code (per-task, not for sharing).
+# Anchored to repo root only — completed briefs at docs/task-briefs/*_done.md
+# remain tracked (they're the archive).
+/TASK_BRIEF*.md
+/TASK_revision*_BRIEF*.md
+
 # Build artefacts
 # dist/patterns.json is COMMITTED — that's how OPD extensions auto-update.
 # Other build outputs (if any) are still ignored.
