@@ -7,7 +7,7 @@
 帳號設定沒同步、或要在新機器快速重建環境，這份檔案就是 single source of
 truth。修改 project instructions 後**請同步更新本檔**，才不會 drift。
 
-**最後同步：** 2026-05-06（加入規則 #6 後）
+**最後同步：** 2026-05-07（加入規則 #7 後）
 
 ---
 
@@ -31,6 +31,8 @@ All public on github.com/Yuchunchen.
 5. 動手寫程式前先說明在 Cowork 還是 Claude Code
 6. TASK_BRIEF_xxx.md 執行完後改名加 _done 後綴（git mv 保留歷史，
    與當輪最後一個 commit 同一輪做掉）
+7. 回覆時在關鍵段落或結論旁加上簡短繁體中文註解（一句話），
+   方便快速瀏覽；文件內容本身維持英文
 
 ## Modes
 
@@ -68,6 +70,7 @@ Follow these instructions when working in this project.
 | 2026-05-06 | 加入規則 #6（TASK_BRIEF _done 改名約定） |
 | 2026-05-06 | PROJECT_CONTEXT.md 從 workspace root 搬進 hospital-lab-patterns/ |
 | 2026-05-06 | 新建本檔，作為 portability snapshot |
+| 2026-05-07 | 加入規則 #7（回覆加簡短中文註解） |
 
 ## 若改了 Cowork UI 的規則
 

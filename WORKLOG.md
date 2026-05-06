@@ -14,6 +14,40 @@ Each entry should include:
 
 ---
 
+## 2026-05-07 — Cowork project instructions 加規則 #7（回覆加中文註解）
+
+- 作者：claude（與 YC 共同）
+- 範圍：docs（COWORK_PROJECT_INSTRUCTIONS.md）
+- 變更：修改（在強制規則段落新增第 7 條 + footer 同步日期 2026-05-06 → 2026-05-07
+  + history 表新增一列）
+- 測試 ID：—（純文件，無 catalog 異動）
+
+**觸發：** 使用者在 Cowork UI 端把 project instructions 加了第 7 條規則
+「回覆時在關鍵段落或結論旁加上簡短繁體中文註解（一句話），方便快速瀏覽；
+文件內容本身維持英文」。本檔是 portability snapshot，UI 改了就必須同步
+本檔，避免 drift（這個慣例本身寫在檔案開頭）。
+
+**設計重點：**
+
+- 規則 #7 適用「Cowork 對話回覆」場景；不影響 repo 內既有英文文件、
+  程式碼註解、commit message 風格。
+- WORKLOG（本檔）本來就是繁體中文，不受規則 #7 直接影響。
+- 純 docs commit；`patterns/*.js` / `dist/patterns.json` 全無異動，sibling
+  repo 不需 sync。
+
+**驗證：**
+
+- `npm run release` 全綠：74 catalog · 60 viewer · 37 reporter · 13
+  computed · 1 track-only（Mg）。dist/patterns.json 只有 synced_at 時間戳
+  差異，已 checkout 還原。
+
+**影響：**
+
+- 純 Cowork 端行為調整（影響 Claude 回覆風格），repo 行為與 OPD viewer
+  皆無變化。
+
+---
+
 ## 2026-05-07 — 文件校正 + 新增 4 份中文 SOP（docs only，不動 patterns）
 
 - 作者：claude（與 YC 共同）
