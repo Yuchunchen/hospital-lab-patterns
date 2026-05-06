@@ -75,6 +75,21 @@ D:\self\hospital-lab\
   └── hospital-lab-reporter\
 ```
 
+### 建立 workspace root CLAUDE.md
+
+這個檔案讓 Claude Code 從 workspace root 一次操作三個 repo，不用逐個 cd：
+
+```powershell
+cd D:\self\hospital-lab
+copy hospital-lab-patterns\docs\workspace-claude-md-template.md CLAUDE.md
+```
+
+或直接從 patterns repo 最新版複製（template 內容見
+`hospital-lab-patterns/docs/workspace-claude-md-template.md`）。
+
+這個檔案**不屬於任何 repo**（不 git track），是本機 workspace 設定。
+每台新機器 clone 完三個 repo 後都要建一次。
+
 ---
 
 ## Phase 3 — 設定 Cowork

@@ -17,18 +17,20 @@
 
 ### 步驟 1 — 啟動 Claude Code
 
-**方法 A：從 Claude Desktop App**
-1. 打開 Claude Desktop App
-2. 切換到 Claude Code 模式（左側面板）
-3. 選擇工作目錄（通常是某個 repo 的根目錄）
+**永遠從 workspace root 啟動**，不要 cd 進單一 repo：
 
-**方法 B：從 PowerShell / Terminal**
 ```powershell
-cd D:\self\hospital-lab\hospital-lab-patterns
+cd D:\self\hospital-lab
 claude
 ```
 
-Claude Code 啟動後會自動讀取該 repo 的 `CLAUDE.md`，了解 repo 的規則和結構。
+Claude Code 會讀取 workspace root 的 `CLAUDE.md`，知道底下有三個 repo，
+然後自行切換到各 repo、讀各自的 `CLAUDE.md`、執行修改。
+
+這樣的好處：一次操作三個 repo，不用逐個 cd + claude + exit + 重複。
+
+> **注意：** workspace root 的 `CLAUDE.md` 不屬於任何 repo（不 git track）。
+> 新機器 clone 後需建立一次，見 `docs/bootstrap.md` Phase 2。
 
 ### 步驟 2 — 告訴 Claude Code 要做什麼
 
