@@ -230,8 +230,6 @@ their respective `groups/<id>.js`.
 ```
 COWORK
   └─ 討論 → 決定要做什麼 → 寫 TASK_BRIEF_<topic>.md 進對應 repo
-                              (viewer/reporter 是 gitignored；
-                               patterns repo 會 commit 進 history)
                                             │
                                             ▼
 CLAUDE CODE  (PowerShell, in repo root)
@@ -241,21 +239,21 @@ CLAUDE CODE  (PowerShell, in repo root)
                                             │
                                             ▼
 COWORK
-  └─ 驗收 → 跨 repo 所有 phase 都 push 完之後,
-            git mv TASK_BRIEF_<topic>.md → TASK_BRIEF_<topic>_done.md
-            (在 brief 原本所在的 repo,搭配當輪最後一個 commit)
+  └─ 驗收 → 跨 repo 所有 phase 都 push 完之後:
+            1. 改名加 _done 後綴，搬到 hospital-lab-patterns/docs/task-briefs/
+            2. 更新 CLAUDE.md（若架構/行為變了）+ PROJECT_CONTEXT.md（加 milestone）
+            3. 與當輪最後一個 commit 同一輪做掉
             → 計畫下一步
 ```
 
 **_done 改名約定**(對應 project instructions 強制規則 #6):
 
-- **時機**:跨 repo 所有 phase 都 done 並 push 完之後,不要每個 phase 後就改。
-- **地點**:brief 原本所在的 repo。通常是 patterns/(patterns 沒 gitignore
-  `TASK_BRIEF*.md`,所以 _done 會留在 git history 當作里程碑記錄)。
-- **方法**:用 `git mv`,不要 delete + add,保留檔案 rename history。
-- **viewer / reporter 的 brief**:這兩個 repo 的 .gitignore 把
-  `TASK_BRIEF*.md` 排除,所以 brief 是 local-only;改名只是讓你 workspace
-  整齊,不會進 history。也可以直接刪掉,看你習慣。
+- **時機**：跨 repo 所有 phase 都 done 並 push 完之後，不要每個 phase 後就改。
+- **地點**：統一集中到 `hospital-lab-patterns/docs/task-briefs/`（三個 repo 共用）。
+- **方法**：若 brief 原在 patterns repo，用 `git mv` 保留 rename history；
+  若原在 viewer/reporter（gitignored），直接搬檔案到 patterns 再 `git add`。
+- **分層更新**：每次完成 brief 時更新 CLAUDE.md + PROJECT_CONTEXT.md；
+  `docs/` 其餘文件（pattern-spec、learning-workflow 等）留到 major revision 再整批校正。
 
 ### Pattern-learning shortcut
 

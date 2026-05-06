@@ -7,7 +7,7 @@
 帳號設定沒同步、或要在新機器快速重建環境，這份檔案就是 single source of
 truth。修改 project instructions 後**請同步更新本檔**，才不會 drift。
 
-**最後同步：** 2026-05-07（加入規則 #7 後）
+**最後同步：** 2026-05-07（規則 #6 重寫 + 檔案搬移到 docs/）
 
 ---
 
@@ -29,8 +29,12 @@ All public on github.com/Yuchunchen.
 3. git push 之前先問我
 4. 跨 repo 副作用主動提醒（patterns 改 → viewer/reporter re-sync）
 5. 動手寫程式前先說明在 Cowork 還是 Claude Code
-6. TASK_BRIEF_xxx.md 執行完後改名加 _done 後綴（git mv 保留歷史，
-   與當輪最後一個 commit 同一輪做掉）
+6. TASK_BRIEF_xxx.md 完成後：
+   (a) 改名加 _done 後綴，搬到 hospital-lab-patterns/docs/task-briefs/
+   (b) 若 brief 原在 viewer/reporter（gitignored），直接搬檔再 git add
+   (c) 與當輪最後一個 commit 同一輪做掉
+   (d) 同時更新 CLAUDE.md（若架構/行為變了）和 PROJECT_CONTEXT.md（加 milestone）
+   (e) docs/ 其餘文件留到 major revision 再整批校正
 7. 回覆時在關鍵段落或結論旁加上簡短繁體中文註解（一句話），
    方便快速瀏覽；文件內容本身維持英文
 
@@ -71,6 +75,8 @@ Follow these instructions when working in this project.
 | 2026-05-06 | PROJECT_CONTEXT.md 從 workspace root 搬進 hospital-lab-patterns/ |
 | 2026-05-06 | 新建本檔，作為 portability snapshot |
 | 2026-05-07 | 加入規則 #7（回覆加簡短中文註解） |
+| 2026-05-07 | 規則 #6 重寫（集中到 patterns/docs/task-briefs/ + 分層更新策略） |
+| 2026-05-07 | 本檔從 repo root 搬到 docs/cowork-project-instructions.md |
 
 ## 若改了 Cowork UI 的規則
 

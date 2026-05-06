@@ -12,7 +12,7 @@
 
 - 已安裝 Claude Desktop App（從 anthropic.com 下載）
 - 已登入 Anthropic 帳號
-- 已 clone 三個 repos 到 workspace root（見 `BOOTSTRAP.md` Phase 2）
+- 已 clone 三個 repos 到 workspace root（見 `docs/bootstrap.md` Phase 2）
 
 ### 步驟 1 — 開啟專案資料夾
 
@@ -26,7 +26,7 @@
 ### 步驟 2 — 設定 Project Instructions
 
 1. 進入 Cowork 的 **Project Instructions** 設定畫面
-2. 打開 `hospital-lab-patterns/COWORK_PROJECT_INSTRUCTIONS.md`
+2. 打開 `hospital-lab-patterns/docs/cowork-project-instructions.md`
 3. 複製裡面 ` ``` ` 區塊的純文字內容（從 `# Project: Hospital Lab Data System` 開始）
 4. 貼到 Project Instructions UI
 5. 把 `<workspace-root>` 改成你機器的實際路徑

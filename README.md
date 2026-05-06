@@ -31,8 +31,6 @@ hospital-lab-patterns/
 ├── WORKLOG.md                   ← chronological log of pattern additions / changes
 ├── PROJECT_CONTEXT.md           ← cross-repo architecture, SOPs, form reference
 ├── CLAUDE.md                    ← per-repo rules for Claude (Cowork & Code)
-├── BOOTSTRAP.md                 ← new-machine setup guide
-├── COWORK_PROJECT_INSTRUCTIONS.md ← paste-able Cowork project instructions snapshot
 ├── package.json                 ← name + npm scripts (validate, build-json, release)
 ├── .gitignore
 ├── patterns/
@@ -47,12 +45,14 @@ hospital-lab-patterns/
 ├── dist/
 │   └── patterns.json            ← runtime JSON snapshot (COMMITTED — OPD viewer fetches this)
 ├── docs/
+│   ├── bootstrap.md             ← new-machine setup guide（新機器啟用）
+│   ├── cowork-project-instructions.md ← paste-able Cowork project instructions
 │   ├── pattern-spec.md          ← schema field reference
 │   ├── learning-workflow.md     ← Claude-driven pattern-learning recipe
 │   ├── hospital-differences.md  ← known label/format differences vhtt vs vhyl
 │   ├── sop-cowork-guide.md      ← Cowork 操作與 pattern learning SOP（中文）
 │   ├── sop-claude-code-guide.md ← Claude Code 操作與 hand-off SOP（中文）
-│   └── task-briefs/             ← completed TASK_BRIEF archives
+│   └── task-briefs/             ← completed TASK_BRIEF archives（所有 repo 共用）
 ├── scripts/
 │   ├── validate.js              ← compile-check every regex, find duplicate IDs
 │   └── build-json.js            ← generate dist/patterns.json from resolved arrays
