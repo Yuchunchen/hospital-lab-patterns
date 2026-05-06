@@ -5,14 +5,23 @@ through a Cowork conversation with Claude. Goal: turn a real example
 page into a validated catalog entry, committed with a `WORKLOG.md` line,
 in one short session.
 
-## Architecture quick refresher (v0.2)
+## Architecture quick refresher (v0.3)
 
 ```
 patterns/
-├── catalog.js   ← THE master list of every test (universal fields only)
-├── viewer.js    ← Manifest: ids the viewer renders + page/col/section
-├── reporter.js  ← Manifest: ids the reporter renders + cat/label
-└── computed.js  ← Derived-value formulas (eGFR, URR, Ca×P, CKD staging)
+├── catalog.js      ← THE master list of every test (74 entries, universal fields)
+├── viewer.js       ← Manifest: ids the viewer renders + page/col/section (60 resolved)
+├── reporter.js     ← Manifest: ids the reporter renders + cat/label (37 resolved)
+├── normalizers.js  ← Named transform functions (wbcCount, plateletCount)
+├── computed.js     ← Derived-value formulas (eGFR, URR, Ca×P, CKD staging,
+│                      hepatitis display, PSA ratio) — 13 entries
+├── index.js        ← resolveManifest + byId + version export
+└── schema.js       ← validation helpers
+scripts/
+├── validate.js     ← `npm run validate`
+└── build-json.js   ← `npm run build-json` → dist/patterns.json
+dist/
+└── patterns.json   ← runtime artifact (COMMITTED — viewer fetches this from GitHub)
 ```
 
 Adding a pattern can mean any of three things:

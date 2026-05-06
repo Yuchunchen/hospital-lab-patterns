@@ -32,8 +32,12 @@ clinical handouts and case-management exports.
 | `hospital-lab-viewer` | Chrome MV3 extension → outpatient handout printout | Side-loaded `.zip` distributed to OPD machines |
 | `hospital-lab-reporter` | Single self-contained HTML → dialysis-room (and future CKD/DM/COPD) case management | Open the HTML directly in a browser |
 
-**Workspace root:** `D:\self\Dropbox\1.Project.YuLi\20251005.lab_report\`
-(Windows + Dropbox; team of 2–5 syncs via the Dropbox folder).
+**Workspace root:** machine-dependent (see below). Syncs via git, not Dropbox.
+
+| Machine | Path |
+|---|---|
+| Dropbox 主機 | `D:\self\Dropbox\1.Project.YuLi\20251005.lab_report\` |
+| 台東 vhtt | `D:\self\hospital-lab\` (recommended — no Dropbox dependency) |
 
 **GitHub:** `github.com/Yuchunchen` — all three repos public.
 
@@ -91,12 +95,12 @@ catalog (universal definitions)
 
 URL: `https://raw.githubusercontent.com/Yuchunchen/hospital-lab-patterns/main/dist/patterns.json`
 
-### Current counts (per latest WORKLOG)
+### Current counts (validated 2026-05-07)
 
-- 69 catalog entries
-- 54 viewer-resolved
+- 74 catalog entries
+- 60 viewer-resolved
 - 37 reporter-resolved
-- 25 shared between manifests
+- 13 computed entries
 - 1 track-only (Mg)
 - 2 normalizers (wbcCount, plateletCount)
 
