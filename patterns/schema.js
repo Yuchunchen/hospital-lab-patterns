@@ -17,6 +17,8 @@ const ALLOWED_FIELDS = new Set([
   'meaning',
   'kind', 'rows',
   'tags', 'notes',
+  // Sub-page enrichment config: { orderNameMatch:RegExp, resultPattern:RegExp, synthLabel:string }
+  'subpage',
   // Reporter legacy aliases
   'cat', 'label', 'filter',
 ]);

@@ -1,6 +1,6 @@
 {
   "version": "0.3.0",
-  "synced_at": "2026-05-05T21:46:57.665Z",
+  "synced_at": "2026-05-07T03:16:38.689Z",
   "catalog": [
     {
       "id": "WBC",
@@ -543,7 +543,15 @@
       "hi": 30,
       "lo": null,
       "meaning": "腎臟早期傷害指標",
-      "notes": "Viewer fetches sub-pages from opdweb (1-year window) when UACR not in main reportText."
+      "subpage": {
+        "orderNameMatch": {
+          "__regex": [
+            "U-?ACR|UACR|microalbumin|micro-?albumin|urine\\s*alb|albumin\\/cr|alb\\/cr|尿.*白蛋白|微量白蛋白",
+            "i"
+          ]
+        }
+      },
+      "notes": "Viewer fetches sub-pages from opdweb (1-year window) when UACR not in main reportText. Sub-page chase opt-in via subpage.orderNameMatch (broad urine regex)."
     },
     {
       "id": "UPCR",
@@ -872,6 +880,41 @@
       "hi": 20.5,
       "lo": 3.1,
       "notes": "Allows variable internal whitespace (some hospitals print \"Folic  acid:\" with double space)."
+    },
+    {
+      "id": "Aluminum",
+      "pattern": {
+        "__regex": [
+          "(?:Al鋁|BALR0101):\\s*([<>]?\\s*[\\d.]+)",
+          ""
+        ]
+      },
+      "displayName": "鋁 (Aluminum)",
+      "shortLabel": "Al",
+      "unit": "µg/L",
+      "category": "微量元素",
+      "ref": "<20 µg/L",
+      "refLo": null,
+      "refHi": 20,
+      "hi": 20,
+      "lo": null,
+      "meaning": "鋁中毒監測（長期透析）",
+      "subpage": {
+        "orderNameMatch": {
+          "__regex": [
+            "Aluminum|鋁",
+            "i"
+          ]
+        },
+        "resultPattern": {
+          "__regex": [
+            "Result:\\s*([<>]?\\s*[\\d.]+)",
+            ""
+          ]
+        },
+        "synthLabel": "Al鋁"
+      },
+      "notes": "Annual test. vhtt confirmed 2026-05-07 (18-patient survey, 12 with data). Main pattern matches both \"Al鋁: N\" (in-house) and \"BALR0101: N\" (out-sourced lab code). Capture allows leading <> operator (handles \"<2\" below detection limit — but extractLabValues currently parseFloats it, so \"<2\" is silently dropped; pre-existing limitation, not fixed in this task). Ref <20 µg/L per KDOQI guidelines."
     },
     {
       "id": "AFP",
@@ -1917,6 +1960,11 @@
       "lo": null
     },
     {
+      "id": "Aluminum",
+      "cat": "TRACE",
+      "label": "鋁 Al"
+    },
+    {
       "id": "iPTH",
       "cat": "PTH",
       "label": "i-PTH"
@@ -1984,6 +2032,10 @@
     {
       "id": "IRON",
       "label": "鐵代謝"
+    },
+    {
+      "id": "TRACE",
+      "label": "微量元素"
     },
     {
       "id": "PTH",

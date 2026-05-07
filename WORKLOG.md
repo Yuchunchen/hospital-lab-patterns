@@ -14,6 +14,64 @@ Each entry should include:
 
 ---
 
+## 2026-05-07 — Aluminum regex 加 BALR0101（外送 lab code）+ UACR opt-in subpage chase
+
+- 作者：claude（與 YC 共同）
+- 範圍：catalog（regex 擴充 + UACR subpage opt-in）+ runtime-snapshot
+- 變更：修改
+- 測試 ID：Aluminum、UACR
+- 原因：reporter 端實機測 92066B，看到 6 筆 Blood Aluminum order 但表格只 1 筆。
+  F12 console diag 顯示主 reportText **已含全部 6 筆值**，只是格式分兩種：
+  - 最近一筆（在地檢驗）：`Al鋁: 4`
+  - 歷史 5 筆（外送「新南海醫事檢驗所」）：`BALR0101: <2 / 3 / 6 / 5 / 6`
+  原 catalog regex `Al鋁:` 只認在地格式，外送的 5 筆全漏，被誤判成 missing；
+  之後 enrichMissingValues 又因為 chartno orgin = `file://`（reporter 是
+  本機 HTML）+ opdweb 沒 CORS header，所有 sub-page fetch 全 blocked。本輪
+  改成不抓 sub-page、純靠主 regex 命中：
+  - Aluminum pattern → `/(?:Al鋁|BALR0101):\s*([<>]?\s*[\d.]+)/`
+  - UACR catalog 加 `subpage.orderNameMatch`（broad urine regex）讓 UACR
+    在 viewer 端能繼續走 sub-page chase（viewer 是 Chrome extension，有
+    host_permissions 沒 CORS 問題）
+- 驗證：`npm run release` 通過 — catalog 75 · viewer 60 · reporter 38；
+  dist/patterns.json 40.8 KB；regex 對 `BALR0101: <2`、`BALR0101: 3`、
+  `Al鋁: 4` 三種樣本全部命中（capture group 1）。
+- 影響：sibling repo（viewer / reporter）需要重 sync，已執行。
+- **已知限制（非本輪 scope）**：
+  - extractLabValues 把 `<2` parseFloat 後成 NaN 直接 drop。`<2`（低於
+    偵測下限）是臨床上有意義的值（≠ missing）但目前會消失。要處理需
+    跨層改 alarm 比較邏輯與 CSV 輸出。
+  - reporter 走 `file://` 開啟時所有 opdweb sub-page fetch 都 CORS
+    blocked。要解決需把 HTML 移到 localhost server 或裝 CORS bypass
+    extension。viewer Chrome extension 不受影響。
+
+---
+
+## 2026-05-07 — 新增 Aluminum + 微量元素 category + sub-page enrichment 配置
+
+- 作者：claude（與 YC 共同）
+- 範圍：catalog + reporter-manifest + schema + runtime-snapshot
+- 變更：新增
+- 測試 ID：Aluminum
+- 原因：vhtt 透析病人血鋁年檢資料探測（18 人，12 人有資料），主頁面
+  格式 `Al鋁: 6` / `Al鋁: <2`（低於偵測下限），子頁面 OpdOrderReport.aspx
+  只給 `Result: N`。為了讓 viewer / reporter 共用通用 sub-page enrichment
+  機制（後續 Phase 2/3），catalog entry 新增 optional `subpage` 欄位
+  記錄 `{ orderNameMatch, resultPattern, synthLabel }`，由 enrichment pass
+  在子頁面文字沒有 `Al鋁:` 時，根據 orderName 含 Aluminum 翻譯
+  `Result: N` → 注入 `Al鋁: N` 進 reportText，下游 regex 即可命中。
+- 驗證：`npm run release` 通過 — catalog 75 (+1) · viewer 60 · reporter 38
+  (+1) · dist/patterns.json 40.3 KB；schema.js `subpage` 已加入
+  ALLOWED_FIELDS。AFP 既有的 `[<>]?` 寫法被沿用到 Aluminum 主 regex 與
+  subpage.resultPattern。
+- 影響：sibling repo（hospital-lab-viewer 與 hospital-lab-reporter）的
+  `sync-patterns.js` 都需要重跑（catalog 動到了）；Phase 2 會接著重構
+  viewer 的 enrichUACRMulti → 通用 enrichMissingValues，Phase 3 會把
+  enrichment 整套搬進 reporter HTML。**Viewer manifest 不收 Aluminum**
+  （per YC 決議：門診衛教單不顯示血鋁），只在 reporter 的透析表格與
+  CSV 出現。
+
+---
+
 ## 2026-05-07 — gitignore 加 TASK_BRIEF / TASK_revision_BRIEF
 
 - 作者：claude（與 YC 共同）
