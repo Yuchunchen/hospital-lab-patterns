@@ -14,6 +14,25 @@ Each entry should include:
 
 ---
 
+## 2026-05-08 — reporter manifest 加 FreeCa / Mg / UIBC（KiDiTi Phase 2 前置）
+
+- 作者：claude（與 YC 共同）
+- 範圍：reporter-manifest + runtime-snapshot
+- 變更：新增 3 條 manifest entries
+- 測試 ID：FreeCa（在 Ca 後）、Mg（在 P 後）、UIBC（在 TIBC 後，computed=TIBC−Fe）
+- 原因：reporter 端要新增 `匯出KiDiTi資料` 按鈕（KiDiTi 平台檢驗記錄
+  58 欄），其中 field 34（離子鈣 FreeCa）、field 37（UIBC）、field 41
+  （Mg）原本不在 reporter manifest，因此 `extractLabValues` 不會 store
+  到 localStorage，匯出時會空值。三個 ID 在 catalog 早就有（FreeCa /
+  Mg pattern 已就位、UIBC 是 catalog computed 條目），只缺 reporter
+  manifest 的 opt-in。
+- 驗證：`npm run release` 全綠 — catalog 76 / viewer 60 / reporter
+  41（從 38 → 41）/ computed 14。reporter sync 重跑後 LAB_TESTS 含
+  三條新 entry。
+- 影響：只有 reporter 需要重 sync。viewer 不受影響（viewer manifest
+  獨立，FreeCa 已在 viewer manifest，Mg/UIBC viewer 沒對應 page slot
+  不需加）。
+
 ## 2026-05-07 — Detection-limit regex（49 條 capture group 加 `[<>]?\s*`）
 
 - 作者：claude（與 YC 共同）
