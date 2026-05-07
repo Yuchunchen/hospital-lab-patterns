@@ -1,6 +1,6 @@
 {
   "version": "0.3.0",
-  "synced_at": "2026-05-07T03:16:38.689Z",
+  "synced_at": "2026-05-07T04:06:42.101Z",
   "catalog": [
     {
       "id": "WBC",
@@ -1075,7 +1075,7 @@
       "pattern": {
         "__regex": [
           "HBsAg\\s*(?:\\((?:TT|YL)\\))?:\\s*([^\\s\\d]\\S*)",
-          ""
+          "i"
         ]
       },
       "displayName": "B型肝炎表面抗原 (HBsAg)",
@@ -1089,7 +1089,7 @@
       "pattern": {
         "__regex": [
           "Anti-HBs\\s*(?:\\((?:TT|YL)\\))?:\\s*([^\\s\\d]\\S*)",
-          ""
+          "i"
         ]
       },
       "displayName": "B型肝炎表面抗體 (Anti-HBs)",
@@ -1103,7 +1103,7 @@
       "pattern": {
         "__regex": [
           "(?:HCV Ab|Anti-HCV)\\s*(?:\\((?:TT|YL)\\))?:\\s*([^\\s\\d]\\S*)",
-          ""
+          "i"
         ]
       },
       "displayName": "C型肝炎抗體 (Anti-HCV)",
@@ -1117,7 +1117,7 @@
       "pattern": {
         "__regex": [
           "HBsAg:\\s*([\\d.]+)",
-          ""
+          "i"
         ]
       },
       "displayName": "HBsAg 滴度",
@@ -1131,7 +1131,7 @@
       "pattern": {
         "__regex": [
           "Anti-HBs:\\s*([\\d.]+)",
-          ""
+          "i"
         ]
       },
       "displayName": "Anti-HBs 滴度",
@@ -1145,7 +1145,7 @@
       "pattern": {
         "__regex": [
           "(?:HCV Ab|Anti-HCV):\\s*([\\d.]+)",
-          ""
+          "i"
         ]
       },
       "displayName": "Anti-HCV 滴度",
