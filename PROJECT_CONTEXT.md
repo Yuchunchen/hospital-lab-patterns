@@ -23,6 +23,9 @@
 | 2026-05-07 | **findNearby 窗口 90→30 天**:viewer report.js `findNearby()` 原用 90 天窗口配對 eGFR 與 UACR/UPCR，導致單筆 UACR 被重複配到多個 eGFR 日期、在沒有 UACR 的日期顯示誤導 staging（case: 000115014H UACR=57.20 at 115/02/13，87 天外的 eGFR at 114/11/18 也被配上 → KDIGO=「中」）。改成 30 天窗口後只剩同日或近期精準配對。|
 | 2026-05-07 | **Incremental fetch（stable-frontier）— viewer + reporter 同時上線**:(1) 觀察 — ernode 回傳 newest-first，signed-off 報告 immutable，`更新資料` / 6h TTL 過期就 full re-fetch 浪費 95%+ API call;(2) 新演算法 — 用 cached orders 的 `Map(ordseq → status)`，逐頁掃，遇到第一頁 ALL ordseq 都 known + status 不變 → STOP（之後頁面也都不變）;(3) viewer popup.js cache key v3 → v4 加 raw `allOrders`，loadData 三條路徑（TTL 內 / 過 TTL 跑 incremental / forceRefresh 全頁），↻ 按鈕仍是 escape hatch;(4) reporter 先用 localStorage `ordersCache_dialysis`，後遷移至 IndexedDB `LabReporterOrdersCache`（見下條）;(5) status 變動（未執行 → 正式報告）in-place overwrite cached entry，新醫囑 prepend，sub-page enrichment 在 merge 之後跑。預期：viewer 1 patient 從 5–15 call → 1 call；reporter 30 patients 從 150–450 call → ~30 call。|
 | 2026-05-08 | **Reporter ordersCache localStorage → IndexedDB**:incremental fetch 上線後 reporter 的 `ordersCache_dialysis` 在 localStorage 約 3MB / 30 患者，逼近 5MB 上限。改用 IndexedDB `LabReporterOrdersCache`（DB_VER=1，store `orders`，keyPath=chartno），quota 顧慮消失。`enrichCache_dialysis`（sub-page text by ordapno）體積小，保留 localStorage。One-time migration IIFE 啟動時清舊 localStorage key。|
+| 2026-05-08 | **Reporter Phase 2: KiDiTi 檢驗記錄匯出**:洗腎室 KiDiTi 平台需 58 欄 positional CSV（無 header、UTF-8 BOM、CRLF、民國年 7 碼日期、HBsAg/Anti-HCV → Y/N/O、缺值留空不能填 0）。新增「匯出KiDiTi資料」按鈕（橘色 btn-warning，與既有「匯出csv」並列），一鍵產出 `KiDiTi_檢驗記錄_YYYYMMDD.csv`。Button bar 同步改版：「更新資料」改名「全部更新」並放大成 primary action。Reporter manifest 加 FreeCa（field 34）/ Mg（field 41）/ UIBC（field 37，computed=TIBC−Fe）三條，catalog UIBC computed entry 也補上。同月檢辨識重用 `detectMonthlyDrawsFromStored` + `pickEarliestPerMonth`，UIBC / CaxP 在 export 函式 inline 計算（不污染 viewer）。|
+| 2026-05-08 | **Reporter Phase 1.5: 病患清單勾選匯出**:病患清單表最左加 `_select` checkbox 欄（width 36px、不參與 sort/filter），勾選列加淡藍底。In-memory `selectedPatients = new Set()`（**不**持久化 — 重整即清是預期行為）。5 個 helper：`toggleSelectAll`（只動可見列）/ `togglePatientSelect` / `updateSelectState`（同步 master checkbox 的 checked / indeterminate）/ `updateSelectUI`（按鈕文字加 `(N)` 提示）/ `getSelectedChartNos`（回 array 或 null）。`exportKiDiTiCSV` / `exportCombinedCSV` 都先呼叫 `getSelectedChartNos()`：null → 全部、array → 只匯這些。`confirmRemovePatient` 順手清 Set、`renderPatientList` 渲染後呼叫 `updateSelectState()`（filter/sort 後勾選狀態維持）。|
+| 2026-05-08 | **Reporter Phase 1: repo restructure（core/ + build.js + 16 模組）**:`hospital-lab-data.html` ~3700 行 monolith 抽成 16 個 `core/*.js` + 1 個 `export-formats/kiditi-csv.js` + `core/{shell,body}.html` template + `core/styles.css`。`build.js` 讀 shell + 串 patterns（從 sibling repo）+ groups + core（固定 load order）+ export-formats，產出 `hospital-lab-dialysis.html`（152.8 KB）。**無 ES modules、無 bundler**：core/*.js 都是頂層 function 宣告，concat 進單一 `<script>` 透過 hoist 跨模組可見 — 與 monolith 行為 1:1 對齊。`groups/dialysis.js` 完全不動。`sync-patterns.js` sync 完順手呼叫 `buildOne()` 重產所有 disease HTML。Phase 3+ 加新 disease 只需在 `build.js` 的 `DISEASES` 加 entry + 寫 `groups/<id>.js`，core/* 不需動。**Phase 1 fix（同日）**：`ENRICH_CACHE_KEY` 從 `enrichCache_dialysis` → `enrichCache`（disease-neutral，sub-page text 跟 disease 無關），加 one-time migration IIFE。Legacy `hospital-lab-data.html` 過渡期保留，仍由 `sync-patterns.js` 維護 markers。|
 
 ---
 
@@ -35,7 +38,7 @@ clinical handouts and case-management exports.
 |---|---|---|
 | `hospital-lab-patterns` | Master catalog of test patterns + thin per-app manifests + named normalizers + computed-value helpers | npm-style (pure JS modules), runtime JSON snapshot at `dist/patterns.json` |
 | `hospital-lab-viewer` | Chrome MV3 extension → outpatient handout printout | Side-loaded `.zip` distributed to OPD machines |
-| `hospital-lab-reporter` | Single self-contained HTML → dialysis-room (and future CKD/DM/COPD) case management | Open the HTML directly in a browser |
+| `hospital-lab-reporter` | Disease-room case management (dialysis today, CKD/DM/ESRD next). `core/` modules + `groups/<disease>.js` + `export-formats/*.js` → `build.js` → standalone `hospital-lab-<disease>.html` | Open the built HTML directly in a browser |
 
 **Workspace root:** machine-dependent (see below). Syncs via git, not Dropbox.
 
@@ -151,38 +154,71 @@ parent folder. Side-load to OPD Chrome instances.
 
 ### What it does
 
-Single HTML file. Maintains patient list with CRUD, fetches labs from
-intranet by chartNo, renders a longitudinal table, exports CSV.
+Disease-room case management — maintains a patient list with CRUD,
+fetches labs from intranet by chartNo, renders a longitudinal table,
+exports CSV (long-format + KiDiTi 58-field positional). Phase 1 ships
+dialysis; CKD / DM / ESRD follow in Phase 3+.
 
-### Currently dialysis-only
-
-Currently set up for the dialysis room. The architecture is being extended
-into a multi-disease-group framework — see `groups/` directory (planned).
-
-### Pattern block
-
-Inside `hospital-lab-data.html`, the catalog + manifest + resolver block
-sits between markers:
+### Layout (post Phase 1, 2026-05-08)
 
 ```
-// __HOSPITAL_LAB_PATTERNS_BEGIN__
-... auto-generated ...
-// __HOSPITAL_LAB_PATTERNS_END__
+hospital-lab-reporter/
+├── core/                     ← shared shell across diseases
+│   ├── shell.html            ← HTML template ({{TITLE}}, {{STYLES}}, ...)
+│   ├── body.html             ← body markup (verbatim from monolith)
+│   ├── styles.css            ← extracted CSS
+│   └── *.js (16 files)       ← storage, fetch, indexeddb-cache, enrichment,
+│                                lab-extract, compute, date-utils, ui-tabs,
+│                                ui-patient-list / select / crud / remove,
+│                                ui-lab-view, ui-settings, export-utils,
+│                                chart-format, init
+├── groups/
+│   └── dialysis.js           ← disease-specific manifest + monthly-draw
+│                                detection + CSV exporter (UNCHANGED)
+├── export-formats/
+│   └── kiditi-csv.js         ← KiDiTi 檢驗記錄 58-field positional CSV
+├── build.js                  ← assembles → hospital-lab-<disease>.html
+├── sync-patterns.js          ← sync legacy markers + chain build.js
+├── hospital-lab-dialysis.html ← BUILT output (the file YC opens in
+│                                a browser; THE current end-user HTML)
+└── hospital-lab-data.html    ← LEGACY monolith, still updated by
+                                 sync-patterns.js for transition period
 ```
 
-`node sync-patterns.js` overwrites everything between those markers.
-Do NOT hand-edit content inside the markers.
+`build.js` reads shell + styles + body markup + patterns (sibling repo
+`patterns/{catalog,reporter,normalizers}.js` + resolver) + groups + core
+(fixed load order, init last) + the disease's export-formats, fills
+placeholders, writes the standalone HTML. Pure concatenation — no IIFE,
+no bundler, no ES modules; top-level fn declarations hoist within the
+single `<script>` block so cross-module calls Just Work like the legacy
+monolith.
 
-### Disease-group framework (in flight)
+### Adding a new disease (Phase 3+)
 
-Each disease group (dialysis / CKD / DM / COPD) will be its own module in
-`groups/<id>.js`, inlined into HTML between **a second marker pair**:
+1. Add `groups/<id>.js` with `labManifest`, `detectDraws`, `exporter`,
+   `storageKey`, etc.
+2. Add an entry to `DISEASES` in `build.js` with `title`, `groupId`,
+   `exportFormats`.
+3. (When second disease lands) refactor `core/storage.js` to read
+   `window.ACTIVE_GROUP_ID` injected via the build's `{{DISEASE_INIT}}`
+   block — currently still hardcoded `'dialysis'`.
+4. `node build.js <id>` → `hospital-lab-<id>.html`.
+
+`core/*.js` should not need to change.
+
+### Pattern + groups blocks (legacy monolith)
+
+`hospital-lab-data.html` keeps marker pairs that `sync-patterns.js`
+overwrites:
 
 ```
-// __HOSPITAL_LAB_GROUPS_BEGIN__
-... auto-generated ...
-// __HOSPITAL_LAB_GROUPS_END__
+// __HOSPITAL_LAB_PATTERNS_BEGIN__   ... // __HOSPITAL_LAB_PATTERNS_END__
+// __HOSPITAL_LAB_GROUPS_BEGIN__     ... // __HOSPITAL_LAB_GROUPS_END__
 ```
+
+The new built `hospital-lab-<disease>.html` does **not** use markers —
+`build.js` re-reads patterns + groups directly each build (the output is
+a throwaway artifact).
 
 **Storage is fully separate per group** (explicit user requirement):
 
@@ -223,9 +259,10 @@ Some lab orders show only `請 Click「正式報告」`-style placeholder in the
 main reportText; the actual values live in opdweb's
 `OpdOrderReport.aspx` sub-page. Both viewer and reporter share the same
 generic `enrichMissingValues()` (差只在 cache backend：viewer 用
-IndexedDB store `enrichCache`，reporter 用 localStorage
-`enrichCache_dialysis`，key 都是 `ordapno`，永不過期 — lab 報告簽收
-後不變動).
+IndexedDB store `enrichCache`，reporter 用 localStorage `enrichCache`
+（disease-neutral 共用，2026-05-08 從 `enrichCache_dialysis` 改名 +
+migration IIFE — sub-page text 跟 disease 無關），key 都是 `ordapno`，
+永不過期 — lab 報告簽收後不變動).
 
 **Strict opt-in 候選邏輯:** 只 chase 帶 catalog `subpage.orderNameMatch`
 的 test。Tests opt in 透過:
