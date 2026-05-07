@@ -18,6 +18,7 @@
 | 2026-05-03 | Patterns repo v0.3 (catalog + manifest + dist/patterns.json runtime artifact); hospital-lab-viewer wired to fetch dist/ at runtime with 24h cache + bundled fallback |
 | 2026-05-04 | **hospital-lab-reporter form-aware export milestone**: dialysis revision 1 (ID-list input + demographics auto-fill + long-format CSV + 生效時間 cluster + 簽收時間 BUN sort) + hotfix v1 (BUN A+B classification fix) + hotfix v2 (sort/filter + per-row actions). Verified on vhyl patient 000105069H — BUN (BD)/(AD) display correctly, CSV export aligned to vhtt 病人定期檢查記錄 form |
 | 2026-05-05 | **vhyl 五批修正**:(1) catalog 5 條 regex 放寬支援 vhyl `(YL)` suffix + 黏連格式(HBsAg / AntiHCV / AFP / TSAT / Fe);(2) viewer 肝炎硬編 regex 對齊 vhyl(HCV / HBsAg / AntiHBs);(3) **schema 加性別感知 threshold (`loM` / `hiM` / `loF` / `hiF`)**,viewer + reporter alarm 邏輯改為依 patient gender 挑 threshold,fallback 到 wide envelope。第一輪遷移 6 條(RBC / Hb / HCT / Fe / TIBC / Ferritin,誤判 case);(4) 第二輪再遷移 5 條(GPT / RGT / BUN / CREAT / UA,只加 hiM/hiF,維持原 lo:null);(5) **肝炎 regex 集中化**:catalog 加 3 條 raw titer + 2 條 computed display(HBsAgDisplay / AntiHBsDisplay,HCV 既有);patterns-computed.js 加 `_hepatitisDisplay` helper + 3 函式;viewer report.js 移除 `findHepatitis` / `findAntiHBs` 改走 dispatcher;reporter 維持 raw 定性顯示。觸發 case:vhyl 000151649A(女)Fe 58 µg/dL 誤判過低 + viewer 肝炎硬編 regex 沒同步 vhyl |
+| 2026-05-07 | **Aluminum + 通用 sub-page enrichment + `<>` 字串保留**:(1) catalog 加 Aluminum entry + 新 category 微量元素，pattern 同時匹配 in-house `Al鋁: N` 與外送單位 `BALR0101: N` 兩種 label;(2) catalog 新增 optional `subpage` 欄位（`{ orderNameMatch, resultPattern, synthLabel }`），驅動 viewer + reporter 共用的 manifest-driven enrichment 機制 — 取代 viewer 原本 UACR-only 的 `enrichUACRMulti`;(3) viewer popup.js DB_VER 3 → 4 加 `enrichCache` IndexedDB store;reporter HTML 加整套 enrichment + localStorage `enrichCache_dialysis`;(4) chase 候選邏輯為 strict opt-in（只 chase 帶 `subpage.orderNameMatch` 的 test），UACR opt-in 保留 viewer 既有行為;(5) `extractLabValues` 對帶 `<>` 開頭的 capture group 保留為 string（`<2` 等 detection-limit 值不再被 parseFloat drop，table/CSV 直接顯示 literal）;(6) dialysis groups 加 annual-attach（按 YYYYMM 把 annual test entries 對齊到同月 monthly cluster，CSV 才能撈到 annual 值）。觸發 case:vhtt 92066B 6 筆 Blood Aluminum 表格只 1 筆 → 6 筆。已知殘留:reporter `file://` origin 下 opdweb sub-page fetch 全 CORS blocked（當前 Aluminum 不需 sub-page，無感）|
 
 ---
 
@@ -97,9 +98,9 @@ URL: `https://raw.githubusercontent.com/Yuchunchen/hospital-lab-patterns/main/di
 
 ### Current counts (validated 2026-05-07)
 
-- 74 catalog entries
+- 75 catalog entries
 - 60 viewer-resolved
-- 37 reporter-resolved
+- 38 reporter-resolved
 - 13 computed entries
 - 1 track-only (Mg)
 - 2 normalizers (wbcCount, plateletCount)
@@ -211,6 +212,53 @@ Reporter exports work on monthly intervals:
 
 Other diseases will have their own intervals and detection logic in
 their respective `groups/<id>.js`.
+
+### Sub-page enrichment (manifest-driven, 2026-05-07)
+
+Some lab orders show only `請 Click「正式報告」`-style placeholder in the
+main reportText; the actual values live in opdweb's
+`OpdOrderReport.aspx` sub-page. Both viewer and reporter share the same
+generic `enrichMissingValues()` (差只在 cache backend：viewer 用
+IndexedDB store `enrichCache`，reporter 用 localStorage
+`enrichCache_dialysis`，key 都是 `ordapno`，永不過期 — lab 報告簽收
+後不變動).
+
+**Strict opt-in 候選邏輯:** 只 chase 帶 catalog `subpage.orderNameMatch`
+的 test。Tests opt in 透過:
+
+```js
+subpage: {
+  orderNameMatch: /Aluminum|鋁/i,            // 必填:本 order 可能含此 test 的 orderName 訊號
+  resultPattern:  /Result:\s*([<>]?\s*[\d.]+)/,  // 選填:子頁面用不同 label 時的翻譯 regex
+  synthLabel:     'Al鋁',                    // 選填:配 resultPattern 注入回主 reportText 的 label
+}
+```
+
+兩階段 apply: Phase A 試主 regex,沒中再用 `resultPattern` + orderName
+翻譯（如 Aluminum 子頁面只有 `Result: N` → 注入 `Al鋁: N` 進
+reportText,下游 extractLabValues 即可命中）。Non-subpage missing 的
+test **不**會 brute-fetch（避免一個 globally-missing test 拖累一車 order
+被 fetch）。
+
+**已 opt-in 的 test:** Aluminum、UACR。
+
+**Reporter `file://` 限制:** 直接雙擊開啟 HTML 時瀏覽器以 `file://`
+origin 載入,opdweb 沒設 `Access-Control-Allow-Origin` → fetch 全 CORS
+blocked。目前 Aluminum 透過主-page regex 擴充（同時匹配 `Al鋁:` 與外送
+單位 `BALR0101:`）解決,沒踩到此限制。未來若有真的 sub-page-only
+test,需把 HTML 移到 localhost server 或 Chrome extension 化。Viewer 是
+Chrome MV3 extension（`host_permissions: https://*/*`）不受影響。
+
+### Detection-limit values (`<N` / `>N`, 2026-05-07)
+
+`extractLabValues` 對 capture group 開頭是 `<` 或 `>` 時保留為 string
+（如 `"<2"`）,不走 parseFloat。下游全自動相容:
+
+- table 渲染:`parseFloat("<2")` → NaN → 跳 alarm color → 直接顯示原字串
+- CSV:`csvCell` 字串化 → literal `<2`
+- URR / Ca×P / classifyBUN:既有 `Number()` + `isFinite` 防衛跳過
+
+Aluminum `<2`(低於偵測下限 = 抽了、安全)是這條的主要驅動 case。
 
 ---
 
@@ -374,7 +422,7 @@ Lab values (in scope for the reporter):
 | Anti-HBS | `AntiHBs` | annual | |
 | Anti-HCV | `HCV` | annual | |
 | α-FP (肝炎) | `AFP` | annual | |
-| Aluminin | — | **DEFERRED** | Form column stays empty in CSV. User decision 2026-05-04: defer until ground-truth sample data is available. vhyl probe on patient 000105069H found 0 aluminum records; vhyl may not routinely test Al. Re-activate when a long-term dialysis patient with Al history is found, or after lab confirms whether the panel includes Al. |
+| Aluminin | `Aluminum` | annual | **Active 2026-05-07.** vhtt 18 人探測 12 人有 Blood Aluminum 年檢資料（67%）;orderName `Blood Aluminum` / `Blood Aluminum(TT)`。主 regex 同時匹配 in-house `Al鋁: N` 與外送單位「新南海醫事檢驗所」`BALR0101: N` 兩種 label;不需 sub-page enrichment。`<2`（低於偵測下限）保留為 string 顯示。CSV 透過 dialysis groups 的 annual-attach（按 YYYYMM 對齊到同月 monthly cluster）出現此欄。Form 上的 typo「Aluminin」對應的正名是「Aluminum」(Al)。|
 | HIV (新收時抽) | `HIV` | on-admission | Drawn once at start of dialysis |
 | VDRL/RPR (新收時抽) | `RPR` | on-admission | Drawn once at start of dialysis |
 
