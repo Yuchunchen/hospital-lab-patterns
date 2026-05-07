@@ -35,7 +35,7 @@ const CATEGORIES = [
   { id:'COMPUTED', label:'計算值' },
 ];
 
-// ─── Manifest (37 entries — dialysis-room outpatient list) ──────────────
+// ─── Manifest (41 entries — dialysis-room outpatient list) ──────────────
 const REPORTER_MANIFEST = [
   // ── 血液常規 ──
   { id:'WBC',      cat:'CBC',     label:'白血球 WBC' },
@@ -87,13 +87,16 @@ const REPORTER_MANIFEST = [
   { id:'K',        cat:'LYTE',    label:'鉀 K' },
   { id:'Cl',       cat:'LYTE',    label:'氯 Cl' },
   { id:'Ca',       cat:'LYTE',    label:'鈣 Ca' },
+  { id:'FreeCa',   cat:'LYTE',    label:'離子鈣 Free Ca' },   // KiDiTi field 34
   { id:'P',        cat:'LYTE',    label:'磷 P' },
+  { id:'Mg',       cat:'LYTE',    label:'鎂 Mg' },             // KiDiTi field 41
 
   // ── 鐵代謝 ──
   { id:'Fe',       cat:'IRON',    label:'血清鐵 Fe',
     ref:'M:65-175 F:50-170', hi:null, lo:null },
   { id:'TIBC',     cat:'IRON',    label:'TIBC',
     ref:'M:134-415 F:120-480', hi:null, lo:null },
+  { id:'UIBC',     cat:'IRON',    label:'UIBC' },              // computed: TIBC − Fe; KiDiTi field 37
   { id:'TSAT',     cat:'IRON',    label:'TSAT' },
   { id:'Ferritin', cat:'IRON',    label:'鐵蛋白',
     ref:'M:21.8-274.7 F:4.6-204.0', hi:null, lo:null },

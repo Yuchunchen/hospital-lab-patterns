@@ -398,6 +398,13 @@ const CATALOG = [
     ref:'20–45 %',
     refLo:20, refHi:45, hi:45, lo:20 },
 
+  { id:'UIBC', computed:'UIBC', pattern:null,
+    displayName:'不飽和鐵結合力 (UIBC)', shortLabel:'UIBC',
+    unit:'µg/dL', category:'鐵代謝',
+    ref:'110–370 µg/dL',
+    refLo:110, refHi:370, lo:110, hi:370,
+    notes:'Computed: TIBC − Fe. ernode does not report UIBC directly.' },
+
   { id:'Ferritin',
     pattern: /(?:Ferritin|FERRITIN):\s*([<>]?\s*[\d.]+)/i,
     displayName:'鐵蛋白 (Ferritin)', shortLabel:'Ferritin',
