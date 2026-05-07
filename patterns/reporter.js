@@ -29,6 +29,7 @@ const CATEGORIES = [
   { id:'RENAL',    label:'腎功能' },
   { id:'LYTE',     label:'電解質' },
   { id:'IRON',     label:'鐵代謝' },
+  { id:'TRACE',    label:'微量元素' },
   { id:'PTH',      label:'副甲狀腺' },
   { id:'HEPAT',    label:'肝炎 / 感染' },
   { id:'COMPUTED', label:'計算值' },
@@ -96,6 +97,9 @@ const REPORTER_MANIFEST = [
   { id:'TSAT',     cat:'IRON',    label:'TSAT' },
   { id:'Ferritin', cat:'IRON',    label:'鐵蛋白',
     ref:'M:21.8-274.7 F:4.6-204.0', hi:null, lo:null },
+
+  // ── 微量元素 (annual; sub-page enrichment) ──
+  { id:'Aluminum', cat:'TRACE',   label:'鋁 Al' },
 
   // ── 副甲狀腺 ──
   { id:'iPTH',     cat:'PTH',     label:'i-PTH' },
