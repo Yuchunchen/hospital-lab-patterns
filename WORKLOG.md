@@ -14,6 +14,38 @@ Each entry should include:
 
 ---
 
+## 2026-05-07 — Detection-limit regex（49 條 capture group 加 `[<>]?\s*`）
+
+- 作者：claude（與 YC 共同）
+- 範圍：catalog（regex 全面擴充）+ runtime-snapshot
+- 變更：修改
+- 測試 ID：WBC, RBC, Hb, HCT, MCV, Platelet, TP, Albumin, GOT, GPT, RGT, ALP,
+  TBIL, DBIL, CHOL, HDLC, LDL, TG, GluAC, HbA1c, BUN, BUN_pre, BUN_post,
+  CREAT, UA, eGFR, UACR, UPCR, Na, K, Cl, Ca, FreeCa, P, Mg, Fe, TIBC, TSAT,
+  iPTH, VitB12, FolicAcid, PSA, FreePSA, TSH, FreeT4, HBsAgTiter,
+  AntiHBsTiter, AntiHCVTiter, CD4
+- 原因：原本 49 條 numeric capture group 是 `([\d.]+)`，遇到偵測下限值
+  `<0.01` / `<2` / `>2000` 完全不 match — 連 pipeline 都進不來。Ferritin /
+  Aluminum / AFP / CEA / CA199 / CA125 已先各自加過 `[<>]?`，本輪把還沒加
+  的 49 條一次補齊。`[<>]?` 是 zero-width optional，純數字 case 完全不變；
+  `\s*` 容許 `<` 與數字間有空白（例 `< 2.00`）；WBC negative lookahead
+  不受影響。viewer `valueStyle()` 早就 `replace(/^[<>]\s*/, '')` 後 parseFloat；
+  reporter `extractLabValues()` 自 2026-05-07 起對 `<` / `>` 開頭值保留為
+  string（不 parseFloat → 不掉）— 兩端都已支援，這次只是補上 regex 入口。
+  順手把 Aluminum entry 內提到 "extractLabValues currently parseFloats it
+  ... pre-existing limitation, not fixed in this task" 的過時備註改成現況
+  描述（reporter 早就修了）。
+- 驗證：`npm run release` 通過 — catalog 75 · viewer 60 · reporter 38 ·
+  dist/patterns.json 41.2 KB。MISS-detection 一行 node 檢查 0 命中
+  (`/\(\[\d.\]\+\)/.test(s)` 全無)；spot-check：TSH `2.5` → `2.5`、
+  TSH `<0.01` → `<0.01`、TSH `< 0.01` → `< 0.01`、WBC `0-5`（urine）仍
+  reject、WBC `6.7` 正常 capture。viewer / reporter 已重 sync。
+- 影響：sibling repo（viewer / reporter）已執行 `node sync-patterns.js`
+  並重新內嵌；OPD 端 24h 內透過 dist/patterns.json 自動拿到。
+- TASK_BRIEF：`docs/task-briefs/TASK_BRIEF_detection_limit_regex_done.md`
+
+---
+
 ## 2026-05-07 — 肝炎 6 條 regex 全加 i flag（修 vhtt 全大寫 ANTI-HCV match 不到）
 
 - 作者：claude（與 YC 共同）

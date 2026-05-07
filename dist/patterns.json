@@ -1,12 +1,12 @@
 {
   "version": "0.3.0",
-  "synced_at": "2026-05-07T04:06:42.101Z",
+  "synced_at": "2026-05-07T04:45:50.892Z",
   "catalog": [
     {
       "id": "WBC",
       "pattern": {
         "__regex": [
-          "WBC:\\s*([\\d.]+)(?!\\s*[-–]\\s*\\d)",
+          "WBC:\\s*([<>]?\\s*[\\d.]+)(?!\\s*[-–]\\s*\\d)",
           ""
         ]
       },
@@ -26,7 +26,7 @@
       "id": "RBC",
       "pattern": {
         "__regex": [
-          "\\bRBC:\\s*([\\d.]+)",
+          "\\bRBC:\\s*([<>]?\\s*[\\d.]+)",
           ""
         ]
       },
@@ -48,7 +48,7 @@
       "id": "Hb",
       "pattern": {
         "__regex": [
-          "(?:Hb|HGB):\\s*([\\d.]+)",
+          "(?:Hb|HGB):\\s*([<>]?\\s*[\\d.]+)",
           ""
         ]
       },
@@ -71,7 +71,7 @@
       "id": "HCT",
       "pattern": {
         "__regex": [
-          "HCT:\\s*([\\d.]+)",
+          "HCT:\\s*([<>]?\\s*[\\d.]+)",
           ""
         ]
       },
@@ -93,7 +93,7 @@
       "id": "MCV",
       "pattern": {
         "__regex": [
-          "MCV:\\s*([\\d.]+)",
+          "MCV:\\s*([<>]?\\s*[\\d.]+)",
           ""
         ]
       },
@@ -111,7 +111,7 @@
       "id": "Platelet",
       "pattern": {
         "__regex": [
-          "Platelet:\\s*([\\d.]+)",
+          "Platelet:\\s*([<>]?\\s*[\\d.]+)",
           ""
         ]
       },
@@ -131,7 +131,7 @@
       "id": "TP",
       "pattern": {
         "__regex": [
-          "Total protein\\(serum\\):\\s*([\\d.]+)",
+          "Total protein\\(serum\\):\\s*([<>]?\\s*[\\d.]+)",
           "i"
         ]
       },
@@ -149,7 +149,7 @@
       "id": "Albumin",
       "pattern": {
         "__regex": [
-          "(?:^|[\\s;])Albumin(?:\\([^)]*\\))?:\\s*([\\d.]+)",
+          "(?:^|[\\s;])Albumin(?:\\([^)]*\\))?:\\s*([<>]?\\s*[\\d.]+)",
           "i"
         ]
       },
@@ -169,7 +169,7 @@
       "id": "GOT",
       "pattern": {
         "__regex": [
-          "GOT:\\s*([\\d.]+)",
+          "GOT:\\s*([<>]?\\s*[\\d.]+)",
           ""
         ]
       },
@@ -187,7 +187,7 @@
       "id": "GPT",
       "pattern": {
         "__regex": [
-          "GPT:\\s*([\\d.]+)",
+          "GPT:\\s*([<>]?\\s*[\\d.]+)",
           ""
         ]
       },
@@ -207,7 +207,7 @@
       "id": "RGT",
       "pattern": {
         "__regex": [
-          "(?:r-?GT|R-?GT|γ-?GT|GGT|RGT):\\s*([\\d.]+)",
+          "(?:r-?GT|R-?GT|γ-?GT|GGT|RGT):\\s*([<>]?\\s*[\\d.]+)",
           "i"
         ]
       },
@@ -228,7 +228,7 @@
       "id": "ALP",
       "pattern": {
         "__regex": [
-          "(?:Alk[\\s.\\-]*P|ALP|Alkaline\\s*Phosphatase):\\s*([\\d.]+)",
+          "(?:Alk[\\s.\\-]*P|ALP|Alkaline\\s*Phosphatase):\\s*([<>]?\\s*[\\d.]+)",
           "i"
         ]
       },
@@ -246,7 +246,7 @@
       "id": "TBIL",
       "pattern": {
         "__regex": [
-          "T-BIL:\\s*([\\d.]+)",
+          "T-BIL:\\s*([<>]?\\s*[\\d.]+)",
           ""
         ]
       },
@@ -264,7 +264,7 @@
       "id": "DBIL",
       "pattern": {
         "__regex": [
-          "D-BIL:\\s*([\\d.]+)",
+          "D-BIL:\\s*([<>]?\\s*[\\d.]+)",
           ""
         ]
       },
@@ -282,7 +282,7 @@
       "id": "CHOL",
       "pattern": {
         "__regex": [
-          "CHOL:\\s*([\\d.]+)",
+          "CHOL:\\s*([<>]?\\s*[\\d.]+)",
           ""
         ]
       },
@@ -300,7 +300,7 @@
       "id": "HDLC",
       "pattern": {
         "__regex": [
-          "HDLC:\\s*([\\d.]+)",
+          "HDLC:\\s*([<>]?\\s*[\\d.]+)",
           ""
         ]
       },
@@ -319,7 +319,7 @@
       "id": "LDL",
       "pattern": {
         "__regex": [
-          "LDL-C:\\s*([\\d.]+)",
+          "LDL-C:\\s*([<>]?\\s*[\\d.]+)",
           ""
         ]
       },
@@ -338,7 +338,7 @@
       "id": "TG",
       "pattern": {
         "__regex": [
-          "Triglyceride:\\s*([\\d.]+)",
+          "Triglyceride:\\s*([<>]?\\s*[\\d.]+)",
           ""
         ]
       },
@@ -356,7 +356,7 @@
       "id": "GluAC",
       "pattern": {
         "__regex": [
-          "(?:Glucose(?:\\([^)]*\\))?|GLU[\\s-]*(?:AC)?|Sugar(?:\\([^)]*\\))?|AC[\\s-]*Sugar|飯前血糖):\\s*([\\d.]+)",
+          "(?:Glucose(?:\\([^)]*\\))?|GLU[\\s-]*(?:AC)?|Sugar(?:\\([^)]*\\))?|AC[\\s-]*Sugar|飯前血糖):\\s*([<>]?\\s*[\\d.]+)",
           "i"
         ]
       },
@@ -375,7 +375,7 @@
       "id": "HbA1c",
       "pattern": {
         "__regex": [
-          "HBA[I1]C%?:\\s*([\\d.]+)",
+          "HBA[I1]C%?:\\s*([<>]?\\s*[\\d.]+)",
           "i"
         ]
       },
@@ -394,7 +394,7 @@
       "id": "BUN",
       "pattern": {
         "__regex": [
-          "BUN:\\s*([\\d.]+)",
+          "BUN:\\s*([<>]?\\s*[\\d.]+)",
           ""
         ]
       },
@@ -415,7 +415,7 @@
       "id": "BUN_pre",
       "pattern": {
         "__regex": [
-          "BUN:\\s*([\\d.]+)",
+          "BUN:\\s*([<>]?\\s*[\\d.]+)",
           ""
         ]
       },
@@ -441,7 +441,7 @@
       "id": "BUN_post",
       "pattern": {
         "__regex": [
-          "BUN:\\s*([\\d.]+)",
+          "BUN:\\s*([<>]?\\s*[\\d.]+)",
           ""
         ]
       },
@@ -467,7 +467,7 @@
       "id": "CREAT",
       "pattern": {
         "__regex": [
-          "(?:Creatinine\\(serum\\)|CREAT):\\s*([\\d.]+)",
+          "(?:Creatinine\\(serum\\)|CREAT):\\s*([<>]?\\s*[\\d.]+)",
           "i"
         ]
       },
@@ -488,7 +488,7 @@
       "id": "UA",
       "pattern": {
         "__regex": [
-          "(?:UA|Uric\\s*acid):\\s*([\\d.]+)",
+          "(?:UA|Uric\\s*acid):\\s*([<>]?\\s*[\\d.]+)",
           "i"
         ]
       },
@@ -508,7 +508,7 @@
       "id": "eGFR",
       "pattern": {
         "__regex": [
-          "(?:Creatinine\\(serum\\)|CREAT):\\s*([\\d.]+)",
+          "(?:Creatinine\\(serum\\)|CREAT):\\s*([<>]?\\s*[\\d.]+)",
           "i"
         ]
       },
@@ -529,7 +529,7 @@
       "id": "UACR",
       "pattern": {
         "__regex": [
-          "(?:U-?ACR|UACR|Alb(?:umin)?\\/Cr(?:eatinine)?|Urine\\s*Alb\\/Cr):\\s*([\\d.]+)",
+          "(?:U-?ACR|UACR|Alb(?:umin)?\\/Cr(?:eatinine)?|Urine\\s*Alb\\/Cr):\\s*([<>]?\\s*[\\d.]+)",
           "i"
         ]
       },
@@ -557,7 +557,7 @@
       "id": "UPCR",
       "pattern": {
         "__regex": [
-          "(?:U-?PCR|UPCR|RATTC|TP\\/Cr|Pr(?:otein)?\\/Cr(?:eatinine)?|Urine\\s*TP\\/Cr):\\s*([\\d.]+)",
+          "(?:U-?PCR|UPCR|RATTC|TP\\/Cr|Pr(?:otein)?\\/Cr(?:eatinine)?|Urine\\s*TP\\/Cr):\\s*([<>]?\\s*[\\d.]+)",
           "i"
         ]
       },
@@ -618,7 +618,7 @@
       "id": "Na",
       "pattern": {
         "__regex": [
-          "NA\\(Serum\\):\\s*([\\d.]+)",
+          "NA\\(Serum\\):\\s*([<>]?\\s*[\\d.]+)",
           ""
         ]
       },
@@ -636,7 +636,7 @@
       "id": "K",
       "pattern": {
         "__regex": [
-          "K \\(Serum\\):\\s*([\\d.]+)",
+          "K \\(Serum\\):\\s*([<>]?\\s*[\\d.]+)",
           ""
         ]
       },
@@ -654,7 +654,7 @@
       "id": "Cl",
       "pattern": {
         "__regex": [
-          "Cl\\(Serum\\):\\s*([\\d.]+)",
+          "Cl\\(Serum\\):\\s*([<>]?\\s*[\\d.]+)",
           ""
         ]
       },
@@ -672,7 +672,7 @@
       "id": "Ca",
       "pattern": {
         "__regex": [
-          "Calcium\\(Serum\\):\\s*([\\d.]+)",
+          "Calcium\\(Serum\\):\\s*([<>]?\\s*[\\d.]+)",
           ""
         ]
       },
@@ -690,7 +690,7 @@
       "id": "FreeCa",
       "pattern": {
         "__regex": [
-          "Free Ca\\+\\+:\\s*([\\d.]+)",
+          "Free Ca\\+\\+:\\s*([<>]?\\s*[\\d.]+)",
           ""
         ]
       },
@@ -708,7 +708,7 @@
       "id": "P",
       "pattern": {
         "__regex": [
-          "Phosphorus:\\s*([\\d.]+)",
+          "Phosphorus:\\s*([<>]?\\s*[\\d.]+)",
           ""
         ]
       },
@@ -726,7 +726,7 @@
       "id": "Mg",
       "pattern": {
         "__regex": [
-          "MG:\\s*([\\d.]+)",
+          "MG:\\s*([<>]?\\s*[\\d.]+)",
           ""
         ]
       },
@@ -744,7 +744,7 @@
       "id": "Fe",
       "pattern": {
         "__regex": [
-          "(?:Fe|Iron)\\s*(?:\\((?:TT|YL)\\))?:\\s*([\\d.]+)",
+          "(?:Fe|Iron)\\s*(?:\\((?:TT|YL)\\))?:\\s*([<>]?\\s*[\\d.]+)",
           "i"
         ]
       },
@@ -766,7 +766,7 @@
       "id": "TIBC",
       "pattern": {
         "__regex": [
-          "TIBC:\\s*([\\d.]+)",
+          "TIBC:\\s*([<>]?\\s*[\\d.]+)",
           ""
         ]
       },
@@ -788,7 +788,7 @@
       "id": "TSAT",
       "pattern": {
         "__regex": [
-          "(?<![A-Za-z])(?:TSAT|TS|SAT):\\s*([\\d.]+)",
+          "(?<![A-Za-z])(?:TSAT|TS|SAT):\\s*([<>]?\\s*[\\d.]+)",
           ""
         ]
       },
@@ -829,7 +829,7 @@
       "id": "iPTH",
       "pattern": {
         "__regex": [
-          "i-PTH:\\s*([\\d.]+)",
+          "i-PTH:\\s*([<>]?\\s*[\\d.]+)",
           ""
         ]
       },
@@ -847,7 +847,7 @@
       "id": "VitB12",
       "pattern": {
         "__regex": [
-          "(?:Vit(?:amin)?\\.?\\s*B12|VIT\\.?\\s*B12|B12):\\s*([\\d.]+)",
+          "(?:Vit(?:amin)?\\.?\\s*B12|VIT\\.?\\s*B12|B12):\\s*([<>]?\\s*[\\d.]+)",
           "i"
         ]
       },
@@ -866,7 +866,7 @@
       "id": "FolicAcid",
       "pattern": {
         "__regex": [
-          "(?:Folic\\s+acid|Folate):\\s*([\\d.]+)",
+          "(?:Folic\\s+acid|Folate):\\s*([<>]?\\s*[\\d.]+)",
           "i"
         ]
       },
@@ -914,7 +914,7 @@
         },
         "synthLabel": "Al鋁"
       },
-      "notes": "Annual test. vhtt confirmed 2026-05-07 (18-patient survey, 12 with data). Main pattern matches both \"Al鋁: N\" (in-house) and \"BALR0101: N\" (out-sourced lab code). Capture allows leading <> operator (handles \"<2\" below detection limit — but extractLabValues currently parseFloats it, so \"<2\" is silently dropped; pre-existing limitation, not fixed in this task). Ref <20 µg/L per KDOQI guidelines."
+      "notes": "Annual test. vhtt confirmed 2026-05-07 (18-patient survey, 12 with data). Main pattern matches both \"Al鋁: N\" (in-house) and \"BALR0101: N\" (out-sourced lab code). Capture allows leading <> operator (handles \"<2\" below detection limit; reporter extractLabValues preserves \"<N\" as string since 2026-05-07). Ref <20 µg/L per KDOQI guidelines."
     },
     {
       "id": "AFP",
@@ -974,7 +974,7 @@
       "id": "PSA",
       "pattern": {
         "__regex": [
-          "\\bPSA:\\s*([\\d.]+)",
+          "\\bPSA:\\s*([<>]?\\s*[\\d.]+)",
           ""
         ]
       },
@@ -993,7 +993,7 @@
       "id": "FreePSA",
       "pattern": {
         "__regex": [
-          "(?:Free PSA|RATIO):\\s*([\\d.]+)",
+          "(?:Free PSA|RATIO):\\s*([<>]?\\s*[\\d.]+)",
           ""
         ]
       },
@@ -1038,7 +1038,7 @@
       "id": "TSH",
       "pattern": {
         "__regex": [
-          "TSH:\\s*([\\d.]+)",
+          "TSH:\\s*([<>]?\\s*[\\d.]+)",
           ""
         ]
       },
@@ -1056,7 +1056,7 @@
       "id": "FreeT4",
       "pattern": {
         "__regex": [
-          "Free T4:\\s*([\\d.]+)",
+          "Free T4:\\s*([<>]?\\s*[\\d.]+)",
           ""
         ]
       },
@@ -1116,7 +1116,7 @@
       "id": "HBsAgTiter",
       "pattern": {
         "__regex": [
-          "HBsAg:\\s*([\\d.]+)",
+          "HBsAg:\\s*([<>]?\\s*[\\d.]+)",
           "i"
         ]
       },
@@ -1130,7 +1130,7 @@
       "id": "AntiHBsTiter",
       "pattern": {
         "__regex": [
-          "Anti-HBs:\\s*([\\d.]+)",
+          "Anti-HBs:\\s*([<>]?\\s*[\\d.]+)",
           "i"
         ]
       },
@@ -1144,7 +1144,7 @@
       "id": "AntiHCVTiter",
       "pattern": {
         "__regex": [
-          "(?:HCV Ab|Anti-HCV):\\s*([\\d.]+)",
+          "(?:HCV Ab|Anti-HCV):\\s*([<>]?\\s*[\\d.]+)",
           "i"
         ]
       },
@@ -1256,7 +1256,7 @@
       "id": "CD4",
       "pattern": {
         "__regex": [
-          "LEU3AN:\\s*([\\d.]+)",
+          "LEU3AN:\\s*([<>]?\\s*[\\d.]+)",
           ""
         ]
       },
