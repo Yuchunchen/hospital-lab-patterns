@@ -549,7 +549,7 @@ const CATALOG = [
 
   // vhyl sample (2026-05-05): "正式報告 HBsAg: 0.21HBsAg (YL): Non-Reactive (Non-Reactive)"
   { id:'HBsAg',
-    pattern: /HBsAg\s*(?:\((?:TT|YL)\))?:\s*([^\s\d]\S*)/,
+    pattern: /HBsAg\s*(?:\((?:TT|YL)\))?:\s*([^\s\d]\S*)/i,
     displayName:'B型肝炎表面抗原 (HBsAg)', shortLabel:'HBsAg',
     category:'肝炎 / 感染',
     qualitative:true,
@@ -559,7 +559,7 @@ const CATALOG = [
   // optional (TT|YL) hospital tag and stops the value capture before any
   // digits so vhyl's concatenated numeric+qualitative line parses cleanly.
   { id:'AntiHBs',
-    pattern: /Anti-HBs\s*(?:\((?:TT|YL)\))?:\s*([^\s\d]\S*)/,
+    pattern: /Anti-HBs\s*(?:\((?:TT|YL)\))?:\s*([^\s\d]\S*)/i,
     displayName:'B型肝炎表面抗體 (Anti-HBs)', shortLabel:'Anti-HBs',
     category:'肝炎 / 感染',
     qualitative:true,
@@ -567,7 +567,7 @@ const CATALOG = [
 
   // vhyl sample (2026-05-05): "正式報告 Anti-HCV: 0.12Anti-HCV (YL): Non-Reactive (Non-Reactive)"
   { id:'AntiHCV',
-    pattern: /(?:HCV Ab|Anti-HCV)\s*(?:\((?:TT|YL)\))?:\s*([^\s\d]\S*)/,
+    pattern: /(?:HCV Ab|Anti-HCV)\s*(?:\((?:TT|YL)\))?:\s*([^\s\d]\S*)/i,
     displayName:'C型肝炎抗體 (Anti-HCV)', shortLabel:'Anti-HCV',
     category:'肝炎 / 感染',
     qualitative:true,
@@ -578,19 +578,19 @@ const CATALOG = [
   // "HBsAg: 0.21HBsAg (YL): Non-Reactive" — \[\d.\]+ stops at the next "H"
   // so we get the numeric without the qualitative text bleeding in.
   { id:'HBsAgTiter',
-    pattern: /HBsAg:\s*([\d.]+)/,
+    pattern: /HBsAg:\s*([\d.]+)/i,
     displayName:'HBsAg 滴度', shortLabel:'HBsAg titer',
     unit:'', category:'肝炎 / 感染',
     notes:'Numeric titer for HBsAg. Consumed by HBsAgDisplay computed wrapper.' },
 
   { id:'AntiHBsTiter',
-    pattern: /Anti-HBs:\s*([\d.]+)/,
+    pattern: /Anti-HBs:\s*([\d.]+)/i,
     displayName:'Anti-HBs 滴度', shortLabel:'Anti-HBs titer',
     unit:'', category:'肝炎 / 感染',
     notes:'Numeric titer for Anti-HBs. Consumed by AntiHBsDisplay computed wrapper.' },
 
   { id:'AntiHCVTiter',
-    pattern: /(?:HCV Ab|Anti-HCV):\s*([\d.]+)/,
+    pattern: /(?:HCV Ab|Anti-HCV):\s*([\d.]+)/i,
     displayName:'Anti-HCV 滴度', shortLabel:'Anti-HCV titer',
     unit:'', category:'肝炎 / 感染',
     notes:'Numeric titer for Anti-HCV. Consumed by HCV computed wrapper.' },

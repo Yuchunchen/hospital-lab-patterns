@@ -14,6 +14,36 @@ Each entry should include:
 
 ---
 
+## 2026-05-07 — 肝炎 6 條 regex 全加 i flag（修 vhtt 全大寫 ANTI-HCV match 不到）
+
+- 作者：claude（與 YC 共同）
+- 範圍：catalog（regex case-insensitive）+ runtime-snapshot
+- 變更：修改
+- 測試 ID：HBsAg, AntiHBs, AntiHCV, HBsAgTiter, AntiHBsTiter, AntiHCVTiter
+- 原因：vhtt 110 年之後 ANTI-HCV order 主 reportText 格式為:
+  ```
+  Anti-HCV: 0.13
+  ANTI-HCV: Non-Reactive Non-Reactive
+  ```
+  定性行用全大寫 `ANTI-HCV`，但 catalog regex
+  `/(?:HCV Ab|Anti-HCV)\s*(?:\((?:TT|YL)\))?:\s*([^\s\d]\S*)/`
+  沒有 i flag → fail → AntiHCV globally missing。
+  92066B 跟 23355G 各 7 筆 ANTI-HCV 全部抓不到。Titer 行剛好混合大小寫
+  `Anti-HCV:` 能 match，但缺 i flag 是隱患。
+  順手檢查 6 條肝炎相關 regex 全沒 i flag，**全部一併加上**防禦
+  vhtt 可能存在的 HBSAG / ANTI-HBS 全大寫變體。i flag 對既有
+  `[^\s\d]\S*` / `[\d.]` capture 無副作用。
+  舊格式 `HCV Ab(TT): Non-Reactive` 不受影響（regex 先 match
+  `HCV Ab`）。
+- 驗證：`npm run release` 通過 — catalog 75 · viewer 60 · reporter 38；
+  dist/patterns.json 40.8 KB。等 YC reporter 重新 fetch 92066B →
+  「檢驗資料」分頁 AntiHCV 應從 missing → 顯示 `Non-Reactive`。
+- 影響：sibling repo（viewer / reporter）需要重 sync，已執行。
+  PROJECT_CONTEXT.md 不更新（純 bug fix，非新功能）。
+- 備註：92066B 的 AFP（0 筆）是真缺，非 regex 問題，本輪不修。
+
+---
+
 ## 2026-05-07 — Aluminum regex 加 BALR0101（外送 lab code）+ UACR opt-in subpage chase
 
 - 作者：claude（與 YC 共同）
