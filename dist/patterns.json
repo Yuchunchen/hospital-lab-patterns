@@ -1,6 +1,6 @@
 {
   "version": "0.3.0",
-  "synced_at": "2026-05-07T17:24:38.238Z",
+  "synced_at": "2026-05-08T00:02:45.622Z",
   "catalog": [
     {
       "id": "WBC",
@@ -557,7 +557,7 @@
       "id": "UPCR",
       "pattern": {
         "__regex": [
-          "(?:U-?PCR|UPCR|RATTC|TP\\/Cr|Pr(?:otein)?\\/Cr(?:eatinine)?|Urine\\s*TP\\/Cr):\\s*([<>]?\\s*[\\d.]+)",
+          "(?:U-?PCR|UPCR|RATTC|T\\.?PROT\\/CREAT|TP\\/Cr|Pr(?:otein)?\\/Cr(?:eatinine)?|Urine\\s*TP\\/Cr):\\s*([<>]?\\s*[\\d.]+)",
           "i"
         ]
       },
@@ -570,7 +570,7 @@
       "refHi": 150,
       "hi": 150,
       "lo": null,
-      "notes": "RATTC label is also used at some sites for total-protein/creatinine ratio."
+      "notes": "RATTC = vhyl/legacy; T.PROT/CREAT = vhtt (Urine total protein inline). Both produce the same numeric ratio."
     },
     {
       "id": "GFRStage",
@@ -1278,6 +1278,82 @@
       "displayName": "CD4 淋巴球 (LEU3AN)",
       "shortLabel": "CD4",
       "category": "HIV"
+    },
+    {
+      "id": "UrineOB",
+      "pattern": {
+        "__regex": [
+          "(?:\\bOB|\\bOCCL):\\s*([+\\-]+(?:\\/[+\\-])?|\\d+\\+)",
+          ""
+        ]
+      },
+      "displayName": "尿潛血 (Occult Blood)",
+      "shortLabel": "尿OB",
+      "category": "尿液",
+      "qualitative": true,
+      "orderNameFilter": {
+        "__regex": [
+          "CHEM\\s*EXAM|尿液|Urine\\s*protein",
+          "i"
+        ]
+      },
+      "notes": "Two label formats: long \"OB: -\" (vhyl/older) and short \"OCCL: 1+ (-)\" (vhtt/newer). Capture stops before whitespace so the reference range is dropped."
+    },
+    {
+      "id": "UrineGlucose",
+      "pattern": {
+        "__regex": [
+          "(?:\\bGlucose|\\bGLU):\\s*([+\\-]+(?:\\/[+\\-])?|\\d+\\+)",
+          ""
+        ]
+      },
+      "displayName": "尿糖 (Urine Glucose)",
+      "shortLabel": "尿糖",
+      "category": "尿液",
+      "qualitative": true,
+      "orderNameFilter": {
+        "__regex": [
+          "CHEM\\s*EXAM|尿液|Urine\\s*protein",
+          "i"
+        ]
+      },
+      "notes": "orderNameFilter required to distinguish from serum GluAC; long \"Glucose: -\" / short \"GLU: 4+ (-)\". Same capture rule as UrineOB."
+    },
+    {
+      "id": "UrineCr",
+      "pattern": {
+        "__regex": [
+          "Creatinine\\s*\\((?:24hrs?\\s*)?Urine\\):\\s*([<>]?\\s*[\\d.]+)",
+          "i"
+        ]
+      },
+      "displayName": "尿肌酸酐 (Urine Creatinine)",
+      "shortLabel": "尿Cr",
+      "unit": "mg/dL",
+      "category": "尿液",
+      "notes": "From Urine Microalbumin(TT)+Creatinine(TT) inline. Distinct label from serum CREAT — does not match Creatinine(serum):."
+    },
+    {
+      "id": "UrineProtein",
+      "pattern": {
+        "__regex": [
+          "尿蛋白\\s+([<>]?\\s*[\\d.]+)\\s*mg\\/dL",
+          "i"
+        ]
+      },
+      "displayName": "尿蛋白定量 (Urine Total Protein)",
+      "shortLabel": "尿蛋白",
+      "unit": "mg/dL",
+      "category": "尿液",
+      "subpage": {
+        "orderNameMatch": {
+          "__regex": [
+            "Urine\\s*total\\s*protein|尿蛋白定量",
+            "i"
+          ]
+        }
+      },
+      "notes": "Random urine protein concentration. Inline reportText only has UPCR; mg/dL value requires sub-page enrichment via opdweb OpdOrderReport.aspx."
     },
     {
       "id": "BoneDensity",

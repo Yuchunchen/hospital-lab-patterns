@@ -14,6 +14,50 @@ Each entry should include:
 
 ---
 
+## 2026-05-08 — Phase 3 前置：catalog 加 4 條尿液 + UPCR 加 T.PROT/CREAT alternation
+
+- 作者：claude（與 YC 共同）
+- 範圍：catalog + runtime-snapshot
+- 變更：新增 4 條 / 修改 1 條
+- 測試 ID：UrineOB、UrineGlucose、UrineCr、UrineProtein、UPCR
+- 原因：reporter Phase 3 將推出 `hospital-lab-ckd.html`，對應腎臟病平台
+  「檢驗數據」匯出（23 欄），其中 4 個尿液項目（尿潛血 OB、尿糖、尿肌
+  酸酐、尿蛋白定量）catalog 原本沒有；UPCR pattern 也只認 `RATTC:`
+  （vhyl）不認 `T.PROT/CREAT:`（vhtt 主流），跨院區會漏抓。Phase 3 已
+  於 84 位 vhtt CKD 病患的 ernode 報告驗證 regex（見
+  `TASK_BRIEF_phase3_early_ckd.md` §1.3 + §0 統計）。
+- 具體變更：
+  - **UrineOB**：`/(?:\bOB|\bOCCL):\s*([+\-]+(?:\/[+\-])?|\d+\+)/` —
+    支援 long `OB: -`（vhyl/舊版）和 short `OCCL: 1+ (-)`（vhtt/新版）
+    兩種 reportText 格式；capture 停在空白以丟掉參考值 `(-)` 後綴。
+    `qualitative:true`，定性正規化（→ `[-]`/`[+]`/`[++]`/...）由
+    export-formats 層處理。`orderNameFilter: /CHEM\s*EXAM|尿液|Urine\s*protein/i`。
+  - **UrineGlucose**：同 OB pattern 結構，`(?:\bGlucose|\bGLU)`。
+    `orderNameFilter` 同 OB（與 serum GluAC 區分）。
+  - **UrineCr**：`/Creatinine\s*\((?:24hrs?\s*)?Urine\):\s*([<>]?\s*[\d.]+)/i`，
+    來源 Urine Microalbumin(TT)+Creatinine(TT)。Label `Creatinine(24hrs Urine):`
+    與 serum `Creatinine(serum):` 不同 — 不會誤撈 serum CREAT。
+  - **UrineProtein**：`/尿蛋白\s+([<>]?\s*[\d.]+)\s*mg\/dL/i`，
+    來源 Urine total protein(TT) **子頁面**（inline 只有 UPCR）。配
+    `subpage.orderNameMatch: /Urine\s*total\s*protein|尿蛋白定量/i` 觸發
+    enrichMissingValues 的 sub-page chase；子頁面已直接印 `尿蛋白 N mg/dL`，
+    不需 resultPattern 翻譯。
+  - **UPCR**：alternation 加 `T\.?PROT\/CREAT`（`T\.?` 同時匹配
+    `T.PROT/CREAT` 與 `TPROT/CREAT`）。原本的 `RATTC` / `TP/Cr` /
+    `Urine TP/Cr` 等保留 — 跨院區相容。實測 vhtt 45+ 位病患
+    `Urine total protein(TT)` inline 全部用 `T.PROT/CREAT:`。
+- 驗證：`npm run release` 全綠 — catalog 80（+4）、viewer 60、
+  reporter 41 / computed 14 / 2 normalizers。**Track-only 暫時 4 項**
+  （UrineOB / UrineGlucose / UrineCr / UrineProtein）— 預期，因為 CKD
+  manifest 依 brief 設計放在 reporter 的 `groups/early-ckd.js`（self-
+  contained group module），不在 `patterns/reporter.js`。後續 Step 2
+  reporter sync 會把 catalog 注入到 ckd HTML，新 manifest 在 group module
+  端 reference 這些 ids。
+- 影響：sibling repos：
+  - viewer：無影響（尿液項目不在 viewer manifest）。
+  - reporter：必須跑 `node sync-patterns.js` 拉新版 catalog 再 build；
+    Phase 3 同 commit 一起做。
+
 ## 2026-05-08 — reporter manifest 加 FreeCa / Mg / UIBC（KiDiTi Phase 2 前置）
 
 - 作者：claude（與 YC 共同）
