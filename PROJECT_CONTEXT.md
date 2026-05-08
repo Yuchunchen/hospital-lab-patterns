@@ -26,6 +26,7 @@
 | 2026-05-08 | **Reporter Phase 2: KiDiTi 檢驗記錄匯出**:洗腎室 KiDiTi 平台需 58 欄 positional CSV（無 header、UTF-8 BOM、CRLF、民國年 7 碼日期、HBsAg/Anti-HCV → Y/N/O、缺值留空不能填 0）。新增「匯出KiDiTi資料」按鈕（橘色 btn-warning，與既有「匯出csv」並列），一鍵產出 `KiDiTi_檢驗記錄_YYYYMMDD.csv`。Button bar 同步改版：「更新資料」改名「全部更新」並放大成 primary action。Reporter manifest 加 FreeCa（field 34）/ Mg（field 41）/ UIBC（field 37，computed=TIBC−Fe）三條，catalog UIBC computed entry 也補上。同月檢辨識重用 `detectMonthlyDrawsFromStored` + `pickEarliestPerMonth`，UIBC / CaxP 在 export 函式 inline 計算（不污染 viewer）。|
 | 2026-05-08 | **Reporter Phase 1.5: 病患清單勾選匯出**:病患清單表最左加 `_select` checkbox 欄（width 36px、不參與 sort/filter），勾選列加淡藍底。In-memory `selectedPatients = new Set()`（**不**持久化 — 重整即清是預期行為）。5 個 helper：`toggleSelectAll`（只動可見列）/ `togglePatientSelect` / `updateSelectState`（同步 master checkbox 的 checked / indeterminate）/ `updateSelectUI`（按鈕文字加 `(N)` 提示）/ `getSelectedChartNos`（回 array 或 null）。`exportKiDiTiCSV` / `exportCombinedCSV` 都先呼叫 `getSelectedChartNos()`：null → 全部、array → 只匯這些。`confirmRemovePatient` 順手清 Set、`renderPatientList` 渲染後呼叫 `updateSelectState()`（filter/sort 後勾選狀態維持）。|
 | 2026-05-08 | **Reporter Phase 1: repo restructure（core/ + build.js + 16 模組）**:`hospital-lab-data.html` ~3700 行 monolith 抽成 16 個 `core/*.js` + 1 個 `export-formats/kiditi-csv.js` + `core/{shell,body}.html` template + `core/styles.css`。`build.js` 讀 shell + 串 patterns（從 sibling repo）+ groups + core（固定 load order）+ export-formats，產出 `hospital-lab-dialysis.html`（152.8 KB）。**無 ES modules、無 bundler**：core/*.js 都是頂層 function 宣告，concat 進單一 `<script>` 透過 hoist 跨模組可見 — 與 monolith 行為 1:1 對齊。`groups/dialysis.js` 完全不動。`sync-patterns.js` sync 完順手呼叫 `buildOne()` 重產所有 disease HTML。Phase 3+ 加新 disease 只需在 `build.js` 的 `DISEASES` 加 entry + 寫 `groups/<id>.js`，core/* 不需動。**Phase 1 fix（同日）**：`ENRICH_CACHE_KEY` 從 `enrichCache_dialysis` → `enrichCache`（disease-neutral，sub-page text 跟 disease 無關），加 one-time migration IIFE。Legacy `hospital-lab-data.html` 過渡期保留，仍由 `sync-patterns.js` 維護 markers。|
+| 2026-05-08 | **Reporter Phase 3: Early CKD（hospital-lab-ckd.html + 腎平台 xlsx）**:第二個 disease HTML 上線。新增 `groups/early-ckd.js`（16 條 manifest，無 BUN pre/post，`drawDetection.requiredAnyOf = ['CREAT','BUN']` 寬鬆判斷）+ `export-formats/renal-platform-xlsx.js`（23 欄 `.xlsx`，3 行 header [key/label/unit]，西元年 `yyyy/mm/dd`，OB / 尿糖 `normalizeQualitative` 轉中括號 `[-]`/`[+]`/`[++]`/...，缺值留空不填 `[-]`）+ `lib/xlsx.mini.min.js`（SheetJS 0.18.5，從 cdnjs 下載，inline 進 CKD HTML 約 250 KB，dialysis 不動）。Catalog 加 4 條尿液 `UrineOB`/`UrineGlucose`/`UrineCr`/`UrineProtein`（從 84 位 vhtt CKD 病患 ernode 報告驗證）+ UPCR pattern 加 `T\.?PROT\/CREAT` alternation（vhtt 主流，原 RATTC 是 vhyl）。Build 框架加強：每 disease config 帶 `headerTitle` + `actionButtons` HTML + `libs[]`，`shell.html` 重排 `{{DISEASE_INIT}}` 移到 `{{CORE_JS}}` 之前（storage.js 才看得到 `window.ACTIVE_GROUP_ID`）+ 新 `{{LIB}}` placeholder。**Phase 1 build pipeline 第一次實戰**：加新 disease 完全沒動 core/*。產出 `hospital-lab-ckd.html`（412.1 KB 含 SheetJS）+ `hospital-lab-dialysis.html`（167.3 KB）並存。|
 
 ---
 
@@ -103,13 +104,15 @@ catalog (universal definitions)
 
 URL: `https://raw.githubusercontent.com/Yuchunchen/hospital-lab-patterns/main/dist/patterns.json`
 
-### Current counts (validated 2026-05-07)
+### Current counts (validated 2026-05-08)
 
-- 75 catalog entries
+- 80 catalog entries
 - 60 viewer-resolved
-- 38 reporter-resolved
-- 13 computed entries
-- 1 track-only (Mg)
+- 41 reporter-resolved (manifest), CKD-resolved via `groups/early-ckd.js` labManifest
+- 14 computed entries (URR / CaxP / UIBC / eGFR / GFRStage / UACRStage /
+  UPCRStage / KDIGORisk / TaiwanCKD / EarlyCKD / PSARatio / 3 hepatitis displays)
+- 4 track-only (UrineOB, UrineGlucose, UrineCr, UrineProtein — referenced
+  by reporter via `groups/early-ckd.js`, not the patterns/reporter.js manifest)
 - 2 normalizers (wbcCount, plateletCount)
 
 ---
@@ -164,8 +167,10 @@ dialysis; CKD / DM / ESRD follow in Phase 3+.
 ```
 hospital-lab-reporter/
 ├── core/                     ← shared shell across diseases
-│   ├── shell.html            ← HTML template ({{TITLE}}, {{STYLES}}, ...)
-│   ├── body.html             ← body markup (verbatim from monolith)
+│   ├── shell.html            ← HTML template ({{TITLE}}, {{STYLES}}, ...,
+│   │                            {{HEADER_TITLE}} via body, {{LIB}}, etc.)
+│   ├── body.html             ← body markup with {{HEADER_TITLE}} +
+│   │                            {{ACTION_BUTTONS}} placeholders
 │   ├── styles.css            ← extracted CSS
 │   └── *.js (16 files)       ← storage, fetch, indexeddb-cache, enrichment,
 │                                lab-extract, compute, date-utils, ui-tabs,
@@ -173,14 +178,17 @@ hospital-lab-reporter/
 │                                ui-lab-view, ui-settings, export-utils,
 │                                chart-format, init
 ├── groups/
-│   └── dialysis.js           ← disease-specific manifest + monthly-draw
-│                                detection + CSV exporter (UNCHANGED)
+│   ├── dialysis.js           ← 透析 (UNCHANGED across all phases)
+│   └── early-ckd.js          ← 初期慢性腎臟病 (Phase 3, 2026-05-08)
 ├── export-formats/
-│   └── kiditi-csv.js         ← KiDiTi 檢驗記錄 58-field positional CSV
+│   ├── kiditi-csv.js         ← KiDiTi 檢驗記錄 58-field positional CSV
+│   └── renal-platform-xlsx.js ← 腎臟病平台 23-col xlsx (Phase 3)
+├── lib/
+│   └── xlsx.mini.min.js      ← SheetJS 0.18.5 (only inlined for ckd build)
 ├── build.js                  ← assembles → hospital-lab-<disease>.html
 ├── sync-patterns.js          ← sync legacy markers + chain build.js
-├── hospital-lab-dialysis.html ← BUILT output (the file YC opens in
-│                                a browser; THE current end-user HTML)
+├── hospital-lab-dialysis.html ← BUILT — 透析病房 (167 KB)
+├── hospital-lab-ckd.html     ← BUILT — CKD 門診 (412 KB, ships SheetJS)
 └── hospital-lab-data.html    ← LEGACY monolith, still updated by
                                  sync-patterns.js for transition period
 ```
@@ -193,18 +201,34 @@ no bundler, no ES modules; top-level fn declarations hoist within the
 single `<script>` block so cross-module calls Just Work like the legacy
 monolith.
 
-### Adding a new disease (Phase 3+)
+### Adding a new disease (post Phase 3)
 
-1. Add `groups/<id>.js` with `labManifest`, `detectDraws`, `exporter`,
-   `storageKey`, etc.
-2. Add an entry to `DISEASES` in `build.js` with `title`, `groupId`,
-   `exportFormats`.
-3. (When second disease lands) refactor `core/storage.js` to read
-   `window.ACTIVE_GROUP_ID` injected via the build's `{{DISEASE_INIT}}`
-   block — currently still hardcoded `'dialysis'`.
-4. `node build.js <id>` → `hospital-lab-<id>.html`.
+Phase 3 (early-ckd, 2026-05-08) made this routine. Recipe:
 
-`core/*.js` should not need to change.
+1. Add `groups/<id>.js` with `labManifest`, `detectDrawsFromStored` (or
+   the dialysis-style `detectMonthlyDrawsFromStored`), `pickEarliestPerMonth`,
+   `exporter.formatAll`, `storageKey: { patients, labs }`, optional
+   `patientFields`. Register via `window.GROUPS[id] = ...`.
+2. (Optional) Add a disease-specific `export-formats/<format>.js` if the
+   target platform wants something other than long-format CSV.
+3. (Optional) Drop a vendor lib into `lib/<file>` if the export needs one
+   (e.g., SheetJS for xlsx).
+4. Add an entry to `DISEASES` in `build.js`:
+   ```js
+   <id>: {
+     title:         '<HTML <title>>',
+     headerTitle:   '<page <h1>>',
+     groupId:       '<groups/<id>.js exposed id>',
+     libs:          ['xlsx.mini.min.js'],     // optional
+     exportFormats: ['<format-name>'],        // optional
+     actionButtons: '...HTML for the right-side buttons...',
+   }
+   ```
+5. `node build.js <id>` → `hospital-lab-<id>.html`.
+
+`core/*.js` does not need to change. `core/storage.js` already reads
+`window.ACTIVE_GROUP_ID` (set by `{{DISEASE_INIT}}`) with a `'dialysis'`
+fallback for legacy compatibility.
 
 ### Pattern + groups blocks (legacy monolith)
 
