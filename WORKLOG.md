@@ -14,6 +14,33 @@ Each entry should include:
 
 ---
 
+## 2026-05-08 — FreePSA regex 移除 RATIO alternation（修 vhtt 誤匹配）
+
+- 作者：claude（與 YC 共同）
+- 範圍：catalog + runtime-snapshot
+- 變更：修改
+- 測試 ID：FreePSA
+- 原因：vhtt 的 `Free PSA(TT)` 報告**只**輸出 `RATIO: 0.152`（Free/Total
+  比值，小數），**不**輸出 Free PSA 絕對濃度。原 regex
+  `/(?:Free PSA|RATIO):\s*([<>]?\s*[\d.]+)/` 的 `RATIO` alternation 把
+  比值（如 0.152）當成 `FreePSA` 濃度（ng/mL）抓進去 → 下游 PSARatio
+  computed 觸發、UI 顯示錯誤資料。已確認 case：
+  - vhtt 000017679E：PSA=0.631，報告 `RATIO: 0.152` → 被誤存 FreePSA=0.152
+  - vhtt 000043524F：PSA=0.113，報告 `RATIO: 0.093` → 被誤存 FreePSA=0.093
+- 變更後：pattern 改為 `/Free PSA:\s*([<>]?\s*[\d.]+)/`，移除 `RATIO`
+  alternation。vhtt 這類「只有 RATIO」的報告 → FreePSA 正確留 null →
+  PSARatio computed 不觸發（`PSA == null || FreePSA == null` 直接
+  return null）— 這是正確行為。其他院區若 inline 用 `Free PSA: N`
+  輸出絕對濃度仍照常匹配，零回歸。
+- 驗證：`npm run release` 全綠 — catalog 80 / viewer 60 / reporter 41 /
+  computed 14。`Grep` 跨三 repo 確認沒任何 `Free PSA|RATIO` / `FreePSA
+  ... RATIO` 殘留。
+- 影響：sibling repos 都需要 re-sync — 已跑：
+  - viewer：`node sync-patterns.js` 重產 mapping.js / normalizers.js /
+    patterns-computed.js
+  - reporter：`node sync-patterns.js` 重產 legacy markers + dialysis +
+    ckd 兩個 built HTML
+
 ## 2026-05-08 — Phase 3 前置：catalog 加 4 條尿液 + UPCR 加 T.PROT/CREAT alternation
 
 - 作者：claude（與 YC 共同）
