@@ -285,12 +285,16 @@ const CATALOG = [
     notes:'Viewer fetches sub-pages from opdweb (1-year window) when UACR not in main reportText. Sub-page chase opt-in via subpage.orderNameMatch (broad urine regex).' },
 
   { id:'UPCR',
-    pattern: /(?:U-?PCR|UPCR|RATTC|TP\/Cr|Pr(?:otein)?\/Cr(?:eatinine)?|Urine\s*TP\/Cr):\s*([<>]?\s*[\d.]+)/i,
+    // T.PROT/CREAT alternation added 2026-05-08 (Phase 3 CKD): vhtt's
+    // Urine total protein(TT) inline reportText uses "T.PROT/CREAT: <值>"
+    // (verified across 45+ vhtt patients); RATTC was vhyl-only / legacy.
+    // The optional period in T\.? handles both `T.PROT/CREAT` and `TPROT/CREAT`.
+    pattern: /(?:U-?PCR|UPCR|RATTC|T\.?PROT\/CREAT|TP\/Cr|Pr(?:otein)?\/Cr(?:eatinine)?|Urine\s*TP\/Cr):\s*([<>]?\s*[\d.]+)/i,
     displayName:'尿蛋白／肌酸酐比 (UPCR)', shortLabel:'UPCR',
     unit:'mg/g', category:'腎功能',
     ref:'< 150 mg/g',
     refLo:null, refHi:150, hi:150, lo:null,
-    notes:'RATTC label is also used at some sites for total-protein/creatinine ratio.' },
+    notes:'RATTC = vhyl/legacy; T.PROT/CREAT = vhtt (Urine total protein inline). Both produce the same numeric ratio.' },
 
   // ═══════════════════════════════════════════════════════════════════════
   // KIDNEY DISEASE STAGING (computed)
@@ -662,6 +666,52 @@ const CATALOG = [
     pattern: /LEU3AN:\s*([<>]?\s*[\d.]+)/,
     displayName:'CD4 淋巴球 (LEU3AN)', shortLabel:'CD4',
     category:'HIV' },
+
+  // ═══════════════════════════════════════════════════════════════════════
+  // URINE — qualitative + quantitative (Phase 3 Early CKD, 2026-05-08)
+  // ═══════════════════════════════════════════════════════════════════════
+  // CHEM EXAM(TT) reportText comes in two formats verified across 84 vhtt
+  // CKD patients:
+  //   Format A (long): "Bilirubin: -  Glucose: -  Ketone: -  OB: -  ..."
+  //   Format B (short+ref): "BILI: - (-)  GLU: - (-)  KETO: - (-)  OCCL: 1+ (-) ..."
+  // The patterns below accept both labels (long + short) and the reference
+  // suffix in format B. Capture stops before whitespace so " (-)" is dropped.
+  // Catalog only captures the raw qualitative string ('-', '+/-', '1+', '4+',
+  // '++', etc.); export-formats/renal-platform-xlsx.js normalises it to
+  // bracket notation ([-], [+], [++], ...).
+
+  { id:'UrineOB',
+    pattern: /(?:\bOB|\bOCCL):\s*([+\-]+(?:\/[+\-])?|\d+\+)/,
+    displayName:'尿潛血 (Occult Blood)', shortLabel:'尿OB',
+    category:'尿液', qualitative:true,
+    orderNameFilter: /CHEM\s*EXAM|尿液|Urine\s*protein/i,
+    notes:'Two label formats: long "OB: -" (vhyl/older) and short "OCCL: 1+ (-)" (vhtt/newer). Capture stops before whitespace so the reference range is dropped.' },
+
+  { id:'UrineGlucose',
+    pattern: /(?:\bGlucose|\bGLU):\s*([+\-]+(?:\/[+\-])?|\d+\+)/,
+    displayName:'尿糖 (Urine Glucose)', shortLabel:'尿糖',
+    category:'尿液', qualitative:true,
+    orderNameFilter: /CHEM\s*EXAM|尿液|Urine\s*protein/i,
+    notes:'orderNameFilter required to distinguish from serum GluAC; long "Glucose: -" / short "GLU: 4+ (-)". Same capture rule as UrineOB.' },
+
+  { id:'UrineCr',
+    pattern: /Creatinine\s*\((?:24hrs?\s*)?Urine\):\s*([<>]?\s*[\d.]+)/i,
+    displayName:'尿肌酸酐 (Urine Creatinine)', shortLabel:'尿Cr',
+    unit:'mg/dL', category:'尿液',
+    notes:'From Urine Microalbumin(TT)+Creatinine(TT) inline. Distinct label from serum CREAT — does not match Creatinine(serum):.' },
+
+  { id:'UrineProtein',
+    pattern: /尿蛋白\s+([<>]?\s*[\d.]+)\s*mg\/dL/i,
+    displayName:'尿蛋白定量 (Urine Total Protein)', shortLabel:'尿蛋白',
+    unit:'mg/dL', category:'尿液',
+    subpage: {
+      // Inline reportText only carries UPCR (T.PROT/CREAT); the actual
+      // protein concentration in mg/dL lives behind the opdweb sub-page.
+      orderNameMatch: /Urine\s*total\s*protein|尿蛋白定量/i,
+      // No resultPattern: sub-page already prints "尿蛋白 <值> mg/dL" so
+      // the main pattern matches it directly after enrichment.
+    },
+    notes:'Random urine protein concentration. Inline reportText only has UPCR; mg/dL value requires sub-page enrichment via opdweb OpdOrderReport.aspx.' },
 
   // ═══════════════════════════════════════════════════════════════════════
   // IMAGING / TEXT-BLOCK ENTRIES (page 2 of viewer — fillable text forms)
