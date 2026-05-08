@@ -14,6 +14,35 @@ Each entry should include:
 
 ---
 
+## 2026-05-08 — GluAC 收緊 bare-Glucose alternation（修尿液 Glucose: 4+ 誤匹配）
+
+- 作者：claude（與 YC 共同）
+- 範圍：catalog + runtime-snapshot
+- 變更：修改
+- 測試 ID：GluAC
+- 原因：CHEM EXAM(TT) 尿液例行報告含 `Glucose: 4+`（定性）。原 regex
+  `Glucose(?:\([^)]*\))?` 把括號設為 optional，所以尿液的 bare
+  `Glucose:` 也被命中；接著 `[\d.]+` capture 抓到 `4+` 的開頭數字 `4`，
+  把 GluAC 誤存成 `4 mg/dL`。已確認 case：vhtt 000026353G 115/02/26
+  尿液報告 `Glucose: 4+` → GluAC 被誤存成 4（實際空腹血糖 80）。
+- 變更後：bare `Glucose` 改成必須帶括號（site qualifier），即
+  `Glucose\([^)]*\)`。Serum 報告寫 `Glucose(AC-serum): 80` /
+  `Glucose(serum): 75` 仍正常匹配；尿液 bare `Glucose: 4+` / `Glucose: -`
+  不再誤匹配。其他 alternation（`GLU` / `GLU-AC` / `Sugar(...)` /
+  bare `Sugar:` / `AC-Sugar:` / `飯前血糖:`）全部不變 — 沒已知尿液
+  label 用這些 alias，零回歸風險。
+- 驗證：本機 12 個 case 全過：`Glucose(AC-serum): 80` ✓、
+  `Glucose(serum): 75` ✓、`GLU: 92` ✓、`GLU-AC: 88` ✓、
+  `Sugar(AC-serum): 81` ✓、`Sugar: 79` ✓、`AC-Sugar: 84` ✓、
+  `飯前血糖: 90` ✓、`Glucose: 4+` ✗（reject）、`Glucose: -` ✗、
+  CHEM EXAM 尿液長 / 短格式 ✗。`npm run release` 全綠（catalog 80 /
+  viewer 60 / reporter 41 / computed 14 / 4 track-only urine）。
+- 影響：sibling repos 都需 re-sync — 已跑：
+  - viewer：`node sync-patterns.js` 重產 mapping.js / normalizers.js /
+    patterns-computed.js
+  - reporter：`node sync-patterns.js` 重產 legacy markers + dialysis +
+    ckd 兩個 built HTML
+
 ## 2026-05-08 — FreePSA regex 移除 RATIO alternation（修 vhtt 誤匹配）
 
 - 作者：claude（與 YC 共同）

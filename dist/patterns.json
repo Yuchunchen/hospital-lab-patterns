@@ -1,6 +1,6 @@
 {
   "version": "0.3.0",
-  "synced_at": "2026-05-08T06:46:21.350Z",
+  "synced_at": "2026-05-08T06:54:12.739Z",
   "catalog": [
     {
       "id": "WBC",
@@ -356,7 +356,7 @@
       "id": "GluAC",
       "pattern": {
         "__regex": [
-          "(?:Glucose(?:\\([^)]*\\))?|GLU[\\s-]*(?:AC)?|Sugar(?:\\([^)]*\\))?|AC[\\s-]*Sugar|飯前血糖):\\s*([<>]?\\s*[\\d.]+)",
+          "(?:Glucose\\([^)]*\\)|GLU[\\s-]*(?:AC)?|Sugar(?:\\([^)]*\\))?|AC[\\s-]*Sugar|飯前血糖):\\s*([<>]?\\s*[\\d.]+)",
           "i"
         ]
       },
@@ -369,7 +369,7 @@
       "refHi": 100,
       "hi": 100,
       "lo": 74,
-      "notes": "Matches Glucose(...), GLU, GLU-AC, Sugar(...), AC Sugar, 飯前血糖 — many hospital label variants."
+      "notes": "Matches Glucose(<site>), GLU, GLU-AC, Sugar(<site>), AC Sugar, 飯前血糖. Bare \"Glucose:\" intentionally NOT matched — urine routine Glucose: 4+ would otherwise capture \"4\" as a serum mg/dL value."
     },
     {
       "id": "HbA1c",
