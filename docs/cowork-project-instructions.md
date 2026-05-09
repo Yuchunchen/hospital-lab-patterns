@@ -18,9 +18,10 @@ truth。修改 project instructions 後**請同步更新本檔**，才不會 dri
 (hospital-lab-patterns, hospital-lab-viewer, hospital-lab-reporter).
 All public on github.com/Yuchunchen.
 
-# 註：<workspace-root> 在不同機器路徑不同
-#   Dropbox 主機: D:\self\Dropbox\1.Project.YuLi\20251005.lab_report\
-#   台東 vhtt:   D:\self\hospital-lab\ （建議，避免依賴 Dropbox）
+# 註：<workspace-root> 兩台 desktop 統一為 D:\self\hospital-lab\
+#   vhtt（台東）: D:\self\hospital-lab\
+#   vhyl（玉里）: D:\self\hospital-lab\
+# （2026-05-10 起 vhyl 從 Dropbox 路徑搬出對齊）
 
 ## 強制規則
 
@@ -88,4 +89,4 @@ Follow these instructions when working in this project.
 2. 同步更新本檔（更新「最後同步」日期 + 維護紀錄）
 3. 在 patterns repo commit 本檔
 4. 兩台機器都 git pull
-5. 另一台機器手動把本檔內容貼回它的 Cowork UI
+5. 另一台機器手動把本檔內容貼回

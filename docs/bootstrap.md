@@ -52,11 +52,12 @@ device-level，不會跨機器同步。
 
 ## Phase 2 — Clone 三個 repos
 
-選一個本機資料夾當 workspace root（**不要選 Dropbox 或其他 sync 資料夾**，
-避免跟 Dropbox 主機衝突）：
+選一個本機資料夾當 workspace root（**不要選 Dropbox 或其他 sync 資料夾** —
+Dropbox sync `.git/` 會撞 line-ending 翻轉、`.git/index.lock` 殘留、conflicted
+copy 等問題，已知 anti-pattern）：
 
 ```powershell
-# 建議路徑（台東機器）
+# 標準路徑（兩台 desktop 統一）
 mkdir D:\self\hospital-lab
 cd D:\self\hospital-lab
 
@@ -166,30 +167,25 @@ git status
 
 ## Phase 7 — 環境差異備忘
 
-台東機器跟 Dropbox 主機可能有以下差異要注意：
+兩台 desktop 環境差異（自 2026-05-10 起兩台路徑統一、純 git 同步）：
 
-| 項目 | Dropbox 主機 | 台東 vhtt desktop |
+| 項目 | vhyl（玉里 desktop） | vhtt（台東 desktop） |
 |---|---|---|
-| Workspace 路徑 | `D:\self\Dropbox\1.Project.YuLi\20251005.lab_report\` | `D:\self\hospital-lab\` |
-| Sync 機制 | Dropbox + git | git only |
-| 內網存取 | vhyl（？） | vhtt |
-| Cowork project instructions | UI 裡（含路徑寫死） | UI 裡（路徑要改） |
-| Claude in Chrome 配對 | 已配 | 要重配 |
+| Workspace 路徑 | `D:\self\hospital-lab\` | `D:\self\hospital-lab\` |
+| Sync 機制 | git only | git only |
+| 內網存取 | vhyl 內網 | vhtt 內網 |
+| Cowork project instructions | UI 裡（路徑統一後不再分歧） | 同 |
+| Claude in Chrome 配對 | per-machine 配對 | per-machine 配對 |
 | 預設 opsid | A123456789 | 同 |
+| 角色 | 測試 + minor revision | 主開發 |
+
+> 環境分工原則詳見 `PROJECT_CONTEXT.md` § 1.5。
+>
+> 歷史備註：vhyl 2026-05-10 之前位於 `D:\self\Dropbox\1.Project.YuLi\20251005.lab_report\`，
+> 同時依賴 Dropbox + git，已知會撞 line-ending 翻轉與 .git lock 問題。已淘汰。
 
 特別注意：**Pattern catalog 是共用的**，但 vhtt 跟 vhyl 兩家醫院的 lab 報告
 格式可能略有不同。如果發現某條 pattern 在 vhtt 抓不到，依 SOP F → B 偵錯
 流程；如果是 vhtt 專屬欄位 catalog 還沒有，依 SOP A 新增。
 
----
-
-## 排錯
-
-**Cowork 開了但 SOP 沒自動觸發** → Phase 3 的 project instructions 沒貼或貼錯
-
-**git push 被拒 (403)** → GitHub 認證沒設好。新機器第一次 push 會跳
-credential prompt，用 GitHub username + Personal Access Token
-
-**Claude in Chrome 連不上** → extension 要在這台機器重新跟 Cowork 配對
-
-**vhtt 內網連不到** → 不是設定問題，是網路；先 ping 看通不通
+--
