@@ -18,9 +18,7 @@
 
 1. 打開 Claude Desktop App
 2. 點選左上角 **「選擇資料夾」**（或 Project folder 圖示）
-3. 選擇你的 workspace root：
-   - 台東機器：`D:\self\hospital-lab\`
-   - Dropbox 主機：`D:\self\Dropbox\1.Project.YuLi\20251005.lab_report\`
+3. 選擇你的 workspace root：`D:\self\hospital-lab\`（兩台 desktop 統一）
 4. Claude 會自動偵測到三個 repo 子資料夾
 
 ### 步驟 2 — 設定 Project Instructions
@@ -153,3 +151,4 @@ Claude 確認後會印出類似這樣的內容：
 │  ✓ Chrome 自動化                          │
 └──────────────────────────────────────────┘
 ```
+

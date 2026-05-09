@@ -41,12 +41,15 @@ clinical handouts and case-management exports.
 | `hospital-lab-viewer` | Chrome MV3 extension → outpatient handout printout | Side-loaded `.zip` distributed to OPD machines |
 | `hospital-lab-reporter` | Disease-room case management (dialysis today, CKD/DM/ESRD next). `core/` modules + `groups/<disease>.js` + `export-formats/*.js` → `build.js` → standalone `hospital-lab-<disease>.html` | Open the built HTML directly in a browser |
 
-**Workspace root:** machine-dependent (see below). Syncs via git, not Dropbox.
+**Workspace root:** unified across machines. Syncs via git, **not** Dropbox.
 
 | Machine | Path |
 |---|---|
-| Dropbox 主機 | `D:\self\Dropbox\1.Project.YuLi\20251005.lab_report\` |
-| 台東 vhtt | `D:\self\hospital-lab\` (recommended — no Dropbox dependency) |
+| vhtt（台東 desktop） | `D:\self\hospital-lab\` |
+| vhyl（玉里 desktop） | `D:\self\hospital-lab\` |
+
+> 2026-05-10 起 vhyl 也從 Dropbox 路徑搬到 `D:\self\hospital-lab\`，與 vhtt 對齊。
+> Dropbox 不再參與 working tree 同步，只保留 `_INDEX.md` 與非程式碼工作雜物。
 
 **GitHub:** `github.com/Yuchunchen` — all three repos public.
 
@@ -59,6 +62,43 @@ clinical handouts and case-management exports.
 **Endpoint:** `/order/get_lab_orders?chartno={chartno}&opsid={opsid}`
 Intranet-only — Cowork can't fetch this directly, but Claude in Chrome
 running on a hospital machine can.
+
+---
+
+## 1.5 環境分工原則（established 2026-05-10）
+
+兩台 desktop 環境分工，避免雙頭開發造成的 churn：
+
+- **vhtt（台東 desktop）= 主開發機**
+  - 新功能 / 新 SOP / 新 pattern 類別 / 跨 repo 大動作
+  - 新模組與新疾病群組（如 Phase 3 Early CKD、未來 DM / ESRD）
+  - reporter `core/` 與 `export-formats/` 結構性改動
+  - 新 hospital-lab-`<disease>`.html 上線
+
+- **vhyl（玉里 desktop）= 測試 + minor revision**
+  - 允許：單條 pattern add / regex tweak / ref range 微調 / viewer-reporter `sync-patterns` 重跑
+  - 不允許：跨多條 pattern 重構、catalog schema 改、新功能模組
+  - 例外處理：在 vhyl 抓到 case 揭示**非 minor** 的問題 → 不要在 vhyl 動手，寫 `TASK_BRIEF_<topic>.md` 帶回 vhtt 處理
+
+### 「Minor」的明確邊界
+
+| 動作 | 在 vhyl 動手？ |
+|---|---|
+| 改某條 pattern 的 regex（一個檔內） | ✓ |
+| 改某條 pattern 的 `ref` 範圍 | ✓ |
+| 增加一條 yl-only pattern | ✓ |
+| `node sync-patterns.js` 重跑 viewer/reporter | ✓ |
+| 補登 WORKLOG | ✓ |
+| 新增 hospital scope 的 pattern 類別（跨多檔） | ✗ → vhtt |
+| 改 `patterns/schema.js` / `resolution model` | ✗ → vhtt |
+| 新增 `groups/<disease>.js` 或 `export-formats/*.js` | ✗ → vhtt |
+| 改 `core/` 模組 | ✗ → vhtt |
+
+### Hospital-scope tag
+
+WORKLOG 條目的 hospital scope 隨此分工自然落定：
+- vhtt 開發 → 多半 `both` 或 `tt`
+- vhyl 修補 → 多半 `yl` 或 `both`
 
 ---
 
@@ -658,7 +698,7 @@ flow**，不要再問是 SOP A、B、F——自己選對。
 **Code 階段**：
 
 ```powershell
-cd D:\self\Dropbox\1.Project.YuLi\20251005.lab_report\hospital-lab-patterns
+cd D:\self\hospital-lab\hospital-lab-patterns
 npm run release   # validate + build-json
 git add patterns/ dist/patterns.json WORKLOG.md
 git commit -m "patterns: add <TestId> for vhyl/vhtt lab tracking"
@@ -772,41 +812,4 @@ console F12 用以下步驟分層判斷（同 BUN bug 的偵錯邏輯）：
 
 // 2. 確認 storage 有沒有資料
 const data = JSON.parse(localStorage.getItem('labs_dialysis') || '{}');
-const labs = data['<chartno>'];
-labs?.['<TestId>']?.length
-
-// 3. 若 labs[TestId] 是空陣列 → regex 沒命中 → 走 SOP B
-//    若 labs[TestId] 有資料但 UI 沒顯示 → manifest 沒列 → 走 SOP D
-```
-
----
-
-## 10. Common pitfalls (learned the hard way)
-
-### Don't confuse 生效時間 / 簽收時間 / 報告時間
-
-- `生效時間` is the **order placement time** — all labs in one composite
-  order share it exactly. Use this as the **cluster key** for monthly
-  draw detection.
-- `簽收時間` is the **sign-off time** — when each individual test was
-  signed off. Use this for **BUN pre/post discrimination** (earliest
-  signed-off BUN within a cluster = pre).
-- `報告時間` is a generic "report posted" timestamp; not used in
-  revision-1 logic.
-- Mixing them up gives bizarre results: clustering on 簽收時間 shatters
-  composite orders into per-test events; sorting BUN by 生效時間 always
-  ties (because pre and post share the same order time).
-
-### Other pitfalls
-
-
-- **Dropbox mount NULL bytes** — Edit/Write occasionally adds trailing NULL
-  bytes when writing through the FUSE mount. If JSON parse fails after a
-  write, trim trailing nulls before retrying.
-- **chrome.storage strips RegExp** — never cache rehydrated pattern objects
-  to chrome.storage; cache the raw JSON text.
-- **`dist/` belongs in git** — not in `.gitignore`. OPD users fetch it.
-  `build/` is the directory to gitignore.
-- **Hand-edits to generated files are silently overwritten** — always edit
-  the source in the patterns repo, then sync.
-- **Two BUN on same day** — earlier reportTime is 洗腎前, not the other way.
+cons
