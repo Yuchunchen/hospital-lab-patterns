@@ -100,6 +100,28 @@ WORKLOG 條目的 hospital scope 隨此分工自然落定：
 - vhtt 開發 → 多半 `both` 或 `tt`
 - vhyl 修補 → 多半 `yl` 或 `both`
 
+### 跨機器 handoff brief convention（established 2026-05-10）
+
+當機器 A 累積了機器 B 需要知道的狀態（架構決策、半完成的重構、環境遷移、
+新規範），離開前寫一份 handoff brief：
+
+**檔名**：`docs/task-briefs/TASK_BRIEF_handoff_<src>_to_<dst>_<date>.md`
+- `src` / `dst` = `vhtt` 或 `vhyl`
+- `date` = `YYYY-MM-DD`
+
+**內容**：背景 + step-by-step phases + 完成 checklist + 對方端待辦（即反向 brief 的種子）
+
+**Lifecycle**：
+
+1. 寫完 → src 端 `commit + push`
+2. 對方 `git pull` → 讀 brief → 執行
+3. 對方執行完 → 改名加 `_done` 後綴 + 同輪 `commit + push`（依 rule #6）
+
+**何時寫**：只在有意義的狀態變化時寫——不是每次切機器都要。判準：
+「對方不讀這份就會踩雷或重複勞動嗎？」是 → 寫。
+
+**首例**：`TASK_BRIEF_handoff_vhyl_to_vhtt_2026-05-10.md`（Dropbox → 純 git 遷移）
+
 ---
 
 ## 2. hospital-lab-patterns (architecture v0.3)
