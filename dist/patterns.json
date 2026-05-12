@@ -1,6 +1,6 @@
 {
   "version": "0.3.0",
-  "synced_at": "2026-05-08T06:54:12.739Z",
+  "synced_at": "2026-05-12T01:14:32.257Z",
   "catalog": [
     {
       "id": "WBC",
@@ -26,7 +26,7 @@
       "id": "RBC",
       "pattern": {
         "__regex": [
-          "\\bRBC:\\s*([<>]?\\s*[\\d.]+)",
+          "\\bRBC:\\s*([<>]?\\s*[\\d.]+)(?!\\s*[-–]\\s*\\d)",
           ""
         ]
       },
@@ -42,7 +42,8 @@
       "loF": 3.7,
       "hiF": 5.5,
       "lo": 3.7,
-      "hi": 6.2
+      "hi": 6.2,
+      "notes": "Negative lookahead rejects urine routine \"RBC: 0-2/HPF\" ranges (2026-05-12, parallel to WBC). vhyl 000012148C surfaced URINE ROUTINE(YL) \"RBC: 0-2\" being captured as blood RBC=0."
     },
     {
       "id": "Hb",
@@ -356,7 +357,7 @@
       "id": "GluAC",
       "pattern": {
         "__regex": [
-          "(?:Glucose\\([^)]*\\)|GLU[\\s-]*(?:AC)?|Sugar(?:\\([^)]*\\))?|AC[\\s-]*Sugar|飯前血糖):\\s*([<>]?\\s*[\\d.]+)",
+          "(?:Glucose\\([^)]*\\)|GLU[\\s-]*(?:AC)?|Sugar(?:\\([^)]*\\))?|AC[\\s-]*Sugar|飯前血糖):\\s*([<>]?\\s*[\\d.]+)(?!\\s*\\+)",
           "i"
         ]
       },
@@ -369,7 +370,7 @@
       "refHi": 100,
       "hi": 100,
       "lo": 74,
-      "notes": "Matches Glucose(<site>), GLU, GLU-AC, Sugar(<site>), AC Sugar, 飯前血糖. Bare \"Glucose:\" intentionally NOT matched — urine routine Glucose: 4+ would otherwise capture \"4\" as a serum mg/dL value."
+      "notes": "Matches Glucose(<site>), GLU, GLU-AC, Sugar(<site>), AC Sugar, 飯前血糖. Bare \"Glucose:\" intentionally NOT matched — urine routine Glucose: 4+ would otherwise capture \"4\" as a serum mg/dL value. 2026-05-12: also reject `+`-qualified gradient values (vhyl URINE ROUTINE(YL) GLU: 4+ was capturing 4)."
     },
     {
       "id": "HbA1c",

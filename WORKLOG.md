@@ -14,6 +14,44 @@ Each entry should include:
 
 ---
 
+## 2026-05-12 — RBC + GluAC 加 negative lookahead（vhyl 尿液常規誤匹配）
+
+- 作者:claude(與 YC 共同,在 vhyl 動手)
+- 範圍:catalog + runtime-snapshot(`patterns/catalog.js` + `dist/patterns.json`)
+- 醫院 scope:both(yl 觸發 case;邏輯 vhtt 無感)
+- 影響 Test ID:`RBC`、`GluAC`
+- 變更:updated(各加一個 negative lookahead)
+- Rationale:
+  - **RBC**(vhyl 000012148C 觸發):`URINE ROUTINE(YL)` 尿沉渣的
+    `RBC: 0-2`(顆/HPF range)被 `/\bRBC:\s*([<>]?\s*[\d.]+)/` 抓到,
+    capture group 取到開頭的 `0` → 存進血液 RBC = 0 ×10⁶/µL。WBC 早就
+    有同型 lookahead 擋掉 `WBC: 0-5`,RBC 漏寫。
+  - **GluAC**(vhyl 000124693B 觸發):`URINE ROUTINE(YL)` 的尿糖
+    qualitative gradient `GLU: 4+` 被 alternation 內的 `GLU[\s-]*(?:AC)?:`
+    抓到,capture group 取到 `4` → 存進空腹血糖 = 4 mg/dL。5/8 收緊
+    `bare Glucose:` 沒同步處理 `GLU:` label 變體(因為當時只見到 vhtt 的
+    Glucose case)。
+- Patch:
+  ```js
+  // RBC
+  pattern: /\bRBC:\s*([<>]?\s*[\d.]+)(?!\s*[-–]\s*\d)/
+
+  // GluAC
+  pattern: /(?:Glucose\([^)]*\)|GLU[\s-]*(?:AC)?|Sugar(?:\([^)]*\))?
+            |AC[\s-]*Sugar|飯前血糖):\s*([<>]?\s*[\d.]+)(?!\s*\+)/i
+  ```
+- 對 vhtt 影響:無。`(?!\s*[-–]\s*\d)` 只擋 range(`數字-數字`),
+  `(?!\s*\+)` 只擋 gradient(`數字+`)。vhtt 血液 RBC=4.5 / serum
+  GluAC=95 都不會被擋。
+- Validation:vhyl 兩個觸發病人 re-extract 後:
+  - 000012148C RBC:5 → 4 筆,0 個 zero、0 筆來自 URINE。
+  - 000124693B GluAC:8 → 4 筆,0 個 four、0 筆來自 URINE,
+    剩下皆 `GLUCOSE(AC)(YL)` orderName,值 125–137 mg/dL。
+- Sibling sync:`hospital-lab-viewer` + `hospital-lab-reporter` 跑
+  `node sync-patterns.js`,reporter 兩個 disease HTML 一起重 build。
+
+---
+
 ## 2026-05-08 — GluAC 收緊 bare-Glucose alternation（修尿液 Glucose: 4+ 誤匹配）
 
 - 作者：claude（與 YC 共同）
