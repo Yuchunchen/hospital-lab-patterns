@@ -4,6 +4,11 @@
 > - **SOP-CW1**：Cowork 基本操作（開專案、設定、日常使用）
 > - **SOP-CW2**：Cowork Pattern Learning 流程（用 Claude in Chrome 從內網學 regex）
 
+> **2026-05-12 後**：當前 TODO 與 brief 順序的 single source of truth 是
+> Notion 的「🛠 開機 SOP (vhyl ↔ vhtt 共用)」page,**Cowork session
+> 開始時先讀那邊**(細節見 PROJECT_CONTEXT § 10)。本文件留作 Cowork 基本
+> 操作 + Pattern Learning 流程的參考。
+
 ---
 
 ## SOP-CW1：Cowork 基本操作

@@ -13,7 +13,11 @@ directory, Claude Code can operate across all of them in a single session.
 
 ## First step in every session
 
-Read the per-repo `CLAUDE.md` for whichever repos you're about to modify:
+1. **Read Notion 「🛠 開機 SOP (vhyl ↔ vhtt 共用)」 page** for current TODO
+   and brief order (single source of truth across machines). See
+   `hospital-lab-patterns/PROJECT_CONTEXT.md` § 10 for the page URL and
+   sync convention.
+2. Read the per-repo `CLAUDE.md` for whichever repos you're about to modify:
 
 ```bash
 cat hospital-lab-patterns/CLAUDE.md

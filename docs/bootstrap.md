@@ -6,6 +6,10 @@
 **設計原則：** 用 git 同步，不依賴 Dropbox。任何兩台機器之間的同步都靠
 GitHub `github.com/Yuchunchen` 的三個 public repos。
 
+**2026-05-12 後** bootstrap 完最後一步:打開 Notion「🛠 開機 SOP
+(vhyl ↔ vhtt 共用)」page,把它加入 bookmark / pin tab。每次 boot
+Cowork 或 Claude Code 都從那裡讀當前 TODO(細節見 PROJECT_CONTEXT § 10)。
+
 ---
 
 ## Phase 0 — 確認新機器的網路前提
