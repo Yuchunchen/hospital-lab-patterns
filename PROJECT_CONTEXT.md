@@ -493,6 +493,8 @@ Get-Date -Format yyyy-MM-dd
 | Per-repo change history | `<repo>/WORKLOG.md` |
 | What changed last commit | `git log -1` |
 | Why a pattern is the way it is | catalog.js comments + grep WORKLOG |
+| **Cross-machine "what's next" dashboard** | Notion「🛠 vhtt 接手 SOP」page(見 § 10) |
+| **TASK_BRIEF 進度 / 順序 / 依賴** | Notion 同一 page 內嵌的 TASK_BRIEF Dashboard database |
 
 ---
 
@@ -835,3 +837,70 @@ console F12 用以下步驟分層判斷（同 BUN bug 的偵錯邏輯）：
 // 2. 確認 storage 有沒有資料
 const data = JSON.parse(localStorage.getItem('labs_dialysis') || '{}');
 cons
+ole.log('test ids in storage:', Object.keys(data[chartno] || {}));
+
+// 3. 從 catalog 找該 entry 的 regex 並手動測一段 reportText
+const cat = HOSPITAL_LAB_PATTERNS_CATALOG.find(e => e.id === '<testId>');
+console.log('pattern:', cat?.pattern);
+console.log('matches:', cat?.pattern.exec('<paste reportText line here>'));
+```
+
+依照命中與否,落到 SOP B(regex 修)或 SOP D(manifest 加)或 SOP A(catalog 沒這 testId,新增)。
+
+---
+
+## 10. Notion 同步機制(established 2026-05-12)
+
+兩台機器(vhtt / vhyl)共用一份 Notion 儀表板當 cross-machine 入口。
+**不取代** git 的 canonical 地位 — Notion 只記列表 + 狀態,不存 brief 內容。
+
+### Page 結構
+
+- **Parent**:`🏥 Hospital Lab (lab report system dev workspace)`
+  - URL: https://www.notion.so/35e4b4642c998192ad28c7de47d1058f
+- **主入口**:`🛠 vhtt 接手 SOP`(子頁)
+  - URL: https://www.notion.so/35e4b4642c99817aa866c2925f3a1705
+  - § 1 環境 sync PowerShell batch
+  - § 2 內嵌 TASK_BRIEF Dashboard database
+  - § 3 已 Done 歷史
+
+### TASK_BRIEF Dashboard 欄位
+
+| 欄位 | 型別 | 用途 |
+|---|---|---|
+| Brief | Title | 簡短描述 |
+| Status | Select(Open / In-progress / Blocked / Done)| 進度 |
+| Order | Number | 執行優先序,數字小先做 |
+| Repo | Select(patterns / viewer / reporter / cross-repo)| 動哪個 |
+| Effort | Select(15min / half-day / one-day / multi-day)| 預估工時 |
+| Depends on | Text | 寫另一個 brief 的 Title,該 brief Done 前本條不能動 |
+| Brief path | URL | 指到 GitHub 上的 .md |
+| Done date | Date | Done 時填 |
+| Notes | Text | 兩三句重點,不複製 brief 內文 |
+
+### 同步時機
+
+Claude 在以下時機**主動**寫 Notion(都在 git push 成功之後,push 失敗不動 Notion):
+
+1. 新增 TASK_BRIEF 到 `docs/task-briefs/` → 加一列,Status=Open,設好 Order / Depends on
+2. brief 改名為 `_done` → 該列 Status=Done,填 Done date
+3. brief 順序改變(新 brief 應該插隊 / 既有 brief 有新依賴)→ 調整 Order 或 Depends on
+4. brief 被退回(Done 後又發現要重做)→ Status 回 Open + Notes 加註
+
+### 衝突偵測(Claude 加新 brief 前必做)
+
+1. 列出新 brief 動的檔
+2. 比對 Notion 內所有 Status=Open / In-progress 的 brief 動的檔(從 brief.md 讀)
+3. 重疊 → flag 給使用者決定先後
+4. 依賴關係(被依賴的必須先 Done)寫進 `Depends on` 欄
+
+### 容錯
+
+- Notion 寫入失敗 **不**擋 git push
+- git push 已成功 + Notion 寫失敗 → Claude 必須在回應裡明示「Notion 沒更到」,讓使用者手動補
+- Notion 寫成功 + git push 還沒做 → 不該發生(順序錯了),若意外發生 Claude 必須 rollback Notion 的 row 改回 Open 並通知使用者
+
+### 容量考量
+
+Dashboard 設計上只放未完成 + 近期 Done。半年以上的 Done brief 可從 dashboard 移到子頁「§ 3 已 Done 歷史」歸檔,維持表的可讀性。Claude 主動建議歸檔的時機:當 Open + Done 合計超過 30 列。
+
