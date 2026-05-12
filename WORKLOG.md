@@ -14,6 +14,34 @@ Each entry should include:
 
 ---
 
+## 2026-05-12 — FreePSA 加 `FREE PSA/PSA RATIO:` alternation（vhyl 變體）
+
+- 作者:claude(與 YC 共同,在 vhyl 動手)
+- 範圍:catalog + runtime-snapshot(`patterns/catalog.js` + `dist/patterns.json`)
+- 醫院 scope:yl(觸發 case;vhtt 無感 — 路線 1 不動 vhtt `RATIO:` 處理)
+- 影響 Test ID:`FreePSA`
+- 變更:updated(pattern alternation 加 `FREE PSA/PSA RATIO:` 變體)
+- Rationale:
+  - **觸發 case**:vhyl 000025318J,viewer 顯示 Free PSA 為 empty。
+  - **vhyl 實際 label 樣式**:`Free PSA(YL)` order 的 reportText 為
+    `FREE PSA/PSA RATIO: 0.097`(該值經 YC 確認為 Free PSA 絕對濃度
+    ng/mL,非 Free/Total 比值;PSA=0.395 + FreePSA=0.097 → ratio 24.6%
+    屬正常範圍,語意 consistent)。
+  - 原 pattern `/Free PSA:\s*([<>]?\s*[\d.]+)/` 因 vhyl label 為全大寫
+    + 接 `/PSA RATIO` 後綴而漏抓。加 alternation 涵蓋此樣式。
+- 變更後 pattern:`/(?:Free PSA|FREE PSA\/PSA RATIO):\s*([<>]?\s*[\d.]+)/`
+- Validation(vhyl 000025318J):
+  - `FREE PSA/PSA RATIO: 0.097` → capture `0.097` ✓
+  - `Free PSA: 1.23`(假想其他院區)→ capture `1.23` ✓(舊行為維持)
+  - vhtt `RATIO: 0.152` → 不命中(維持 2026-05-08 行為,符合路線 1 設計)
+- 範圍邊界(路線 1):本次**只**處理 vhyl 變體;2026-05-08 對 vhtt
+  `RATIO:` 樣式「該值為比值不該存」的解讀是否誤判,另寫
+  `docs/task-briefs/TASK_BRIEF_freepsa_vhtt_ratio_revisit.md` 帶回 vhtt
+  嚴肅處理(涉及歷史 case 重新檢視 + 可能 WORKLOG 更正,超出 vhyl minor
+  範圍)。
+
+---
+
 ## 2026-05-12 — RBC + GluAC 加 negative lookahead（vhyl 尿液常規誤匹配）
 
 - 作者:claude(與 YC 共同,在 vhyl 動手)
