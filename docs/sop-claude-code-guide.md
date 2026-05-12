@@ -4,6 +4,11 @@
 > - **SOP-CC1**：Claude Code 基本操作（啟動、多檔修改、git 流程）
 > - **SOP-CC2**：Cowork ↔ Claude Code 切換與 hand-off 流程
 
+> **2026-05-12 後**:當前 TODO 與 brief 順序的 single source of truth 是
+> Notion 的「🛠 開機 SOP (vhyl ↔ vhtt 共用)」page。**Claude Code session
+> 啟動後也該讓 Claude 讀 Notion 拿 TODO**(細節見 PROJECT_CONTEXT § 10)。
+> 本文件留作 Claude Code 基本操作 + 與 Cowork hand-off 的參考。
+
 ---
 
 ## SOP-CC1：Claude Code 基本操作

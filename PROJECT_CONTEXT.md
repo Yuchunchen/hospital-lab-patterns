@@ -493,7 +493,7 @@ Get-Date -Format yyyy-MM-dd
 | Per-repo change history | `<repo>/WORKLOG.md` |
 | What changed last commit | `git log -1` |
 | Why a pattern is the way it is | catalog.js comments + grep WORKLOG |
-| **Cross-machine "what's next" dashboard** | Notion「🛠 vhtt 接手 SOP」page(見 § 10) |
+| **Cross-machine "what's next" dashboard** | Notion「🛠 開機 SOP (vhyl ↔ vhtt 共用)」page(見 § 10) |
 | **TASK_BRIEF 進度 / 順序 / 依賴** | Notion 同一 page 內嵌的 TASK_BRIEF Dashboard database |
 
 ---
@@ -858,8 +858,9 @@ console.log('matches:', cat?.pattern.exec('<paste reportText line here>'));
 
 - **Parent**:`🏥 Hospital Lab (lab report system dev workspace)`
   - URL: https://www.notion.so/35e4b4642c998192ad28c7de47d1058f
-- **主入口**:`🛠 vhtt 接手 SOP`(子頁)
+- **主入口**:`🛠 開機 SOP (vhyl ↔ vhtt 共用)`(子頁)
   - URL: https://www.notion.so/35e4b4642c99817aa866c2925f3a1705
+  - § 1.3 內含「你在哪台機器 — 各自的 default」小表,標出 vhyl vs vhtt 的 mode + brief 類型差異
   - § 1 環境 sync PowerShell batch
   - § 2 內嵌 TASK_BRIEF Dashboard database
   - § 3 已 Done 歷史

@@ -4,6 +4,10 @@ Centralized regex pattern catalog for parsing lab and imaging report data from
 the **ernode** hospital order-query API used at 臺北榮民總醫院玉里分院 (vhyl) and
 臺東分院 (vhtt).
 
+> **Cross-machine TODO / brief 順序**:see Notion page「🛠 開機 SOP
+> (vhyl ↔ vhtt 共用)」(single source of truth across vhyl/vhtt;detail
+> in `PROJECT_CONTEXT.md` § 10).
+
 This is the single source of truth for:
 
 - Lab-test regex patterns (label → numeric value extraction)
