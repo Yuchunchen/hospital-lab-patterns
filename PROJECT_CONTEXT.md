@@ -860,6 +860,8 @@ console.log('matches:', cat?.pattern.exec('<paste reportText line here>'));
   - URL: https://www.notion.so/35e4b4642c998192ad28c7de47d1058f
 - **主入口**:`🛠 開機 SOP (vhyl ↔ vhtt 共用)`(子頁)
   - URL: https://www.notion.so/35e4b4642c99817aa866c2925f3a1705
+  - § 1.0 記錄「Cowork Project Instructions 每台手動 paste」約定 +
+    兩台 paste 追蹤表(Cowork UI 不走 git,vhyl 改了 vhtt 要再貼一次)
   - § 1.3 內含「你在哪台機器 — 各自的 default」小表,標出 vhyl vs vhtt 的 mode + brief 類型差異
   - § 1 環境 sync PowerShell batch
   - § 2 內嵌 TASK_BRIEF Dashboard database
