@@ -65,6 +65,44 @@ Each entry should include:
   若需覆蓋舊 UACR 資料另開 brief 評估。
 - 詳細決策見 `docs/task-briefs/TASK_BRIEF_freepsa_orderNameFilter_done.md`。
 
+### 同日追加:UACR 加 `RATIO` alternation + `orderNameFilter`(補抓 110 年前舊格式)
+
+- 觸發來源:上一條 FreePSA orderNameFilter brief 的衍生發現
+  (000017679E 110/08/20 `RATIO: 4.8` 為真實 UACR 值,但 UACR pattern 漏抓)。
+- 範圍:catalog + runtime-snapshot(`patterns/catalog.js` + `dist/patterns.json`)
+- 醫院 scope:vhtt(主要;vhyl 是否有同現象待確認但不阻擋)
+- 影響 Test ID:`UACR`
+- 變更:updated(pattern 加 `RATIO` alternation + `orderNameFilter: /microalbumin/i`)
+- Rationale:
+  vhtt 的 Urine Microalbumin 報告在 110 年中以前用 `RATIO: N` 輸出 UACR,
+  之後改為 `ALB/CR: N`。原 UACR pattern 只認 `ALB/CR` 系列,110 年中以前
+  的 UACR 全部漏抓 → CKD reporter 早期病人歷史趨勢會出現斷層。加 `RATIO`
+  alternation 補上,同時加 `orderNameFilter: /microalbumin/i` 防止與
+  Free PSA 的 `RATIO:` 衝突(FreePSA 那邊也已加對稱的
+  `orderNameFilter: /Free\s*PSA/i`,兩條 filter 互斥)。
+- 變更後 pattern:
+  `/(?:U-?ACR|UACR|Alb(?:umin)?\/Cr(?:eatinine)?|Urine\s*Alb\/Cr|RATIO):\s*([<>]?\s*[\d.]+)/i`
+- orderName 覆蓋(Phase 1 取樣 3 個 vhtt 病人):
+  - `Urine Creatinine(TT),Urine Microalbumin(TT)` ✓
+  - `Urine Microalbumin(TT),Urine Creatinine(TT)` ✓
+  - `Urine Microalbumin(TT)` ✓
+  - `Creatinine,Microalbumin`(舊式短名) ✓
+  - `Free PSA(TT)` ✗(正確排除)
+- Validation(3 個 vhtt 病人,4 筆舊格式樣本全部驗算 mALB/Cr×1000 吻合):
+  - 000017679E 110/08/20 `RATIO: 4.8` → capture `4.8` ✓(先前 null)
+  - 000026353G 109/09/08 `RATIO: 15.79` → capture `15.79` ✓(先前 null)
+  - 000043524F 110/03/23 `RATIO: 25.53` → capture `25.53` ✓(先前 null)
+  - 000043524F 109/10/06 `RATIO: 72.73` → capture `72.73` ✓(先前 null)
+  - 新格式 `ALB/CR: 7.35` 等 → 維持命中 ✓
+  - Free PSA(TT) reportText `RATIO: 0.152` → UACR 不命中 ✓
+    (orderName `Free PSA(TT)` 不含 microalbumin;FreePSA 仍命中)
+- 格式轉換時間點(Phase 1 取樣):約 110 年中(2021 年中),精確窗口
+  110/03–110/11 之間(由 000043524F 框住)。
+- Sibling sync:`hospital-lab-viewer` + `hospital-lab-reporter` 都要跑
+  `node sync-patterns.js`(catalog 改動)。
+- 詳細決策與 Phase 1 取樣見
+  `docs/task-briefs/TASK_BRIEF_uacr_old_ratio_label_done.md`。
+
 ---
 
 ## 2026-05-12 — FreePSA 加 `FREE PSA/PSA RATIO:` alternation（vhyl 變體）
