@@ -14,6 +14,34 @@ Each entry should include:
 
 ---
 
+## 2026-05-13 — FreePSA 加回 `RATIO:` alternation（更正 2026-05-08 誤判）
+
+- 作者:claude(與 YC 共同,在 vhtt 動手)
+- 範圍:catalog + runtime-snapshot(`patterns/catalog.js` + `dist/patterns.json`)
+- 醫院 scope:both(vhtt 主要受益;vhyl 已有 `FREE PSA/PSA RATIO:` 涵蓋)
+- 影響 Test ID:`FreePSA`
+- 變更:updated(加回 `RATIO` alternation,更正 5/8 錯誤註解)
+- Rationale:
+  2026-05-08 移除 `|RATIO` 時錯誤假設 vhtt `RATIO: 0.152` 為 Free/Total
+  比值。2026-05-13 在 vhtt 取樣 3 個病人(000017679E / 000043524F /
+  000026353G),YC 確認 RATIO 值為 Free PSA 絕對濃度(ng/mL),報告後接
+  的 boilerplate(`(Free PSA/Total PSA ratio:>25%),Total PSA值落在4-10
+  ng/mL的病患…`)為判讀指引而非數值語意。加回 alternation 讓 vhtt 的
+  Free PSA 重新被正確擷取。詳細取樣與決策過程見
+  `docs/task-briefs/TASK_BRIEF_freepsa_vhtt_ratio_revisit_done.md`。
+- 變更後 pattern:
+  `/(?:Free PSA|FREE PSA\/PSA RATIO|RATIO):\s*([<>]?\s*[\d.]+)/`
+- Validation(vhtt):
+  - 000017679E `RATIO: 0.152` → capture `0.152` ✓(先前 null)
+  - 000043524F `RATIO: 0.093` → capture `0.093` ✓(先前 null)
+  - 000026353G `RATIO: 0.079` → capture `0.079` ✓(先前 null)
+  - vhyl 000025318J `FREE PSA/PSA RATIO: 0.097` → capture `0.097` ✓(維持)
+  - 假想 `Free PSA: 1.23` → capture `1.23` ✓(維持)
+- Sibling sync:`hospital-lab-viewer` + `hospital-lab-reporter` 都要跑
+  `node sync-patterns.js`(catalog 改動)。
+
+---
+
 ## 2026-05-12 — FreePSA 加 `FREE PSA/PSA RATIO:` alternation（vhyl 變體）
 
 - 作者:claude(與 YC 共同,在 vhyl 動手)
@@ -135,6 +163,9 @@ Each entry should include:
     patterns-computed.js
   - reporter：`node sync-patterns.js` 重產 legacy markers + dialysis +
     ckd 兩個 built HTML
+- ⚠️ 事後更正（2026-05-13）：上述「RATIO 是比值」的判斷為誤判。
+  vhtt RATIO 值實為 Free PSA 絕對濃度（ng/mL）。已在 2026-05-13 加回
+  RATIO alternation，詳見當日 WORKLOG 條目。
 
 ## 2026-05-08 — Phase 3 前置：catalog 加 4 條尿液 + UPCR 加 T.PROT/CREAT alternation
 
