@@ -1,6 +1,6 @@
 {
   "version": "0.3.0",
-  "synced_at": "2026-05-12T13:55:12.862Z",
+  "synced_at": "2026-05-13T11:27:55.815Z",
   "catalog": [
     {
       "id": "WBC",
@@ -1009,7 +1009,7 @@
       "id": "FreePSA",
       "pattern": {
         "__regex": [
-          "(?:Free PSA|FREE PSA\\/PSA RATIO):\\s*([<>]?\\s*[\\d.]+)",
+          "(?:Free PSA|FREE PSA\\/PSA RATIO|RATIO):\\s*([<>]?\\s*[\\d.]+)",
           ""
         ]
       },
