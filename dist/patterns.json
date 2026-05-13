@@ -1,6 +1,6 @@
 {
   "version": "0.3.0",
-  "synced_at": "2026-05-13T12:04:39.672Z",
+  "synced_at": "2026-05-13T13:22:08.575Z",
   "catalog": [
     {
       "id": "WBC",
@@ -530,7 +530,13 @@
       "id": "UACR",
       "pattern": {
         "__regex": [
-          "(?:U-?ACR|UACR|Alb(?:umin)?\\/Cr(?:eatinine)?|Urine\\s*Alb\\/Cr):\\s*([<>]?\\s*[\\d.]+)",
+          "(?:U-?ACR|UACR|Alb(?:umin)?\\/Cr(?:eatinine)?|Urine\\s*Alb\\/Cr|RATIO):\\s*([<>]?\\s*[\\d.]+)",
+          "i"
+        ]
+      },
+      "orderNameFilter": {
+        "__regex": [
+          "microalbumin",
           "i"
         ]
       },
