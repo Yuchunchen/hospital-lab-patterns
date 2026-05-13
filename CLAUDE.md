@@ -64,7 +64,7 @@ Any new dev machine should clone this repo first to get those three docs.
 
 ## 不要做的事
 
-- 不要自動 `git push`（必須我口頭確認）
+- commit 後自動 `git push`；破壞性改動（schema 變更、大規模重構）才先問
 - 不要刪除 WORKLOG.md 既有條目
 - 不要重排或合併歷史條目（即使順序看起來亂）
 - 不要在 `validate` 或 `build-json` 還沒通過前說「完成」
