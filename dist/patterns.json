@@ -1,6 +1,6 @@
 {
   "version": "0.3.0",
-  "synced_at": "2026-05-13T11:27:55.815Z",
+  "synced_at": "2026-05-13T12:04:39.672Z",
   "catalog": [
     {
       "id": "WBC",
@@ -1011,6 +1011,12 @@
         "__regex": [
           "(?:Free PSA|FREE PSA\\/PSA RATIO|RATIO):\\s*([<>]?\\s*[\\d.]+)",
           ""
+        ]
+      },
+      "orderNameFilter": {
+        "__regex": [
+          "Free\\s*PSA",
+          "i"
         ]
       },
       "displayName": "游離 PSA (Free PSA)",
