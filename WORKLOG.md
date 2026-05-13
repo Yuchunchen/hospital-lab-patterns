@@ -40,6 +40,31 @@ Each entry should include:
 - Sibling sync:`hospital-lab-viewer` + `hospital-lab-reporter` 都要跑
   `node sync-patterns.js`(catalog 改動)。
 
+### 同日追加:FreePSA 加 `orderNameFilter`(防 UACR `RATIO:` 誤匹配)
+
+- 觸發 case:vhtt 000017679E,viewer 出現不存在的 110/08/21 Free PSA = 4.8。
+  實際來源為同病人 `Urine Microalbumin(TT)` 舊格式報告的 `RATIO: 4.8`
+  (UACR mg/g),被 FreePSA 的 `RATIO` alternation 誤抓。
+- 根因:`RATIO:` 至少出現在兩種 order 的 reportText —
+  - `Free PSA(TT)` / `FREE PSA`:Free PSA 絕對濃度 ng/mL(0.01–2)
+  - `Urine Microalbumin(TT)`:UACR albumin/creatinine ratio mg/g(1–3000+)
+  原 FreePSA regex 不區分 orderName,任何 reportText 含 `RATIO: N` 都命中。
+- Patch:加 `orderNameFilter: /Free\s*PSA/i`,只在 orderName match
+  `/Free\s*PSA/i` 的 order 裡跑 FreePSA regex。
+- 覆蓋:
+  - `Free PSA(TT)` ✓
+  - `FREE PSA` ✓
+  - `Urine Microalbumin(TT)` ✗(正確排除)
+- Validation:
+  - 000017679E `Free PSA(TT)` reportText `RATIO: 0.152` → 命中 ✓
+    (orderName `Free PSA(TT)` match `/Free\s*PSA/i`)
+  - 000017679E `Urine Microalbumin(TT)` reportText `RATIO: 4.8` → 不命中 ✓
+    (orderName 排除)
+- 衍生發現(不在本 patch 範圍):UACR entry 的 pattern 不認得舊格式
+  `RATIO:`(110 年之前的 Urine Microalbumin 報告),只認新格式 `ALB/CR:`。
+  若需覆蓋舊 UACR 資料另開 brief 評估。
+- 詳細決策見 `docs/task-briefs/TASK_BRIEF_freepsa_orderNameFilter_done.md`。
+
 ---
 
 ## 2026-05-12 — FreePSA 加 `FREE PSA/PSA RATIO:` alternation（vhyl 變體）
