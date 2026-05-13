@@ -120,7 +120,7 @@ WORKLOG 條目的 hospital scope 隨此分工自然落定：
 **何時寫**：只在有意義的狀態變化時寫——不是每次切機器都要。判準：
 「對方不讀這份就會踩雷或重複勞動嗎？」是 → 寫。
 
-**首例**：`TASK_BRIEF_handoff_vhyl_to_vhtt_2026-05-10.md`（Dropbox → 純 git 遷移）
+**首例**：`TASK_BRIEF_handoff_vhyl_to_vhtt_2026-05-10_done.md`（Dropbox → 純 git 遷移）
 
 ---
 
