@@ -73,6 +73,8 @@ PROJECT_CONTEXT.md § 12。
 
 Claude 主動觸發時機（SOP J）：context 已逼近 session 上限、同一個問題使用者重述 ≥ 2 次、一段工作完成的自然斷點。
 
+**SOP I pre-flight**：切換到不同工作環境（cross-machine resume）時，Claude 先檢查 Notion 「🛠 開機 SOP」§ 1.0「兩台 paste 追蹤」表中本機那格狀態。若為 ⏳ → block 後續步驟、提示 YC 從 git canonical（本檔）重貼 Cowork app UI 的 Project Instructions，貼完才繼續。理由：避免本機 Cowork UI 跑舊版規則造成 silent drift。
+
 ## Deep context
 
 Read PROJECT_CONTEXT.md in hospital-lab-patterns/ for architecture, commands,
@@ -100,6 +102,7 @@ Follow these instructions when working in this project.
 | 2026-05-12 | 加入新 #7（Notion「🛠 開機 SOP (vhyl ↔ vhtt 共用)」page 為 cross-machine TODO 入口,sync 時序規則） |
 | 2026-05-19 | 加入「思考規則」section（#8–#11:暴露假設 / 成功標準 / 複述狀態 / 靜默失敗明示）。來源:Karpathy + Forrest Chang 12-rule CLAUDE.md（blocktempo 2026-05-14）對應本專案踩過的失敗模式篩選。Coding 端規則同步加入三個 repo CLAUDE.md § Coding behavior contract。 |
 | 2026-05-19 | 加入「Session 切換 trigger」section（4 條中文 trigger 對應 SOP G–J:階段完成 / 離開 vhyl-vhtt / 接續 vhtt-vhyl-上次 / 結束 session）。完整動作清單在 PROJECT_CONTEXT § 12。同日 docs/session-state-vhyl.md / session-state-vhtt.md / session-state-archive/ / workflow-changelog.md 誕生。 |
+| 2026-05-19(addendum) | SOP I 加 pre-flight check(Step 0):cross-machine resume 時讀 Notion § 1.0 paste 追蹤表本機格,⏳ → block 後續、提示 YC 重貼 Cowork UI Project Instructions,貼完才繼續。SOP G Step 6 加特別檢查:本 session 改 cowork-project-instructions.md → § 1.0 重置 ⏳。 |
 
 ## 若改了 Cowork UI 的規則
 

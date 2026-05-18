@@ -968,6 +968,7 @@ Claude 動作清單:
 4. 不需要的本機檔清理(`.tmp.*` / 半寫的 draft brief / sandbox 殘留)
 5. 給 git add / commit / push 指令(由 YC 執行;rule #3 不自動 push)
 6. push 完同步 Notion(Dashboard 列 Done 改 Done、新 brief 加列、Order 調整)— rule #7
+   - **特別檢查**:若本 session 改動了 `docs/cowork-project-instructions.md`(canonical 變了)→ 把 § 1.0「兩台 paste 追蹤」表**兩格**都重置為 ⏳(本機自己貼 UI 動作沒做的話也算 ⏳)。本機若已在 session 內手動貼過,只把對方那一格改 ⏳。
 7. **寫 session snapshot**:
    - 若 `docs/session-state-<本機>.md` 已存在,先 `cp` 到 `docs/session-state-archive/<YYYY-MM-DDTHHMM>-<本機>.md`
    - 把新 snapshot overwrite 寫到 `docs/session-state-<本機>.md`
@@ -982,6 +983,12 @@ Claude 動作清單:
 
 ### SOP I — Resume(接續 vhtt / 接續 vhyl / 接續上次)
 
+0. **Pre-flight check — Cowork Project Instructions paste 對齊**(2026-05-19 加入):
+   - 讀 Notion「🛠 開機 SOP」§ 1.0「兩台 paste 追蹤」表,看本機(由 YC 訊息 / session-state 推斷的當前機器)那一格
+   - 若狀態為 ⏳ → **停下來 block 後續步驟**,提示 YC:
+     > 「本機 Cowork app UI 的 Project Instructions 跟 git canonical(`docs/cowork-project-instructions.md`)未對齊(§ 1.0 表顯示 ⏳)。請打開 Cowork → Project Instructions → 把舊內容清空、從 canonical 的 code block 複製貼上、覆蓋。貼完跟我說『貼好了』,我把 § 1.0 那格改成 ✅ + 填今天日期再繼續 SOP I。」
+   - 若狀態為 ✅ → 直接進 Step 1
+   - **理由**:cross-machine 切換時,上機若改動 cowork-project-instructions.md,本機 Cowork app UI 上跑的 Project Instructions 仍是舊版,Claude 會用舊規則做事 → silent drift。Pre-flight 強制對齊。
 1. 給 § 1.1 環境 sync PowerShell batch(三 repo git pull)
 2. 等 YC 跑完 → 讀對應 snapshot:
    - 「接續 vhtt」(在 vhyl 接 vhtt)→ `docs/session-state-vhtt.md`

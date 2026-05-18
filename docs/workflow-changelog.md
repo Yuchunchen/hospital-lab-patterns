@@ -8,6 +8,21 @@
 
 ---
 
+## 2026-05-19(addendum)— SOP I pre-flight check:cross-machine resume 強制 Cowork Project Instructions 對齊
+
+**範圍**: process(SOP I 增補 Step 0)
+
+**動機**: YC 反映 — 切換到另一台工作環境時,容易忘記上機改了 `cowork-project-instructions.md` 而本機 Cowork app UI 仍是舊版 → Claude 在本機跑舊規則 silent drift。原本 § 1.0 paste 追蹤表只是被動標記 ⏳,需要 YC 自己注意。
+
+**變動**:
+- `PROJECT_CONTEXT.md § 12 SOP I` 加 Step 0「Pre-flight check」:讀 Notion § 1.0 paste 追蹤表本機格,若 ⏳ block 後續步驟、提示 YC 重貼後才繼續
+- `PROJECT_CONTEXT.md § 12 SOP G` Step 6 加「特別檢查」:若本 session 改動 cowork-project-instructions.md 則 § 1.0 兩格(或對方那格)重置 ⏳
+- `docs/cowork-project-instructions.md` Session 切換 trigger section 末尾加一行 SOP I pre-flight 註記
+
+**Process implication**: cross-machine resume 從「被動 + 易忘」變成「主動 block」。trade-off:多一個 confirmation round,但杜絕 silent drift。
+
+---
+
 ## 2026-05-19 — Session 切換 SOPs G–J + session-state 機制 + workflow-changelog 本檔誕生
 
 **範圍**: process(非 catalog / 非 code)
