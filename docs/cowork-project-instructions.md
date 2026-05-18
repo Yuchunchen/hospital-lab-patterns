@@ -7,7 +7,7 @@
 帳號設定沒同步、或要在新機器快速重建環境，這份檔案就是 single source of
 truth。修改 project instructions 後**請同步更新本檔**，才不會 drift。
 
-**最後同步：** 2026-05-19（加入「思考規則」section #8–#11 + Session 切換 trigger section,Karpathy/Forrest Chang 12-rule 篩選版 + Session SOPs G–J)
+**最後同步：** 2026-05-19（加入「思考規則」#8–#12 + Session 切換 trigger section + Glossary,Karpathy/Forrest Chang 12-rule 篩選版 + Session SOPs G–J + 詞彙明確化）
 
 ---
 
@@ -39,6 +39,7 @@ All public on github.com/Yuchunchen.
 9. brief 必含「成功標準」+「測試清單」：TASK_BRIEF.md 沒寫「怎樣算做完」就不算寫完；測試清單要可獨立驗證、且每條對應一個業務行為（不是只「函式有回傳值」這類淺層斷言）。
 10. 跨 session / 跨機 / 跨 repo 任務，每段交付前自我複述當前狀態（已做什麼、已驗證什麼、還剩什麼）。無法清楚複述就停下重述，別硬撐繼續。
 11. 靜默失敗 → 明示。該成功而沒成功的事必須在回應裡直接點出（不限於 Notion 同步；含跳過、降級、跳過驗證、部分完成等）；不確定就先說不確定，預設暴露而非隱藏。
+12. 混淆時詢問，不要猜。任何時刻 Claude 對使用者意圖、SOP 選擇（含 § 12 含糊語）、命名、規則適用範圍等有歧義 → **停下來問**。這條是 catch-all，涵蓋 § 12 含糊語 disambiguate / SOP I pre-flight / 規則 #8（暴露假設）沒明列的所有混淆情境。寧可多一個 confirmation round，不要 silent miss-trigger。
 
 ## Modes
 
@@ -61,20 +62,26 @@ PROJECT_CONTEXT.md § 9（位於 hospital-lab-patterns/PROJECT_CONTEXT.md）。
 
 ## Session 切換 trigger（established 2026-05-19）
 
+### Glossary
+
+- **session / thread / 對話** = 一個 Cowork 對話視窗（三詞互通）
+- **階段 / 段落** = 工作的一個 phase / chunk（一個 thread 可跑多個階段）
+- **機器** = vhyl / vhtt 物理開發環境
+
 ### 明確語（直接觸發對應 SOP，不必問我）
 
-- 「告一段落」/「階段完成」/「先停一下」/「休息一下」 → SOP G（工作斷點，本對話可能繼續或之後接續）
+- 「告一段落」/「階段完成」/「這段先收」/「先停一下」/「休息一下」 → SOP G（工作 phase 結束，本對話 thread 不關，可同 thread 繼續或之後接續）
 - 「離開 vhyl」/「離開 vhtt」/「換到 vhtt」/「換到 vhyl」/「換機器」 → SOP H（要離開本台機器）
-- 「接續 vhtt」/「接續 vhyl」/「接續上次」/「繼續上次」 → SOP I（開新 session 接續上一段）
-- 「準備開新 session」/「等等要重開對話」 → SOP J（明確要結束本 Cowork 對話）
+- 「接續 vhtt」/「接續 vhyl」/「接續上次」/「繼續上次」 → SOP I（新 thread 接續上一段）
+- 「結束 thread」/「結束 session」/「結束對話」/「準備開新 thread」/「準備開新 session」/「這個對話收掉」/「等等要重開對話」 → SOP J（結束本對話 thread，要開新 thread 接續）
 
 ### 含糊語（不直接動作，Claude 必須先問三選一）
 
-「結束」/「結束 session」/「結束對話」/「收工」/「下次再說」/「先這樣」/「就到這」 → 不對應任何 SOP，Claude 回應：
+「結束」（光「結束」沒接 thread/階段/機器修飾）/「收工」/「下次再說」/「先這樣」/「就到這」 → 不對應任何 SOP，Claude 回應：
 
 > 你的意思是哪一種?
-> (a) 工作告一段落想休息，本對話可能還會繼續 → 跑 SOP G
-> (b) 要結束本 Cowork 對話、之後開新對話接續 → 跑 SOP G + SOP J
+> (a) 工作段落結束想休息，本對話 thread 還會繼續 → 跑 SOP G
+> (b) 要結束本對話 thread、之後開新 thread 接續 → 跑 SOP G + SOP J
 > (c) 要離開本台機器 → 跑 SOP H
 
 完整動作清單（每個 SOP 該做的步驟、session snapshot 檔結構、容量考量）見
@@ -113,6 +120,7 @@ Follow these instructions when working in this project.
 | 2026-05-19 | 加入「Session 切換 trigger」section（4 條中文 trigger 對應 SOP G–J:階段完成 / 離開 vhyl-vhtt / 接續 vhtt-vhyl-上次 / 結束 session）。完整動作清單在 PROJECT_CONTEXT § 12。同日 docs/session-state-vhyl.md / session-state-vhtt.md / session-state-archive/ / workflow-changelog.md 誕生。 |
 | 2026-05-19(addendum) | SOP I 加 pre-flight check(Step 0):cross-machine resume 時讀 Notion § 1.0 paste 追蹤表本機格,⏳ → block 後續、提示 YC 重貼 Cowork UI Project Instructions,貼完才繼續。SOP G Step 6 加特別檢查:本 session 改 cowork-project-instructions.md → § 1.0 重置 ⏳。 |
 | 2026-05-19(addendum 2) | Session 切換 trigger 改成「明確語 + 含糊語 disambiguate」兩段式:明確語(告一段落 / 換機器 / 接續 / 準備開新 session)直接觸發 SOP G/H/I/J;含糊語(結束 / 收工 / 下次再說 / 先這樣)強制 Claude 先問三選一,避免猜錯。對應 PROJECT_CONTEXT § 12 同步更新。 |
+| 2026-05-19(addendum 3) | 加 Glossary 區明確化 session/thread/對話 互通 vs 階段/段落 vs 機器 三層詞彙;SOP J 重新命名「End thread」(原 End session),觸發語擴成「結束 thread/session/對話」/「準備開新 thread/session」/「這個對話收掉」;新增思考規則 #12「混淆時詢問」作為 catch-all。對應 PROJECT_CONTEXT § 12 Glossary + Trigger 對照表更新。 |
 
 ## 若改了 Cowork UI 的規則
 

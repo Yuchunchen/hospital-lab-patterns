@@ -4,6 +4,30 @@ Chronological log of pattern catalog changes. Newest entries on top.
 
 ---
 
+## 2026-05-19(addendum 3)— Glossary 區 + SOP J 改名「End thread」+ 思考規則 #12「混淆時詢問」
+
+- 作者:claude(與 YC 共同,在 vhyl 動手)
+- 範圍:meta-process(詞彙 + 觸發語 + 思考規則,patterns 內 4 個檔)
+- 醫院 scope:both
+- 影響檔:
+  - `PROJECT_CONTEXT.md § 12` — 頂端加 Glossary 區(session/thread/對話 互通 / 階段/段落 / 機器 三層詞彙)+ 判讀關鍵字規則;Trigger 對照表更新明確語(SOP G 加「這段先收」/ SOP J 改「End thread」並擴觸發語)+ 含糊語清單更新;SOP J 子標題改「End thread」
+  - `docs/cowork-project-instructions.md` 思考規則加 #12「混淆時詢問」(catch-all,涵蓋 § 12 含糊語 / SOP I pre-flight / 規則 #8 沒明列情境);Session 切換 trigger section 加 Glossary + 明確語更新 + 含糊語更新;最後同步 + 維護紀錄 addendum 3
+  - `docs/workflow-changelog.md` 加 addendum 3 條目
+- 動機:YC 反映「session」跟「階段」原命名混淆 — SOP G 用「階段完成」、SOP J 用「結束 session」都掛「結束 / 完成」關鍵字,layer 不同但詞撞號。YC 強調 Claude 混淆時要主動問 → 提升為思考規則 #12 catch-all。
+- 詞彙三層:
+  - `session / thread / 對話` = Cowork 對話視窗(互通)
+  - `階段 / 段落 / phase` = 工作 chunk(一個 thread 可多階段,一個階段可橫跨多 thread)
+  - `機器` = vhyl/vhtt 物理環境
+- 判讀關鍵字:階段→G / thread→J / 機器→H / 接續→I / 都沒→ 強制問
+- 規則總數:強制 #1–#7 + 思考 #8–#12(+1)+ Coding contract A–C。單檔最高 cowork-project-instructions.md 12 條,仍在 Forrest Chang 14 條安全線內。
+- Trade-off:詞彙明確化前期需要 YC 適應(不能再隨意混用「結束」「告一段落」);換取 silent miss-trigger 大幅降低。
+- 測試:N/A(規則層)
+- 跨 repo 副作用:無(純 patterns 內 SOP 改動)
+- 兩台 paste 追蹤:本 commit 又改 cowork-project-instructions.md → § 1.0 兩格繼續 ⏳
+- 相依:本 commit + 同 commit 內重跑 SOP J wrap snapshot(session-state-vhyl.md overwrite + archive 第二個版本)
+
+---
+
 ## 2026-05-19(addendum 2)— Session 切換 trigger 改成「明確語 + 含糊語 disambiguate」兩段式
 
 - 作者:claude(與 YC 共同,在 vhyl 動手)
