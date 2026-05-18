@@ -907,3 +907,41 @@ Claude 在以下時機**主動**寫 Notion(都在 git push 成功之後,push 失
 
 Dashboard 設計上只放未完成 + 近期 Done。半年以上的 Done brief 可從 dashboard 移到子頁「§ 3 已 Done 歷史」歸檔,維持表的可讀性。Claude 主動建議歸檔的時機:當 Open + Done 合計超過 30 列。
 
+---
+
+## 11. Behavior rules sources(established 2026-05-19)
+
+Claude 行為規則分三塊,canonical source 都在 git,**不在 Notion**(避免多源 drift):
+
+| 區塊 | 內容摘要 | Canonical 位置 |
+|---|---|---|
+| 強制規則 #1–#7 | workflow 守則(WORKLOG / push / brief 改名 / 跨 repo 副作用 / Notion 同步) | Cowork app UI + `docs/cowork-project-instructions.md`(canonical snapshot) |
+| 思考規則 #8–#11 | Cowork mode 思考行為(暴露假設 + session 開始 git pull / brief 成功標準 + 測試清單 / 多步驟複述狀態 / 靜默失敗明示) | 同上(2026-05-19 加入) |
+| Coding behavior contract A–C | 寫程式時的行為契約(外科修改 / 矛盾模式不混用 / 新增前讀 caller) | 三個 repo CLAUDE.md 各自一份(內容同步) |
+
+### 篩選原則
+
+來源:Forrest Chang 12-rule CLAUDE.md([blocktempo 2026-05-14](https://www.blocktempo.com/claude-code-12-rules-error-rate-3-percent-karpathy-agent/),Karpathy 4 + 補 8 共 12 條)。本專案**只挑出對應實際踩過坑的條目**,沒按原文 12 條全抄。
+
+| 採用 | 原版條號 | 對應內容 | 落點 |
+|---|---|---|---|
+| ✓ | 1 | 編碼前先思考、暴露假設 | 思考規則 #8(擴成「先 git pull」) |
+| ✓ | 3 | 外科手術式修改 | Coding contract A |
+| ✓ | 4 | 先定義成功標準 | 思考規則 #9(套 TASK_BRIEF 結構) |
+| ✓ | 7 | 矛盾模式不混用 | Coding contract B |
+| ✓ | 8 | 新增程式碼前先讀 | Coding contract C |
+| ✓ | 10 | 多步驟任務 checkpoint | 思考規則 #10 |
+| ✓ | 12 | 靜默失敗明示 | 思考規則 #11(原強制規則 #7 已是子集,#11 是 generalize) |
+| ✗ | 2 | 簡單優先 | 已被 TASK_BRIEF 結構隱含 |
+| ✗ | 5 | AI vs deterministic code 分工 | 本專案無 runtime AI decision |
+| ✗ | 6 | Token 預算上限 | 未踩坑,加了會多噪音 |
+| ✗ | 9 | 測試編業務邏輯 | 目前測試多為 manual smoke,加之意義不大;待自動化測試成熟再評估 |
+| ✗ | 11 | 一致性優先個人偏好 | 已被 Coding contract A 隱含 |
+
+評估標準:**這條規則,在過去 8 週的 session log 內是否能對應到一次實際失敗 / 修正**。對應得到 → 採用;對應不到 → 不採。文章自己強調「6 條對症的規則 > 12 條其中 6 條用不上」(blocktempo 文末)。
+
+### Notion 處理
+
+Notion「🛠 開機 SOP」page **不放規則內文**,只在頁首 pointer 一行:「Behavior rules canonical: patterns/CLAUDE.md + cowork-project-instructions.md(git)」。理由:Notion 在本架構是狀態鏡像,把規則寫在 Notion 等於多一個 source,衝突時就 drift。
+
+
