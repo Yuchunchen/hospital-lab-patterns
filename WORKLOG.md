@@ -4,6 +4,32 @@ Chronological log of pattern catalog changes. Newest entries on top.
 
 ---
 
+## 2026-05-19 — Session 切換 SOPs G–J + session-state 機制 + workflow-changelog.md
+
+- 作者:claude(與 YC 共同,在 vhyl 動手)
+- 範圍:meta-process(非 catalog;改 PROJECT_CONTEXT.md + cowork-project-instructions.md + 4 個新檔)
+- 醫院 scope:both(規則對 vhyl / vhtt 共用)
+- 影響檔:
+  - `PROJECT_CONTEXT.md` — 加 § 12「Session 切換 SOPs」(SOP G–J + snapshot 檔結構 + 容量考量)+ § 13「Cowork ↔ Chat mode handoff」
+  - `docs/cowork-project-instructions.md` — 加「Session 切換 trigger」section(類似 Pattern-learning trigger);最後同步日期 + 維護紀錄追加一行
+  - 新檔 `docs/session-state-vhyl.md`(每機 current snapshot,Cowork 端 wrap 時 overwrite)
+  - 新檔 `docs/session-state-vhtt.md`(同上)
+  - 新檔夾 `docs/session-state-archive/`(.gitkeep)wrap 時把舊 current 搬進來,檔名 `YYYY-MM-DDTHHMM-<machine>.md`
+  - 新檔 `docs/workflow-changelog.md`(跨 repo 工作流變動史 canonical;不放 Notion,Notion 加 pointer 行)
+- 動機:cross-session / cross-machine 切換時 Claude 沒有「最後狀態」可讀,YC 反映「切換方式不穩定 你會不知道我上一步做甚麼」。Notion + WORKLOG + briefs 雖各完整但碎片化,缺單一 entry-point 接續。
+- 設計決策:
+  - 每機一份 `session-state-<machine>.md` current 檔(無日期 → 讀邏輯簡單);archive 子夾保留歷史,檔名含 timestamp + machine
+  - 機器 ID(`-vhyl` / `-vhtt`)必加 — 跨機 resume 要分辨「最後寫入是誰」;同機 end+resume 也用同一機制
+  - Notion 不放 SOP 內文,只在主入口 page 加 pointer 行
+- Trigger 對照:「階段完成」→ G;「離開 vhyl/vhtt」→ H;「接續 vhtt/vhyl/上次」→ I;「結束 session」→ J(SOP J Claude 主動觸發 — context 逼近上限、同問題重述 ≥ 2 次、決策完成自然斷點)
+- 測試:N/A(規則 / SOP 層)。下一個 session 結束實際跑 SOP G 時驗證 archive cp + overwrite 流程跑得起來。
+- 跨 repo 副作用:viewer / reporter `WORKLOG.md` 各補一條 pointer 條目。下次規則 / SOP 改動需三個 repo 一起改才不會 drift。
+- 兩台 paste 追蹤:cowork-project-instructions.md 改動 → § 1.0 表狀態仍為 ⏳,vhyl + vhtt 兩台 boot 後都要重貼新版 Project Instructions(規則修訂 + Session 切換 trigger 都進去了)
+- 相依:本 commit 內全部一起。Notion pointer 行 push 後同步。
+- 來源連結(設計依據):blocktempo 文末「6 條對症規則 > 12 條其中 6 條用不上」原則;對應本專案踩過坑的失敗模式(YC 2026-05-19 vhyl session 內反映)
+
+---
+
 ## 2026-05-19 — Brief 集中:把 reporter / viewer 散落 4 條歷史 brief 搬進 docs/task-briefs/
 
 - 作者:claude(與 YC 共同,在 vhyl 動手)
