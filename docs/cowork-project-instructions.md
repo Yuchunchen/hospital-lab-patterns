@@ -7,7 +7,7 @@
 帳號設定沒同步、或要在新機器快速重建環境，這份檔案就是 single source of
 truth。修改 project instructions 後**請同步更新本檔**，才不會 drift。
 
-**最後同步：** 2026-05-12（規則 #6 收回短版 + 移除舊 #7 中文註解 + 加入新 #7 Notion 同步）
+**最後同步：** 2026-05-19（加入「思考規則」section #8–#11,Karpathy/Forrest Chang 12-rule 篩選版)
 
 ---
 
@@ -32,6 +32,13 @@ All public on github.com/Yuchunchen.
 5. 動手寫程式前先說明在 Cowork 還是 Claude Code
 6. TASK_BRIEF_xxx.md 執行完成後改名加 _done 後綴（變 TASK_BRIEF_xxx_done.md），表示已歸檔；改名動作在最後一個 commit 同一輪做掉。
 7. Notion 的「🛠 開機 SOP (vhyl ↔ vhtt 共用)」page 是 vhtt / vhyl 共用的儀表板入口（URL 在 PROJECT_CONTEXT § 10）。每次 session 開始時讀一次，把 TASK_BRIEF Dashboard 當當前 TODO 來源（優先於翻 docs/task-briefs/ 目錄）。每次有 brief 新增、改名 _done、順序調整、依賴變動，Claude 主動同步 Notion（時序：git push 成功之後才寫 Notion；Notion 寫失敗不擋 push，但要在回應內明示「Notion 沒更到」）。
+
+## 思考規則（Cowork mode 適用；Coding 規則見各 repo CLAUDE.md § Coding behavior contract）
+
+8. 暴露假設：給結論 / 報告狀態前先說明依據。若依據是 Notion / WORKLOG / Dashboard，session 開始要先跑 § 1.1 環境 sync（git pull 三 repo），不要拿舊 cache 當 ground truth。
+9. brief 必含「成功標準」+「測試清單」：TASK_BRIEF.md 沒寫「怎樣算做完」就不算寫完；測試清單要可獨立驗證、且每條對應一個業務行為（不是只「函式有回傳值」這類淺層斷言）。
+10. 跨 session / 跨機 / 跨 repo 任務，每段交付前自我複述當前狀態（已做什麼、已驗證什麼、還剩什麼）。無法清楚複述就停下重述，別硬撐繼續。
+11. 靜默失敗 → 明示。該成功而沒成功的事必須在回應裡直接點出（不限於 Notion 同步；含跳過、降級、跳過驗證、部分完成等）；不確定就先說不確定，預設暴露而非隱藏。
 
 ## Modes
 
@@ -77,6 +84,7 @@ Follow these instructions when working in this project.
 | 2026-05-12 | 規則 #6 收回單行版（(a)-(e) 細節 live UI 沒採用,留在 PROJECT_CONTEXT § 5 hand-off pattern 段） |
 | 2026-05-12 | 移除舊 #7（中文註解,live UI 未採用） |
 | 2026-05-12 | 加入新 #7（Notion「🛠 開機 SOP (vhyl ↔ vhtt 共用)」page 為 cross-machine TODO 入口,sync 時序規則） |
+| 2026-05-19 | 加入「思考規則」section（#8–#11:暴露假設 / 成功標準 / 複述狀態 / 靜默失敗明示）。來源:Karpathy + Forrest Chang 12-rule CLAUDE.md（blocktempo 2026-05-14）對應本專案踩過的失敗模式篩選。Coding 端規則同步加入三個 repo CLAUDE.md § Coding behavior contract。 |
 
 ## 若改了 Cowork UI 的規則
 

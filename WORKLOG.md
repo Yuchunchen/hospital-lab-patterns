@@ -2,6 +2,31 @@
 
 Chronological log of pattern catalog changes. Newest entries on top.
 
+---
+
+## 2026-05-19 — Behavior rules: 加入「思考規則」+「Coding behavior contract」
+
+- 作者:claude(與 YC 共同,在 vhyl 動手)
+- 範圍:meta-rules(非 catalog;改的是 CLAUDE.md / PROJECT_CONTEXT.md / cowork-project-instructions.md)
+- 醫院 scope:both(規則對 vhyl / vhtt 共用)
+- 影響檔:
+  - `docs/cowork-project-instructions.md` — 強制規則 7 條後加「思考規則」section(#8–#11),更新「最後同步」日期 + 維護紀錄
+  - `CLAUDE.md` — 「不要做的事」之前加「Coding behavior contract」section(A–C)
+  - `PROJECT_CONTEXT.md` — 加 § 11「Behavior rules sources」,含篩選矩陣 + Notion 處理立場
+- 來源:Forrest Chang 12-rule CLAUDE.md(blocktempo 2026-05-14 中文版整理,Karpathy 原 4 條 + 補 8 條共 12 條)。
+- 篩選原則:只選對應本專案實際踩過坑的條目(原 3 / 7 / 8 / 1 / 4 / 10 / 12);評估標準是「過去 8 週 session log 內能不能對應到一次實際失敗 / 修正」。對應不到 → 不採。
+- 落點:
+  - Cowork 端思考類 → cowork-project-instructions.md § 思考規則(#8–#11)
+  - 寫碼類 → 三個 repo CLAUDE.md § Coding behavior contract(A–C,內容同步)
+  - Notion 不放規則內文 — Notion 是狀態鏡像,規則進 Notion 會多源 drift。Notion「🛠 開機 SOP」page 後續只加一行 pointer。
+- 跨 repo 副作用:viewer / reporter 兩個 CLAUDE.md 同 commit 加上同一份 Coding behavior contract(三 repo 共用版本)。下次規則改動需三個 repo 一起改才不會 drift。
+- 測試:N/A(規則層,非 catalog;不跑 npm run validate / build-json)。
+- 兩台 paste 追蹤:`cowork-project-instructions.md` 改動 → § 1.0 表狀態應重置為 ⏳,vhyl + vhtt 兩台 boot 後都要重貼 Cowork app UI 的 Project Instructions(等本 commit push 後 Notion 同步)。
+- 相依:本 commit + viewer/reporter 各自的 WORKLOG.md + CLAUDE.md 改動,三個 repo 一起 push。
+- 來源連結:https://www.blocktempo.com/claude-code-12-rules-error-rate-3-percent-karpathy-agent/
+
+---
+
 Each entry should include:
 
 - **Date** (YYYY-MM-DD)
