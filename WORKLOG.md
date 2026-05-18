@@ -4,6 +4,28 @@ Chronological log of pattern catalog changes. Newest entries on top.
 
 ---
 
+## 2026-05-19 — Brief 集中:把 reporter / viewer 散落 4 條歷史 brief 搬進 docs/task-briefs/
+
+- 作者:claude(與 YC 共同,在 vhyl 動手)
+- 範圍:doc relocation(無 code 動)
+- 醫院 scope:both
+- 變更:新增 4 個 brief 檔到 `docs/task-briefs/`,原始檔自各 sibling repo root 移走
+- 背景:reporter / viewer 兩 repo 的 `.gitignore` 都有 `TASK_BRIEF*.md`(line 25),所以這 4 個 brief 從來沒進 git 歷史、兩台機器各自有本機版本可能 drift。統一搬到 patterns/docs/task-briefs/ 後第一次納入 git 追蹤、跨機可見、跟 Notion Dashboard 的 Brief path 路徑慣例一致。
+- 改名對應:
+  | 原路徑 | 新路徑 |
+  |---|---|
+  | `hospital-lab-reporter/TASK_BRIEF_step1_done.md` | `docs/task-briefs/TASK_BRIEF_reporter_step1_extract_dialysis_module_done.md` |
+  | `hospital-lab-reporter/TASK_BRIEF_step1_v3_done.md` | `docs/task-briefs/TASK_BRIEF_reporter_step1v3_dialysis_form_aware_export_done.md` |
+  | `hospital-lab-reporter/TASK_BRIEF_step2.md` | `docs/task-briefs/TASK_BRIEF_reporter_step2_bun_reporttime_switch_done.md` |
+  | `hospital-lab-viewer/TASK_BRIEF_肝炎硬編對齊vhyl_done.md` | `docs/task-briefs/TASK_BRIEF_viewer_hepatitis_regex_align_vhyl_done.md` |
+- 命名約定:`TASK_BRIEF_<source_repo>_<descriptor>_done.md`,讓檔名一眼看出原 repo + 內容。step2 原本沒 _done 後綴,YC 2026-05-19 確認當已完成處理,加 _done。
+- 測試:N/A(純檔案搬移)。reporter / viewer root 兩個 `ls TASK_BRIEF*` 結果為空。新位置 4 個檔 size 與原檔對齊(13410 / 14816 / 11865 / 8202 bytes)。
+- 跨 repo 副作用:reporter / viewer 兩個 repo 因 .gitignore 將原檔忽略,搬走後 `git status -s` 仍應乾淨(不會看到 delete 紀錄)。patterns repo 會看到 4 個 untracked 新檔。
+- Notion 處理:不主動補進 Dashboard(這 4 條都是 pre-Dashboard 時期 2026-05-04 ~ 2026-05-05 的歷史 brief,加進去會混淆當下 TODO 視覺;git 檔案路徑足以追溯)。
+- 相依:無;單 commit 在 patterns repo 即可。reporter / viewer 各補一條 WORKLOG pointer 條目(由 cross-repo 一致性考量)。
+
+---
+
 ## 2026-05-19 — Behavior rules: 加入「思考規則」+「Coding behavior contract」
 
 - 作者:claude(與 YC 共同,在 vhyl 動手)
