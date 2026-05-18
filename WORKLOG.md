@@ -4,6 +4,25 @@ Chronological log of pattern catalog changes. Newest entries on top.
 
 ---
 
+## 2026-05-19(addendum)— SOP I pre-flight:cross-machine resume 強制 Project Instructions 對齊
+
+- 作者:claude(與 YC 共同,在 vhyl 動手)
+- 範圍:meta-process(SOP 增補,patterns 內 3 個檔)
+- 醫院 scope:both
+- 影響檔:
+  - `PROJECT_CONTEXT.md § 12 SOP I` — 加 Step 0「Pre-flight check」:cross-machine resume 時讀 Notion § 1.0 paste 追蹤表本機格,⏳ block 後續、提示 YC 重貼 Cowork UI Project Instructions,貼完才繼續
+  - `PROJECT_CONTEXT.md § 12 SOP G` Step 6 加「特別檢查」:本 session 改動 `cowork-project-instructions.md` → § 1.0 兩格(或對方那格)重置 ⏳
+  - `docs/cowork-project-instructions.md` Session 切換 trigger section 末尾加一行 pre-flight 註記;維護紀錄表加 addendum 列
+  - `docs/workflow-changelog.md` 加 2026-05-19 addendum 條目
+- 動機:YC 反映 — 上機(例如 vhtt)改了 cowork-project-instructions.md 但本機(vhyl)Cowork app UI 仍是舊版,Claude 在本機跑舊規則 → silent drift。原本 § 1.0 paste 追蹤表只是被動標記,YC 易忘。改成 SOP I Step 0 主動 block。
+- Trade-off:多一個 confirmation round,但杜絕 silent drift。對應 Coding behavior contract B(矛盾模式不混用)的精神 — 舊規則跟新規則並存就是矛盾模式。
+- 測試:N/A(規則層)。下次跨機 resume 觸發時實際驗證 pre-flight block 流程跑得起來。
+- 跨 repo 副作用:無(純 patterns 內 SOP 增補;viewer/reporter 無感)
+- 兩台 paste 追蹤:本 commit 又改 cowork-project-instructions.md → § 1.0 兩格繼續維持 ⏳(本 session 已是 ⏳ 狀態,無變化)
+- 相依:本 commit 單獨 patterns repo 即可
+
+---
+
 ## 2026-05-19 — Session 切換 SOPs G–J + session-state 機制 + workflow-changelog.md
 
 - 作者:claude(與 YC 共同,在 vhyl 動手)
