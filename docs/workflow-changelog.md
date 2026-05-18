@@ -8,6 +8,28 @@
 
 ---
 
+## 2026-05-19(addendum 3)— Glossary 區 + SOP J 重新命名「End thread」+ 思考規則 #12「混淆時詢問」
+
+**範圍**: process(詞彙 + 觸發語 + 思考規則)
+
+**動機**: YC 反映「session」跟「階段」在原命名下會混淆(兩者都帶「結束 / 完成」語意但層級不同)。原 SOP G 用「階段完成」、SOP J 用「結束 session」— 都掛「結束 / 完成」關鍵字 → 觸發語意外重疊。同時 YC 強調「Claude 混淆時要主動問」,值得提升為 catch-all 思考規則。
+
+**變動**:
+- **Glossary 區**(加在 PROJECT_CONTEXT § 12 頂端 + cowork-project-instructions.md Session 切換 trigger section 開頭):
+  - `session / thread / 對話` = 一個 Cowork 對話視窗(三詞互通)
+  - `階段 / 段落 / phase` = 工作的一個 chunk(一個 thread 可跑多個階段,一個階段也可橫跨多 thread)
+  - `機器` = vhyl / vhtt 物理開發環境
+- **判讀關鍵字規則**:看到「階段 / 段落 / 這段」→ G;「thread / session / 對話」→ J;「機器 / 換到」→ H;「接續 / 繼續」→ I;**都沒看到 → 含糊語強制問**
+- **SOP J 重新命名「End thread」**(原「End session」)— 觸發語擴成:「結束 thread」/「結束 session」/「結束對話」/「準備開新 thread」/「準備開新 session」/「這個對話收掉」/「等等要重開對話」
+- **思考規則 #12「混淆時詢問」加入 cowork-project-instructions.md**:catch-all,涵蓋 § 12 含糊語 / SOP I pre-flight / 規則 #8 沒明列的所有混淆情境
+- 更新維護紀錄表加 addendum 3 列
+
+**Process implication**: 詞彙層從「session 跟階段語意重疊」→「三層明確分開,各有判讀關鍵字」。思考規則 #12 提供 catch-all 抓未明示情境。對應 Coding behavior contract B 精神(矛盾模式不混用)— 詞彙層也適用同邏輯。
+
+**規則總數**:強制 #1–#7 + 思考 #8–#12 + Coding contract A–C。思考規則從 4 條增為 5 條,total 12+3=15 條(若計入 contract);Forrest Chang 文章 14 條安全線屬於「單一檔案」,本系統三檔分散(Cowork instructions 12 + 三 repo CLAUDE.md 各 contract 3),單檔最高仍在 12 條內。
+
+---
+
 ## 2026-05-19(addendum 2)— Session 切換 trigger 改成「明確語 + 含糊語 disambiguate」兩段式
 
 **範圍**: process(觸發語表 + Claude 行為)
