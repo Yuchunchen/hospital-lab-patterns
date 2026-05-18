@@ -61,12 +61,21 @@ PROJECT_CONTEXT.md § 9（位於 hospital-lab-patterns/PROJECT_CONTEXT.md）。
 
 ## Session 切換 trigger（established 2026-05-19）
 
-當我訊息符合以下任一格式，自動啟動對應 SOP（不要先問我選哪一條）：
+### 明確語（直接觸發對應 SOP，不必問我）
 
-- 「階段完成」/「wrap」→ SOP G（一段工作完成、要開新 session 或休息）
-- 「離開 vhyl」/「離開 vhtt」→ SOP H（離開本台機器、之後可能對方機接續）
-- 「接續 vhtt」/「接續 vhyl」/「接續上次」→ SOP I（開新 session 接續上一段）
-- 「結束 session」→ SOP J（結束本 chat session，給開新 session 的開場句）
+- 「告一段落」/「階段完成」/「先停一下」/「休息一下」 → SOP G（工作斷點，本對話可能繼續或之後接續）
+- 「離開 vhyl」/「離開 vhtt」/「換到 vhtt」/「換到 vhyl」/「換機器」 → SOP H（要離開本台機器）
+- 「接續 vhtt」/「接續 vhyl」/「接續上次」/「繼續上次」 → SOP I（開新 session 接續上一段）
+- 「準備開新 session」/「等等要重開對話」 → SOP J（明確要結束本 Cowork 對話）
+
+### 含糊語（不直接動作，Claude 必須先問三選一）
+
+「結束」/「結束 session」/「結束對話」/「收工」/「下次再說」/「先這樣」/「就到這」 → 不對應任何 SOP，Claude 回應：
+
+> 你的意思是哪一種?
+> (a) 工作告一段落想休息，本對話可能還會繼續 → 跑 SOP G
+> (b) 要結束本 Cowork 對話、之後開新對話接續 → 跑 SOP G + SOP J
+> (c) 要離開本台機器 → 跑 SOP H
 
 完整動作清單（每個 SOP 該做的步驟、session snapshot 檔結構、容量考量）見
 PROJECT_CONTEXT.md § 12。
@@ -103,6 +112,7 @@ Follow these instructions when working in this project.
 | 2026-05-19 | 加入「思考規則」section（#8–#11:暴露假設 / 成功標準 / 複述狀態 / 靜默失敗明示）。來源:Karpathy + Forrest Chang 12-rule CLAUDE.md（blocktempo 2026-05-14）對應本專案踩過的失敗模式篩選。Coding 端規則同步加入三個 repo CLAUDE.md § Coding behavior contract。 |
 | 2026-05-19 | 加入「Session 切換 trigger」section（4 條中文 trigger 對應 SOP G–J:階段完成 / 離開 vhyl-vhtt / 接續 vhtt-vhyl-上次 / 結束 session）。完整動作清單在 PROJECT_CONTEXT § 12。同日 docs/session-state-vhyl.md / session-state-vhtt.md / session-state-archive/ / workflow-changelog.md 誕生。 |
 | 2026-05-19(addendum) | SOP I 加 pre-flight check(Step 0):cross-machine resume 時讀 Notion § 1.0 paste 追蹤表本機格,⏳ → block 後續、提示 YC 重貼 Cowork UI Project Instructions,貼完才繼續。SOP G Step 6 加特別檢查:本 session 改 cowork-project-instructions.md → § 1.0 重置 ⏳。 |
+| 2026-05-19(addendum 2) | Session 切換 trigger 改成「明確語 + 含糊語 disambiguate」兩段式:明確語(告一段落 / 換機器 / 接續 / 準備開新 session)直接觸發 SOP G/H/I/J;含糊語(結束 / 收工 / 下次再說 / 先這樣)強制 Claude 先問三選一,避免猜錯。對應 PROJECT_CONTEXT § 12 同步更新。 |
 
 ## 若改了 Cowork UI 的規則
 
