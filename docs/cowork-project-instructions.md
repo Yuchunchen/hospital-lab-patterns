@@ -7,7 +7,7 @@
 帳號設定沒同步、或要在新機器快速重建環境，這份檔案就是 single source of
 truth。修改 project instructions 後**請同步更新本檔**，才不會 drift。
 
-**最後同步：** 2026-05-19（加入「思考規則」section #8–#11,Karpathy/Forrest Chang 12-rule 篩選版)
+**最後同步：** 2026-05-19（加入「思考規則」section #8–#11 + Session 切換 trigger section,Karpathy/Forrest Chang 12-rule 篩選版 + Session SOPs G–J)
 
 ---
 
@@ -59,6 +59,20 @@ All public on github.com/Yuchunchen.
 完整流程細節（步驟、Chrome 自動化技巧、輸出格式）見
 PROJECT_CONTEXT.md § 9（位於 hospital-lab-patterns/PROJECT_CONTEXT.md）。
 
+## Session 切換 trigger（established 2026-05-19）
+
+當我訊息符合以下任一格式，自動啟動對應 SOP（不要先問我選哪一條）：
+
+- 「階段完成」/「wrap」→ SOP G（一段工作完成、要開新 session 或休息）
+- 「離開 vhyl」/「離開 vhtt」→ SOP H（離開本台機器、之後可能對方機接續）
+- 「接續 vhtt」/「接續 vhyl」/「接續上次」→ SOP I（開新 session 接續上一段）
+- 「結束 session」→ SOP J（結束本 chat session，給開新 session 的開場句）
+
+完整動作清單（每個 SOP 該做的步驟、session snapshot 檔結構、容量考量）見
+PROJECT_CONTEXT.md § 12。
+
+Claude 主動觸發時機（SOP J）：context 已逼近 session 上限、同一個問題使用者重述 ≥ 2 次、一段工作完成的自然斷點。
+
 ## Deep context
 
 Read PROJECT_CONTEXT.md in hospital-lab-patterns/ for architecture, commands,
@@ -85,6 +99,7 @@ Follow these instructions when working in this project.
 | 2026-05-12 | 移除舊 #7（中文註解,live UI 未採用） |
 | 2026-05-12 | 加入新 #7（Notion「🛠 開機 SOP (vhyl ↔ vhtt 共用)」page 為 cross-machine TODO 入口,sync 時序規則） |
 | 2026-05-19 | 加入「思考規則」section（#8–#11:暴露假設 / 成功標準 / 複述狀態 / 靜默失敗明示）。來源:Karpathy + Forrest Chang 12-rule CLAUDE.md（blocktempo 2026-05-14）對應本專案踩過的失敗模式篩選。Coding 端規則同步加入三個 repo CLAUDE.md § Coding behavior contract。 |
+| 2026-05-19 | 加入「Session 切換 trigger」section（4 條中文 trigger 對應 SOP G–J:階段完成 / 離開 vhyl-vhtt / 接續 vhtt-vhyl-上次 / 結束 session）。完整動作清單在 PROJECT_CONTEXT § 12。同日 docs/session-state-vhyl.md / session-state-vhtt.md / session-state-archive/ / workflow-changelog.md 誕生。 |
 
 ## 若改了 Cowork UI 的規則
 
