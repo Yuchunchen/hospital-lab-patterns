@@ -4,6 +4,31 @@ Chronological log of pattern catalog changes. Newest entries on top.
 
 ---
 
+## 2026-05-19(addendum 2)— Session 切換 trigger 改成「明確語 + 含糊語 disambiguate」兩段式
+
+- 作者:claude(與 YC 共同,在 vhyl 動手)
+- 範圍:meta-process(觸發語表 + Claude 行為,patterns 內 4 個檔)
+- 醫院 scope:both
+- 影響檔:
+  - `PROJECT_CONTEXT.md § 12 Trigger 對照表` — 改成「明確語(直接觸發)+ 含糊語(強制 disambiguate)」兩段
+  - `docs/cowork-project-instructions.md` Session 切換 trigger section — 同步分段
+  - `docs/cowork-project-instructions.md` 維護紀錄表 — 加 addendum 2 列
+  - `docs/workflow-changelog.md` — 加 addendum 2 條目
+- 明確語對照(新版):
+  - 「告一段落」/「階段完成」/「先停一下」/「休息一下」 → SOP G
+  - 「離開 vhyl」/「離開 vhtt」/「換到 vhtt」/「換到 vhyl」/「換機器」 → SOP H
+  - 「接續 vhtt」/「接續 vhyl」/「接續上次」/「繼續上次」 → SOP I
+  - 「準備開新 session」/「等等要重開對話」 → SOP J
+- 含糊語清單(不直接動作,Claude 強制問三選一):「結束」/「結束 session」/「結束對話」/「收工」/「下次再說」/「先這樣」/「就到這」
+- 動機:YC 反映「結束 session」太模糊 — 可能是 G(休息)/ J(關對話)/ H(離開機器)三種不同情境。日常更常脫口而出「告一段落」「下次再說」這類口語,原表沒涵蓋。
+- Trade-off:含糊語多一個 confirmation round,但避免 silent miss-trigger(誤跑 J 浪費開新對話力氣 / 誤跑 G 漏 handoff)。對應 Coding behavior contract B 精神(矛盾模式不混用)— 明確語跟含糊語走不同處理路徑。
+- 測試:N/A(規則層)。下次 YC 講含糊語時 Claude 應該強制 disambiguate。
+- 跨 repo 副作用:無(純 patterns 內 SOP 改動;viewer/reporter 無感)
+- 兩台 paste 追蹤:本 commit 又改 cowork-project-instructions.md → § 1.0 兩格繼續維持 ⏳(本 session 已是 ⏳ 狀態,無變化)
+- 相依:本 commit 單獨 patterns repo 即可
+
+---
+
 ## 2026-05-19(addendum)— SOP I pre-flight:cross-machine resume 強制 Project Instructions 對齊
 
 - 作者:claude(與 YC 共同,在 vhyl 動手)

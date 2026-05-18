@@ -8,6 +8,27 @@
 
 ---
 
+## 2026-05-19(addendum 2)— Session 切換 trigger 改成「明確語 + 含糊語 disambiguate」兩段式
+
+**範圍**: process(觸發語表 + Claude 行為)
+
+**動機**: YC 反映「結束 session」太模糊,可能對應 SOP G(休息)/ J(關對話)/ H(離開機器)三種不同情境;且 YC 日常更常脫口而出「結束」/「收工」/「告一段落」/「下次再說」這類自然口語,原表沒涵蓋。
+
+**變動**:
+- **明確語直接觸發**:
+  - 「告一段落」/「階段完成」/「先停一下」/「休息一下」→ SOP G
+  - 「離開 vhyl」/「離開 vhtt」/「換到 vhtt」/「換到 vhyl」/「換機器」→ SOP H
+  - 「接續 vhtt」/「接續 vhyl」/「接續上次」/「繼續上次」→ SOP I
+  - 「準備開新 session」/「等等要重開對話」→ SOP J
+- **含糊語強制 disambiguate**:「結束」/「結束 session」/「結束對話」/「收工」/「下次再說」/「先這樣」/「就到這」→ Claude **不**直接動作,先問三選一(G / G+J / H)
+- 更新 `PROJECT_CONTEXT.md § 12 Trigger 對照表`(分明確語 + 含糊語 disambiguation 兩段)
+- 更新 `docs/cowork-project-instructions.md` Session 切換 trigger section 同步分段
+- 更新維護紀錄表加 addendum 2 列
+
+**Process implication**: 觸發語層從「猜使用者意圖」→「明確語不問、含糊語強制問」。降低 silent miss-trigger 風險(誤跑 J 浪費開新對話 / 誤跑 G 漏 handoff)。對應 Coding behavior contract B 精神(矛盾模式不混用)— 明確語跟含糊語走不同處理路徑。
+
+---
+
 ## 2026-05-19(addendum)— SOP I pre-flight check:cross-machine resume 強制 Cowork Project Instructions 對齊
 
 **範圍**: process(SOP I 增補 Step 0)
