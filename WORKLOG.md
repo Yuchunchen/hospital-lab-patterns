@@ -4,6 +4,18 @@ Chronological log of pattern catalog changes. Newest entries on top.
 
 ---
 
+## 2026-05-20(addendum)— Brief 加 § 11 印表機設定 SOP(Brother HL-L5100DN A5 Long Side)
+
+- 作者:claude(與 YC 共同)
+- 範圍:doc(brief 補實機運維 SOP)
+- 醫院 scope:both(SOP 適用任何 Brother driver;原則延伸到其他機型)
+- 變更:修改
+- 影響檔:`docs/task-briefs/TASK_BRIEF_viewer_a5_layout.md` — 新增 § 11(11.1 / 11.2 / 11.3 三小節)
+- 動機:YC 實機列印 Brother HL-L5100DN 發現 driver 把 `A5` 與 `A5 Long Side` 視為兩個 paper size,選錯 driver 會把內容 auto-rotate 90°。雖然 viewer commit `bf90912` 已把 `@page` 從 `A5 landscape` keyword 改成 `210mm × 148mm` 顯式寬高(瀏覽器端最強 hint),driver 層的 paper-size + 紙匣 orientation 仍須正確選 — 這條知識若不寫進 brief,下一位接手會踩同樣坑。
+- 內容:§ 11 列出必選 4 欄位(A5 Long Side / Landscape / MP tray / 長邊先進)、解釋 root cause、提兩個減少每次手選的方案(11.1 改 driver 預設;11.2 同印表機系統裝兩份不同預設 — 推薦混合用情境);§ 11.3 換機型時的判斷原則。
+- 跨 repo:無 — 純 doc。viewer repo `bf90912`(driver 相容性 hotfix)同一波 release 一起 push。
+- 相依:viewer `02dffd2` + `bf90912`
+
 ## 2026-05-20 — 新增 VIEWER_A5_MANIFEST(viewer A5 單頁版型 source of truth)
 
 - 作者:claude(與 YC 共同)
