@@ -4,6 +4,17 @@ Chronological log of pattern catalog changes. Newest entries on top.
 
 ---
 
+## 2026-05-20 — A5 brief 歸檔完工(`_done.md`)
+
+- 作者:claude(與 YC 共同)
+- 範圍:doc(brief 改名歸檔,rule #6)
+- 變更:重新命名
+- 影響檔:`docs/task-briefs/TASK_BRIEF_viewer_a5_layout.md` → `..._done.md`
+- 動機:viewer A5 landscape 單表版型 v1.4.0 已 push(viewer `02dffd2` + `bf90912` driver hotfix),YC 實機列印 Brother HL-L5100DN 過了,brief § 11 SOP 也寫進去。整個任務從 § 5 step 13 規定完工後改名。
+- 跨 repo:viewer 已先 push;patterns 本次只是 brief rename。
+- 待 YC 手動:Notion Dashboard 同步 Done(rule #7)— 此處只能提醒,不代操作。
+- 相依:patterns `3094167` + `7d23c87`;viewer `02dffd2` + `bf90912`
+
 ## 2026-05-20(addendum)— Brief 加 § 11 印表機設定 SOP(Brother HL-L5100DN A5 Long Side)
 
 - 作者:claude(與 YC 共同)
