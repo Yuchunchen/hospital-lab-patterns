@@ -4,6 +4,30 @@ Chronological log of pattern catalog changes. Newest entries on top.
 
 ---
 
+## 2026-05-20 — 新增 VIEWER_A5_MANIFEST(viewer A5 單頁版型 source of truth)
+
+- 作者:claude(與 YC 共同)
+- 範圍:viewer-manifest(新增第二份 manifest)+ runtime-snapshot(dist/patterns.json 多一欄)
+- 醫院 scope:both
+- 變更:新增
+- 影響檔:
+  - `patterns/viewer.js` — 新增 `VIEWER_A5_MANIFEST`(15 個 id,順序 fixed by YC 2026-05-20 cowork);CommonJS 以 property 方式掛在現有 `module.exports = VIEWER_MANIFEST` 上,window 加 `HOSPITAL_LAB_PATTERNS_VIEWER_A5_MANIFEST`。VIEWER_MANIFEST 的 60 個 entry 完全不動。
+  - `patterns/index.js` — 載入 `viewerA5Manifest` + resolve 成 `viewerA5`,加進 exported object;version 0.3.0 → 0.4.0(新 manifest = minor bump)。
+  - `scripts/validate.js` — 對 VIEWER_A5_MANIFEST 跑同樣的 catalog id 檢查 + 印 resolved length。
+  - `scripts/build-json.js` — snapshot 加 `viewer_a5_manifest` 欄位 + log line。
+  - `dist/patterns.json` — 跑完 `npm run release` 自動更新(version 0.4.0、新增 15 entry 區塊)。
+  - `docs/task-briefs/TASK_BRIEF_viewer_a5_layout.md` — 同 commit 一起進 git(brief 之前 untracked)。
+- 動機:viewer A5 landscape 單表版型(衛教/紀錄單)需要一份精簡的列印 id list 與順序。沿用「patterns repo = source of truth」原則,A5 list 寫在 viewer.js 與 VIEWER_MANIFEST 並列,sync-patterns.js 文字 inline → viewer 端 mapping.js 自然帶到。spec 與決議見 brief § 2.3 / § 10。
+- Spec 邊界:A5 manifest 只記 `{id, order, section}`,所有 regex/normalize/ref 仍由 catalog 提供;buildA5Page 渲染端不認 `section`(目前為元資料,留待未來分組標頭)。15 個 id 全部已存在於 VIEWER_MANIFEST,所以 viewer mapping.js resolver 已建好 TEST_MAP,無需另外 resolve。
+- 驗證:
+  - `npm run release` 全綠 — 80 catalog · 60 viewer · 15 viewer-A5 · 41 reporter;dist/patterns.json 45.8 KB,新增 viewer_a5_manifest 區塊。
+- 影響:
+  - viewer 需重跑 `sync-patterns.js` 才能在 mapping.js 看到 `VIEWER_A5_MANIFEST` 常數(本輪 brief 接下來的步驟會做)。
+  - OPD 端 24 小時內透過 dist/patterns.json 自動拿到 A5 list(但 viewer report.js 還沒 implement buildA5Page,所以 OPD 拿到也沒處用 — 等 viewer 端 push 1.4.0)。
+  - reporter 不受影響(未引用)。
+- 跨 repo 副作用:**viewer 需 sync + 實作 buildA5Page + bump 1.4.0**(本 brief § 5 步驟 3–11)。reporter 無動作。
+- 相依:無
+
 ## 2026-05-20 — Brief 新增 + viewer 看診序號 overlay 實作 pointer
 
 - 作者:claude(與 YC 共同,在 vhyl Cowork 動手)

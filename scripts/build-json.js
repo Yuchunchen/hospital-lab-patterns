@@ -46,6 +46,7 @@ const snapshot = {
   synced_at: new Date().toISOString(),
   catalog: catalog,
   viewer_manifest: viewerManifest,
+  viewer_a5_manifest: viewerManifest.VIEWER_A5_MANIFEST || [],
   reporter_manifest: reporterPkg.REPORTER_MANIFEST,
   reporter_categories: reporterPkg.CATEGORIES,
   // Note: reporter_computed contains compute() functions, deliberately
@@ -64,6 +65,7 @@ console.log('✓ wrote ' + outPath);
 console.log('  size:               ' + (json.length / 1024).toFixed(1) + ' KB');
 console.log('  catalog entries:    ' + snapshot.catalog.length);
 console.log('  viewer manifest:    ' + snapshot.viewer_manifest.length);
+console.log('  viewer A5 manifest: ' + snapshot.viewer_a5_manifest.length);
 console.log('  reporter manifest:  ' + snapshot.reporter_manifest.length);
 console.log('  dropped functions:  ' + droppedFunctions + ' (compute fns in reporter_computed are intentionally omitted)');
 console.log('  synced_at:          ' + snapshot.synced_at);

@@ -11,22 +11,24 @@
  *   - computed.js     — derived-value formulas
  */
 
-let catalog, viewerManifest, reporterPkg, normalizers, computed;
+let catalog, viewerManifest, viewerA5Manifest, reporterPkg, normalizers, computed;
 
 if (typeof require === 'function') {
-  catalog        = require('./catalog');
-  viewerManifest = require('./viewer');
-  reporterPkg    = require('./reporter');
-  normalizers    = require('./normalizers');
-  computed       = require('./computed');
+  catalog          = require('./catalog');
+  viewerManifest   = require('./viewer');
+  viewerA5Manifest = viewerManifest.VIEWER_A5_MANIFEST || [];
+  reporterPkg      = require('./reporter');
+  normalizers      = require('./normalizers');
+  computed         = require('./computed');
 } else if (typeof window !== 'undefined') {
-  catalog        = window.HOSPITAL_LAB_PATTERNS_CATALOG          || [];
-  viewerManifest = window.HOSPITAL_LAB_PATTERNS_VIEWER_MANIFEST  || [];
-  reporterPkg    = window.HOSPITAL_LAB_PATTERNS_REPORTER_PKG     ||
-                   { CATEGORIES:[], REPORTER_MANIFEST:[], REPORTER_COMPUTED:[] };
-  normalizers    = window.HOSPITAL_LAB_PATTERNS_NORMALIZERS      || {};
-  computed       = window.HOSPITAL_LAB_PATTERNS_COMPUTED         ||
-                   { COMPUTATIONS:[], HELPERS:{} };
+  catalog          = window.HOSPITAL_LAB_PATTERNS_CATALOG          || [];
+  viewerManifest   = window.HOSPITAL_LAB_PATTERNS_VIEWER_MANIFEST  || [];
+  viewerA5Manifest = window.HOSPITAL_LAB_PATTERNS_VIEWER_A5_MANIFEST || [];
+  reporterPkg      = window.HOSPITAL_LAB_PATTERNS_REPORTER_PKG     ||
+                     { CATEGORIES:[], REPORTER_MANIFEST:[], REPORTER_COMPUTED:[] };
+  normalizers      = window.HOSPITAL_LAB_PATTERNS_NORMALIZERS      || {};
+  computed         = window.HOSPITAL_LAB_PATTERNS_COMPUTED         ||
+                     { COMPUTATIONS:[], HELPERS:{} };
 }
 
 // If `normalize` is a string name, replace it with the actual function.
@@ -69,6 +71,7 @@ function resolveManifest(manifest, cat) {
 }
 
 var viewer   = resolveManifest(viewerManifest, catalog);
+var viewerA5 = resolveManifest(viewerA5Manifest, catalog);
 var reporter = resolveManifest(reporterPkg.REPORTER_MANIFEST, catalog);
 
 function byId(id, scope) {
@@ -91,6 +94,8 @@ function trackOnlyIds() {
 var exported = {
   catalog: catalog,
   viewer: viewer,
+  viewerA5: viewerA5,
+  viewerA5Manifest: viewerA5Manifest,
   reporter: reporter,
   reporterCategories: reporterPkg.CATEGORIES,
   reporterComputed:   reporterPkg.REPORTER_COMPUTED,
@@ -102,7 +107,7 @@ var exported = {
   resolveManifest: resolveManifest,
   rehydrateNormalize: rehydrateNormalize,
   trackOnlyIds: trackOnlyIds,
-  version: '0.3.0',
+  version: '0.4.0',
 };
 
 if (typeof module !== 'undefined' && module.exports) {
