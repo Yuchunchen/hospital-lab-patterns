@@ -8,112 +8,106 @@
 
 ---
 
-**Last wrap**: 2026-05-19(Taiwan;含 addendum 3 詞彙明確化 + 思考規則 #12)
+**Last wrap**: 2026-05-20 01:21(Taiwan)
 **Last session type**: Cowork
-**Last action**: SOP J — End thread,結束本 Cowork 對話 thread。整個 thread 重點:規則修訂 + 4 條歷史 brief 集中 + Session 切換 SOPs 建立 + 三次 addendum(pre-flight check / 觸發語兩段式 / Glossary + 思考規則 #12)
+**Last action**: SOP J — End thread。整個 thread 重點:viewer 看診序號 overlay brief 撰寫 + 實作 + 驗收 + 兩 repo push + Notion 同步 一氣呵成
 
 ## 1. 本 thread 完成
 
-完整工作量超過 8 個 commit cycle,分四大階段:
+工作量約 5 個 commit cycle,單一目標 = viewer 看診序號 overlay(v1.3.0)。
 
-**A. 規則修訂(Karpathy/Forrest Chang 12-rule 篩選版)**
-- Cowork project instructions 加思考規則 #8–#12(暴露假設 / 成功標準 / 複述狀態 / 靜默失敗明示 / **混淆時詢問**)
-- 三個 repo CLAUDE.md 加 § Coding behavior contract A–C(外科修改 / 矛盾模式不混用 / 新增前讀 caller)
-- PROJECT_CONTEXT.md 加 § 11「Behavior rules sources」含篩選矩陣
-- 三 repo 一起 commit + push
+**A. SOP I resume**
+- Pre-flight check § 1.0 paste 追蹤(vhyl ✅ up to date,無 block)
+- § 1.1 環境 sync 三 repo Already up to date(YC 在 PowerShell 跑;sandbox 不能 git on Windows mount,踩到一次留下 stale lock 教訓 → 已存 memory)
+- 讀上 thread session-state-vhyl.md 取斷點
 
-**B. Notion Dashboard 補記**
-- 補進 5/13 兩條 Done brief(Order 11 FreePSA orderNameFilter / Order 12 UACR+RATIO alternation)
-- 頁首加 Behavior rules canonical pointer + 後續再擴充
-- § 1.0 paste 追蹤兩格皆為 ⏳
+**B. 殘留物清理(SOP G Step 4 順手解決上 thread parked)**
+- 6 個 stale `.tmp.NNNN.NNNN` 檔(2026-04-28 timestamp,舊 Claude Code atomic-write 沒清)全部驗證為 stale 後刪除
+- 三 repo `.gitignore` 都已含 `*.tmp.*`,本來就 untracked,清完不需 commit
+- 上 thread parked 解 1 條
 
-**C. Brief 集中歸位**
-- 4 條歷史 brief(reporter step1/step1v3/step2 + viewer 肝炎)從各自 repo root 搬至 `patterns/docs/task-briefs/`
-- 加 `<repo>_` 前綴 + descriptive 命名
-- step2 補加 `_done` 後綴(YC 確認當完成)
-- 三 repo 各加 WORKLOG
+**C. Brief 撰寫 + 改名一輪做掉**
+- 新檔:`docs/task-briefs/TASK_BRIEF_viewer_visit_serial_done.md`(直接以 `_done` 進 git)
+- 規則 #9 結構:1 問題 / 2 設計 / 3 改動範圍 / 4 測試清單 13 case / 5 實作步驟 / 6 跨 repo 副作用 / 7 風險 / 8 WORKLOG 模板 / 9 工時
+- 寫之前讀過 popup.js / report.js / manifest.json / WORKLOG.md 實證,brief 帶實際 line number 而非憑空
+- mockup 給 YC 預覽兩次(黑色 48pt → 淺灰 #AAAAAA),pin 字級 / 顏色 / 邊界 case
 
-**D. Session 切換 SOPs 建立(本 thread 最重要的 meta 產出)**
-- 加 SOP G(Wrap 段落收尾)/ H(Leave machine)/ I(Resume)/ J(**End thread**)
-- 新檔:`docs/session-state-vhyl.md` / `session-state-vhtt.md` / `session-state-archive/.gitkeep` / `workflow-changelog.md`
-- PROJECT_CONTEXT.md 加 § 12「Session 切換 SOPs」+ § 13「Cowork ↔ Chat handoff」
-- Cowork project instructions 加「Session 切換 trigger」section
-- Notion 頁首 pointer 擴充涵蓋全部 canonical 檔
-- **Addendum 1**:SOP I 加 Step 0 pre-flight check(cross-machine resume 強制 Project Instructions 對齊)
-- **Addendum 2**:觸發語改成「明確語 + 含糊語 disambiguate」兩段式
-- **Addendum 3**:Glossary 區明確化 session/thread/對話 互通 vs 階段/段落 vs 機器 三層詞彙;SOP J 改名「End thread」;思考規則 #12「混淆時詢問」catch-all
+**D. 實作 (viewer repo 4 檔)**
+- `popup.js splitChartInput()`:回傳結構 `string[]` → `Array<{chartno, visitSerial}>`(breaking change)
+- `popup.js` 4 個 call site(handlePrint single + multi、updateHint、doSearch + firstToken)全部對齊讀 `.chartno`
+  - **漏網之魚自己捕**:line 799 firstToken 直接傳 loadData,sweep 時抓到並修
+- `report.js generatePatientPages`:patientInfo destructure 加 `visitSerial = null`,page 1 + page 2 共用 visitSerialOverlay 字串
+- `report.js REPORT_CSS`:`.page` 加 `position: relative`,新增 `.visit-serial-overlay`(48pt #AAAAAA 淺灰 absolute 右上角)+ `@media print` block
+- `manifest.json`:1.2.0 → 1.3.0
+
+**E. 驗收 + Push + Notion 同步**
+- YC side-load Chrome → 跑 § 4 測試 13 case → 回報「測試結果 ok」全綠
+- viewer commit `91634da` feat(report): tabular paste 看診序號右上角 overlay (v1.3.0)
+- patterns commit `c868b3d` docs(brief): TASK_BRIEF_viewer_visit_serial 完成歸檔
+- 兩 repo push origin main,驗證 `Already up to date` + working tree clean
+- Notion Dashboard 加 Done 條目:Order 2.5、Repo viewer、Effort half-day、Done date 2026-05-20
+
+**F. WORKLOG**
+- viewer WORKLOG:詳細實作條目(改動清單 + spec 邊界 + 測試 pointer)
+- patterns WORKLOG:pointer 條目(本 repo catalog 無動,viewer/reporter 不需 sync-patterns)— SOP J wrap 時補
 
 ## 2. 本 thread 未完
 
-(無)
+(無 — viewer overlay 已完整 ship)
 
 ## 3. 下次該先做什麼
 
-### **★ 下個 thread 優先任務:viewer 看診序號 brief 撰寫 + 實作**
+### **★ 沒有 hard-pinned 優先項**
 
-**狀態**: YC 已釐清所有 spec 細節(2026-05-19 vhyl thread),brief 檔尚未寫。下個 thread 直接寫 `patterns/docs/task-briefs/TASK_BRIEF_viewer_visit_serial.md` + 開始實作。
+上 thread 的優先項(viewer 看診序號)已完成。下個 thread 由 YC 決定走向。預期幾條路線:
 
-**已釐清細節(不必再問 YC)**:
+**(a) 接 reporter #3 / #4(self-tagged「適合 vhtt」)**
+- Order 3:reporter labs_<group> storage → IndexedDB(localStorage QuotaExceededError 已知問題)
+- Order 4:reporter CKD eGFR/GFRStage/KDIGORisk/TaiwanCKD dispatcher(depends 3)
+- 兩條都標「適合 vhtt session 接」(多檔重構,Claude Code 友善)→ 若 YC 切到 vhtt 就接;**vhyl 端不主動接**
 
-1. **觸發場景**:只在現有 **Tabular paste**(tab-separated,從 Excel 貼)模式下產生看診序號。Free-form paste(逗號 / 分號 / pipe / 空白 分隔)跟單一 chartno 模式**不**處理看診序號 → 報表不顯示 overlay。
-2. **看診序號從哪抓**:Tabular paste 每行 tab 分欄,**col 1(index 0)= 看診序號**,**col 5(index 4)= chartno**(現有邏輯)。YC 會自己修改貼上格式,讓 col 1 是序號。
-3. **看診序號要印在哪**:每份報表(一個病人對應 page 1 + page 2 兩頁)**右上角**用 CSS absolute positioning 做 **top-layer 大字 overlay**。
-4. **設計限制**:**不影響現有 4-column 2-page layout** — overlay 用 absolute position,wrap container 必要時改 `position: relative`。
-5. **Multi-patient batch print**:每位病人的兩頁都印自己對應的序號(不會張冠李戴);無序號的病人不印 overlay。
-6. **B&W / 彩色列印兩種模式都要顯示** overlay。
+**(b) viewer 簡化版衛教格式 brief(等 YC 主動給 spec)**
+- 上上 thread 提及「不同紙張 / 版面」需求,spec 未細化 → 等 YC 主動帶
+- vhyl 端可做
 
-**Implementation 範圍(viewer repo)**:
-- `popup.js splitChartInput()`:tabular path 多回傳 col 1 → tokens 從 `[chartno]` 改成 `[{chartno, visitSerial}]` 結構;其他兩條 paste path 維持原樣 → `visitSerial = null`
-- `popup.js` 下游處理(loadData / fetchAndStore call site):把 `visitSerial` 傳到 report.js
-- `report.js generatePatientPages(patientInfo, ...)`:`patientInfo` 加 `visitSerial` 欄位;若有值,page 1 + page 2 都 render 一個 `.visit-serial-overlay` div
-- CSS(report.js 內 inline style):`.visit-serial-overlay { position:absolute; top:5mm; right:5mm; font-size:48pt; font-weight:bold; z-index:1000; ... }` — 重點:`@media print` 規則內也要保留(列印時不被印表機 margin 切掉、不被 layout 推開)
+**(c) 其他 OPD-driven 新需求**
+- 雖然 viewer 1.3.0 剛上,但實際門診用了可能會冒出新需求(B&W 印 #AAAAAA dither 糊?序號位置要再調?)→ 收到回報再啟動
 
-**測試清單(brief 內必寫)**:
-1. 表格貼 3 個病人(col 1 = 1/2/3,col 5 = 三個 chartno)→ 列印 6 頁,各對應右上角顯示 1/2/3
-2. Free-form 貼 `000017679E, 000023456X` → 列印 → **沒有** overlay
-3. 單個 chartno 貼 → 同 (2),無 overlay
-4. Batch print 多病人時序號不錯位
-5. 彩色 + B&W 兩 mode 都驗 overlay 字顯示正確
-6. PDF preview / 實機印表機列印各驗一次,字不被切、不影響原 layout
-7. WORKLOG.md(viewer)加一條繁中
+### Brief 集中慣例(parked from 本 thread,值得未來重議)
 
-**brief 寫完後 Notion Dashboard 加列**:Status=Open / Repo=viewer / Effort=half-day(估計)/ Order=插隊到 reporter #3 之前(因為 YC 拍板 viewer 兩條優先,Reporter 兩條順延 — 可能 Order=3 然後 reporter 兩條變 4/5,或新編號方案,下個 thread 跟 YC 確認)/ Notes 簡述「右上角看診序號 overlay,tabular paste col 1 抓」
+本 thread 中途 YC 問「為什麼要動到 lab pattern」反映 brief 集中於 patterns/docs/task-briefs/ 的慣例(2026-05-19 establish)直覺上不自然 — brief 描述 viewer 工作為何放 patterns?
 
-**Brief 寫作模式**:Cowork(brief 是文件 + 思考)。實作模式:可以直接在 Cowork 動 viewer 三個檔(popup.js / report.js + CSS inline),也可開 Claude Code session(多檔友善)。YC 之前說 vhyl 端可做 → Cowork 應該夠。
+當時理由(patterns WORKLOG 2026-05-19):viewer/reporter `.gitignore` 排除 `TASK_BRIEF*.md` → brief 不能跨機共享。集中到 patterns 解這個問題,但 trade-off 是 patterns repo 變成 catch-all。
 
----
+下個 thread 若 YC 想重議:
+- 替代方案 A:把 viewer/reporter `.gitignore` 的 `TASK_BRIEF*.md` 改成只排除 root-level(`/TASK_BRIEF*.md`),允許 `docs/task-briefs/` 子目錄被追蹤
+- 替代方案 B:每 repo 開自己的 `docs/task-briefs/` 各自存
+- 替代方案 C:維持現狀,但 commit message / brief 命名前綴 `<repo>_` 已可一眼看出歸屬
 
-### **次要 / parked(下個 thread 不一定要動)**:
-
-- **viewer 簡化版衛教格式 brief**:YC 提及要「不同紙張 / 版面」,具體 spec 還沒給 — 等 YC 主動提才開始寫
-- **reporter #3(labs_<group> → IndexedDB)/ reporter #4(CKD eGFR/GFRStage/KDIGORisk/TaiwanCKD dispatcher)**:都還 Open。按 Order 4 依賴 3。reporter 這兩條 brief 自己標「適合 vhtt session 接掉」 → vhtt 端優先,vhyl 端不主動接
+不重議也 OK,只是未來 brief 數量大可能複雜化。
 
 ## 4. Active TODOs(snapshot at wrap;以 Notion Dashboard 為準)
 
 | Order | Brief | Repo | Status |
 |---|---|---|---|
-| 3 | labs_<group> storage → IndexedDB | reporter | Open |
-| 4 | CKD eGFR / GFRStage / KDIGORisk / TaiwanCKD dispatcher | reporter | Open(depends on Order 3)|
-| — | viewer 看診序號(brief 未寫) | viewer | (parked,可優先,vhyl 端可做) |
-| — | viewer 簡化版衛教格式(brief 未寫) | viewer | (parked,等 YC spec) |
+| 2.5 | viewer 看診序號右上角 overlay (v1.3.0) | viewer | **Done ✅ 本 thread** |
+| 3 | labs_<group> storage → IndexedDB | reporter | Open(self-tag 適合 vhtt) |
+| 4 | CKD eGFR / GFRStage / KDIGORisk / TaiwanCKD dispatcher | reporter | Open(depends on Order 3) |
+| — | viewer 簡化版衛教格式(brief 未寫) | viewer | parked,等 YC spec |
 
 ## 5. Parked questions
 
-**長期 parked**:
-- **vhtt 有一個 CLAUDE.md 不在 `D:\self\hospital-lab\`** — 路徑是什麼?是哪種 CLAUDE.md(workspace-level / user-level / 其他 Claude 工具的)?跟本專案規則會不會相互蓋掉?next thread resume 時 YC 可提供細節
-- **YC 提及「我有修改 project instruction, claude.md」** — 是 vhyl 端改的還是 vhtt 端?Cowork app UI 改的還是 git canonical 改的?具體改了什麼規則?
+**長期 parked(從上 thread 帶來,仍未解)**:
+- **vhtt 有一個 CLAUDE.md 不在 `D:\self\hospital-lab\`** — 路徑是什麼?哪種 CLAUDE.md(workspace-level / user-level / 其他工具)?跟本專案規則衝突嗎?next 切 vhtt 時問 YC
+- **YC 提過「我有修改 project instruction, claude.md」** — vhyl 還 vhtt?Cowork app UI 還是 git canonical?具體改了什麼?
 
-**本 thread 新出現 parked(SOP G Step 4 殘留檢查)**:
-- patterns / reporter 兩 repo 有 6 個遺留 `.tmp.NNNN.NNNN` 檔(Unix ms timestamp 解出來是 2026-04-28 附近,不是本 thread 產的),清單:
-  - `patterns/docs/learning-workflow.md.tmp.18320.1777808890935`
-  - `patterns/docs/pattern-spec.md.tmp.18320.1777808860084`
-  - `patterns/package.json.tmp.18320.1777808539576`
-  - `patterns/patterns/computed.js.tmp.18320.1777808786720`
-  - `patterns/patterns/reporter.js.tmp.18320.1777808743731`
-  - `reporter/CLAUDE.md.tmp.22252.1777811429920`
-  - 看起來是過去 Claude Code session 原子寫入沒清乾淨。下次 thread 開始時建議檢查 `.gitignore` 是否含 `.tmp.*`(若有 → 安全刪除;若無 → 個別 check 是否還在用)
+**本 thread 新出現 parked**:
+- **B&W 老印表機 dither (#AAAAAA) 風險**:本 thread 測試 #11 實機印一台 OK,但若未來換印表機需留意。已記在 brief § 2.2 + § 7 風險
+- **Brief 集中慣例重議**:見 § 3 末段(non-blocking,可主動帶出討論或忽略)
 
-**Cowork UI paste 兩台都 ⏳**:
-- 本 thread 改了 `cowork-project-instructions.md` 三次(思考規則 #8–#11 / Session 切換 trigger / addendum 1 SOP I pre-flight / addendum 2 觸發語兩段式 / addendum 3 Glossary + 思考規則 #12 + SOP J 改名)
-- Notion § 1.0 表 vhyl + vhtt 兩格都 ⏳
-- 下次任何一台 boot 開新 thread,SOP I 的 Step 0 pre-flight 會 block 流程 → 提示先貼新版 Project Instructions 才能繼續
+**Cowork UI paste 兩台狀況(2026-05-20 更新)**:
+- vhyl:✅ up to date(本 thread SOP I pre-flight 確認;`cowork-project-instructions.md` 本 thread **未動**,§ 1.0 兩格不重置)
+- vhtt:仍 ⏳ 未驗收(從未貼過新版;下次切 vhtt 時 SOP I pre-flight 會 block 流程,提示先重貼)
+
+**本 thread 學到的 lesson(已存 memory,不需 parked)**:
+- `sandbox-no-git-on-windows-mount.md`:Linux sandbox 對 Windows-mounted `.git` 沒寫權限,跑 git 會留 stale lock 給 YC 收尾。**未來 Claude 動 git 一律請 YC PowerShell,sandbox 不要嘗試**
