@@ -54,6 +54,7 @@ function checkManifest(manifest, label) {
   if (!bad) ok('all ' + manifest.length + ' ids resolve to catalog entries; no duplicates');
 }
 checkManifest(viewerManifest, 'viewer');
+checkManifest(viewerManifest.VIEWER_A5_MANIFEST || [], 'viewer-A5');
 checkManifest(reporterPkg.REPORTER_MANIFEST, 'reporter');
 
 // Normalizers
@@ -73,8 +74,9 @@ header('computed (' + computed.COMPUTATIONS.length + ' entries)');
 
 // Resolved arrays (with rehydrated normalizers)
 header('resolved arrays');
-ok('viewer.length = '   + lib.viewer.length);
-ok('reporter.length = ' + lib.reporter.length);
+ok('viewer.length = '    + lib.viewer.length);
+ok('viewerA5.length = '  + lib.viewerA5.length);
+ok('reporter.length = '  + lib.reporter.length);
 const wbcViewer = lib.byId('WBC');
 ok('viewer WBC.normalize is fn: ' + (typeof wbcViewer.normalize === 'function'));
 ok('viewer WBC.normalize(6700): ' + (wbcViewer.normalize ? wbcViewer.normalize(6700) : 'n/a'));

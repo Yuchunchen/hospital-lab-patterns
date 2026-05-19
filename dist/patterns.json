@@ -1,6 +1,6 @@
 {
-  "version": "0.3.0",
-  "synced_at": "2026-05-13T13:22:08.575Z",
+  "version": "0.4.0",
+  "synced_at": "2026-05-19T18:13:00.840Z",
   "catalog": [
     {
       "id": "WBC",
@@ -1874,6 +1874,83 @@
       "computed": "TPHA",
       "pattern": null,
       "singleValue": true
+    }
+  ],
+  "viewer_a5_manifest": [
+    {
+      "id": "GluAC",
+      "order": 1,
+      "section": "血糖"
+    },
+    {
+      "id": "HbA1c",
+      "order": 2,
+      "section": "血糖"
+    },
+    {
+      "id": "CHOL",
+      "order": 3,
+      "section": "血脂"
+    },
+    {
+      "id": "TG",
+      "order": 4,
+      "section": "血脂"
+    },
+    {
+      "id": "HDLC",
+      "order": 5,
+      "section": "血脂"
+    },
+    {
+      "id": "LDL",
+      "order": 6,
+      "section": "血脂"
+    },
+    {
+      "id": "BUN",
+      "order": 7,
+      "section": "腎"
+    },
+    {
+      "id": "CREAT",
+      "order": 8,
+      "section": "腎"
+    },
+    {
+      "id": "eGFR",
+      "order": 9,
+      "section": "腎"
+    },
+    {
+      "id": "GOT",
+      "order": 10,
+      "section": "肝"
+    },
+    {
+      "id": "GPT",
+      "order": 11,
+      "section": "肝"
+    },
+    {
+      "id": "UA",
+      "order": 12,
+      "section": "其他"
+    },
+    {
+      "id": "UACR",
+      "order": 13,
+      "section": "腎"
+    },
+    {
+      "id": "GFRStage",
+      "order": 14,
+      "section": "腎臟病分期"
+    },
+    {
+      "id": "EarlyCKD",
+      "order": 15,
+      "section": "腎臟病分期"
     }
   ],
   "reporter_manifest": [
