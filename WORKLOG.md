@@ -4,6 +4,24 @@ Chronological log of pattern catalog changes. Newest entries on top.
 
 ---
 
+## 2026-05-20 — Brief 新增 + viewer 看診序號 overlay 實作 pointer
+
+- 作者:claude(與 YC 共同,在 vhyl Cowork 動手)
+- 範圍:doc(本 repo 加 1 個 brief 檔;**catalog 完全無動,viewer/reporter 不需 sync-patterns**)
+- 醫院 scope:both
+- 變更:新增
+- 影響檔:
+  - `docs/task-briefs/TASK_BRIEF_viewer_visit_serial_done.md`(直接以 `_done` 進 git;brief 在本 session 內寫完 + 實作 + 驗收一輪結束)
+- 動機:viewer 列印多病人報表需印「看診序號」協助護理站分發。spec 來自 2026-05-19 vhyl thread,本 thread 寫 brief + 實作 + 驗收一氣呵成。
+- 實作 commit(viewer repo):`91634da` feat(report): tabular paste 看診序號右上角 overlay (v1.3.0)。
+- 設計重點:tabular paste(≥5 tab cells)新增 col 1 抓 visitSerial → 報表 page 1+2 右上角 48pt #AAAAAA 淺灰 watermark overlay。free-form / 單一 chartno 不顯示。
+- Breaking change(viewer 內部):`popup.js splitChartInput()` 回傳結構 `string[]` → `Array<{chartno, visitSerial}>`,4 個 call site 對齊。
+- Spec 邊界:門診上午序號 ≤ 99 假設成立(48pt 不需 auto-shrink);若未來超過需重評估。
+- 跨 repo 副作用:**無** — catalog 沒動,viewer/reporter 不用 sync-patterns。
+- Notion 同步:Dashboard 加一條 Done(Order 2.5,Done date 2026-05-20)。
+- 相依:無
+- 兩台 paste 追蹤:本 commit **未**動 `docs/cowork-project-instructions.md` → § 1.0 兩格狀態不重置
+
 ## 2026-05-19(addendum 3)— Glossary 區 + SOP J 改名「End thread」+ 思考規則 #12「混淆時詢問」
 
 - 作者:claude(與 YC 共同,在 vhyl 動手)
