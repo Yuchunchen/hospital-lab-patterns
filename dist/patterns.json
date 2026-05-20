@@ -1,6 +1,6 @@
 {
   "version": "0.4.0",
-  "synced_at": "2026-05-20T15:37:05.405Z",
+  "synced_at": "2026-05-20T22:03:36.979Z",
   "catalog": [
     {
       "id": "WBC",
@@ -1517,6 +1517,66 @@
       ],
       "displayName": "腹部超音波",
       "category": "影像 / 文字報告"
+    },
+    {
+      "id": "EKG",
+      "displayName": "心電圖",
+      "pattern": {
+        "__regex": [
+          "E\\.K\\.G\\.|心電圖|EKG|ECG",
+          "i"
+        ]
+      },
+      "category": "檢查",
+      "unit": "",
+      "ref": "",
+      "lo": null,
+      "hi": null
+    },
+    {
+      "id": "ABI",
+      "displayName": "ABI",
+      "pattern": {
+        "__regex": [
+          "\\bABI\\b|Doppling ex\\.",
+          "i"
+        ]
+      },
+      "category": "檢查",
+      "unit": "",
+      "ref": "",
+      "lo": null,
+      "hi": null
+    },
+    {
+      "id": "PVR",
+      "displayName": "PVR",
+      "pattern": {
+        "__regex": [
+          "\\bPVR\\b|Doppling ex\\.",
+          "i"
+        ]
+      },
+      "category": "檢查",
+      "unit": "",
+      "ref": "",
+      "lo": null,
+      "hi": null
+    },
+    {
+      "id": "Fundus",
+      "displayName": "眼底鏡",
+      "pattern": {
+        "__regex": [
+          "Fundoscopy|眼底鏡",
+          "i"
+        ]
+      },
+      "category": "檢查",
+      "unit": "",
+      "ref": "",
+      "lo": null,
+      "hi": null
     }
   ],
   "viewer_manifest": [

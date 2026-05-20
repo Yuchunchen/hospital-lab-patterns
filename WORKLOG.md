@@ -4,6 +4,36 @@ Chronological log of pattern catalog changes. Newest entries on top.
 
 ---
 
+## 2026-05-21 — ckd_screening_dashboard S1：catalog 新增 EKG / ABI / PVR / Fundus 四個檢查 pattern
+
+- 作者：claude（與 YC 共同）
+- 範圍：catalog（新增「檢查」category，4 個 track-only entry）+ runtime-snapshot
+- 醫院 scope：both（pattern 設計上 vhtt 合併 order「Doppling ex.」會同時 match ABI/PVR；vhyl 分開兩筆 order 由各自 id match）
+- 變更：新增
+- 影響檔：
+  - `patterns/catalog.js`：尾端新增 4 條 entry（EKG / ABI / PVR / Fundus），category 統一為「檢查」。pattern 設計：
+    - `EKG`    : `/E\.K\.G\.|心電圖|EKG|ECG/i` — 對應 vhtt `E.K.G.(TT)`，留 ECG / 中文 alternation 給其他院區
+    - `ABI`    : `/\bABI\b|Doppling ex\./i` — `\b` word boundary 避免誤 match 其他 order name 子字串；`Doppling ex.` 對應 vhtt 合併 order
+    - `PVR`    : `/\bPVR\b|Doppling ex\./i` — 同上，vhtt 合併 order 會同時 match ABI/PVR，語義正確
+    - `Fundus` : `/Fundoscopy|眼底鏡/i` — 對應 vhtt `Fundoscopy(眼底鏡檢查)`
+    `unit`/`ref` 留空、`lo`/`hi` 為 null（這四個只需 orderDate / status，沒有 lab 數值要 capture）。
+  - `dist/patterns.json`：跑完 `npm run release` 自動更新（49.8 KB；catalog 80 → 84）。
+- 動機：`TASK_BRIEF_ckd_screening_dashboard` S1 第一步 — 為了讓 viewer 新 Dashboard（S2）能列出 CKD/DM 收案需要的 EKG / ABI / PVR / 眼底鏡 檢查日期。Phase 0 已實測 ernode `get_lab_orders` 確認回傳這三類 order（測試病人 125509A / 76708I / 122426G）。本 commit 純加 catalog entry，不動 viewer / reporter manifest — 故為 track-only，現有單人報表零影響。
+- 驗證：
+  - `npm run release` 全綠 — 84 catalog · 60 viewer · 15 viewer-A5 · 41 reporter · 14 computed · 9 reporter_computed；dist 49.8 KB；track-only 從 4 → 8（多 EKG / ABI / PVR / Fundus 4 條，符合預期）。
+  - regex 樣本對照測試（pass=6/6）：
+    - `E.K.G.(TT)` → [EKG] ✅
+    - `Doppling ex. and pressure recodring` → [ABI, PVR] ✅（合併 order 同時 match）
+    - `Fundoscopy(眼底鏡檢查)` → [Fundus] ✅
+    - `Bil Knee AP+LAT+Tangential 6張 (TT)` → [] ✅（放射線 order 不誤 match）
+    - `DM EDUCATION` → [] ✅
+    - `BUN` → [] ✅
+- 影響：
+  - viewer 端：跑 `node sync-patterns.js` 把新 catalog entry bundle 進 `mapping.js`。新 entry 不在 `VIEWER_MANIFEST`，`TEST_MAP = _resolveManifest(VIEWER_MANIFEST, CATALOG)` 不會解析到，故 report.js 既有單人報表完全不受影響。
+  - reporter 端：不在 `REPORTER_MANIFEST`，reporter 不受影響、不必重 sync。
+  - OPD 端：24h 內透過 `dist/patterns.json` 自動拿到（但 viewer popup 目前還沒消費這四個 id；S2 Dashboard 才會用）。
+- 相依：本 commit 推 main 後，viewer commit（同日 chore: sync-patterns）才接得上。reporter 不必動。
+
 ## 2026-05-20 — ckd_egfr_staging brief Phase A：computed.js 命名對齊 + REPORTER_COMPUTED 擴充
 
 - 作者：claude（與 YC 共同）
