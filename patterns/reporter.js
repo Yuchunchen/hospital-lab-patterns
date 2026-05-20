@@ -32,6 +32,7 @@ const CATEGORIES = [
   { id:'TRACE',    label:'微量元素' },
   { id:'PTH',      label:'副甲狀腺' },
   { id:'HEPAT',    label:'肝炎 / 感染' },
+  { id:'STAGING',  label:'腎臟病分期' },
   { id:'COMPUTED', label:'計算值' },
 ];
 
@@ -116,22 +117,31 @@ const REPORTER_MANIFEST = [
   { id:'RPR',      cat:'HEPAT',   label:'RPR' },
 ];
 
-// ─── Computed tests (URR, Ca×P) — reporter-specific derivations ─────────
-// These coexist with patterns/computed.js; reporter's HTML loads them
-// as COMPUTED_TESTS via a backwards-compat alias.
+// ─── Computed tests — render manifest for derived values ────────────────
+//
+// Each entry is a "what to render" row in the reporter's lab table; the
+// actual compute logic lives in patterns/computed.js (COMPUTATIONS), which
+// the reporter inlines at sync/build time and dispatches via core/compute.js.
+//
+// `kind:'staging'` flags string-valued entries (GFR/UACR/etc.) so the
+// lab-view skips numeric hi/lo alarming and uses the staging colour map.
+//
+// URR / CaxP retain their original render metadata (cat:'COMPUTED'); the new
+// CKD-staging entries go under cat:'STAGING'. eGFR is numeric (so plain
+// hi/lo applies) but kept here because it is also derived from CREAT.
 const REPORTER_COMPUTED = [
-  { id:'URR',  cat:'COMPUTED', label:'URR',  unit:'%', ref:'>65%', hi:null, lo:65,
-    needs:['BUN_pre', 'BUN_post'],
-    compute: (pre, post) => {
-      if (pre == null || post == null || pre === 0) return null;
-      return +((1 - post / pre) * 100).toFixed(1);
-    } },
-  { id:'CaxP', cat:'COMPUTED', label:'Ca×P', unit:'',  ref:'<55',  hi:55,   lo:null,
-    needs:['Ca', 'P'],
-    compute: (ca, p) => {
-      if (ca == null || p == null) return null;
-      return +(ca * p).toFixed(1);
-    } },
+  // Dialysis-era derivations
+  { id:'URR',  cat:'COMPUTED', label:'URR',  unit:'%', ref:'>65%', hi:null, lo:65 },
+  { id:'CaxP', cat:'COMPUTED', label:'Ca×P', unit:'',  ref:'<55',  hi:55,   lo:null },
+
+  // CKD staging (eGFR numeric; rest are qualitative staging strings)
+  { id:'eGFR',      cat:'STAGING', label:'eGFR',         unit:'mL/min/1.73m²', ref:'>60', hi:null, lo:60 },
+  { id:'GFRStage',  cat:'STAGING', label:'GFR 分期',      kind:'staging' },
+  { id:'UACRStage', cat:'STAGING', label:'UACR 分期',     kind:'staging' },
+  { id:'UPCRStage', cat:'STAGING', label:'UPCR 分期',     kind:'staging' },
+  { id:'KDIGORisk', cat:'STAGING', label:'KDIGO 風險',    kind:'staging' },
+  { id:'TaiwanCKD', cat:'STAGING', label:'台灣 CKD 分期', kind:'staging' },
+  { id:'EarlyCKD',  cat:'STAGING', label:'健保 CKD 分群', kind:'staging' },
 ];
 
 // ─── Exports (CommonJS + browser global) ─────────────────────────────────

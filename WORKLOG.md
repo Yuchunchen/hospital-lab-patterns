@@ -4,6 +4,26 @@ Chronological log of pattern catalog changes. Newest entries on top.
 
 ---
 
+## 2026-05-20 — ckd_egfr_staging brief Phase A：computed.js 命名對齊 + REPORTER_COMPUTED 擴充
+
+- 作者：claude（與 YC 共同）
+- 範圍：computed（命名修正）+ reporter-manifest（STAGING 類別 + 9 條 computed render manifest）+ runtime-snapshot（dist 多兩欄）
+- 醫院 scope：both
+- 變更：修改 + 新增
+- 影響檔：
+  - `patterns/computed.js`：`URR.needs` 從 `['BUNPre','BUNPost']` 對齊成 `['BUN_pre','BUN_post']`（reporter / viewer 共用 id 命名）；id `CaP` → `CaxP`（reporter UI 已用此名）。compute 函式對應改 destructuring。其餘 12 條 computation 不動。
+  - `patterns/reporter.js`：CATEGORIES 加 `{id:'STAGING', label:'腎臟病分期'}`；`REPORTER_COMPUTED` 從 2 條（URR/CaxP）擴成 9 條 — 新增 eGFR（cat:STAGING, 數值有 lo:60）+ GFRStage / UACRStage / UPCRStage / KDIGORisk / TaiwanCKD / EarlyCKD（cat:STAGING, kind:'staging'）。URR / CaxP 移除 inline compute 函式（compute 邏輯改由 reporter dispatcher 從 COMPUTATIONS 拿；reporter.js 只留 render metadata）。
+  - `scripts/build-json.js`：snapshot 加 `reporter_computed`（現在純 render metadata，可安全 serialize）+ `computed_meta`（COMPUTATIONS 的 id/needs/meta，compute fn 由 replacer 自動丟）。log 印 reporter_computed.length + computed_meta.length。註解更新（原本說「reporter_computed 含 compute fn 故不 snapshot」已不適用）。
+  - `dist/patterns.json`：跑完 `npm run release` 自動更新（47.8 → 48.8 KB；新增 reporter_computed + computed_meta 區塊；dropped functions 從 0 → 14，全部來自 COMPUTATIONS 的 compute fn，reporter 端是 inline 取得不靠 dist）。
+- 動機：reporter 端 `core/compute.js` 原本只 hardcode 兩條 if-else（URR / CaxP），CKD HTML 上線 12 天 0 個病人有 eGFR / 分期 — Phase 3 commit 自己標 backlog（`groups/early-ckd.js` 舊 line 67–69）。brief `TASK_BRIEF_ckd_egfr_staging` 要求重構 dispatcher 走 COMPUTATIONS registry + 接上 7 條 CKD staging。本 commit 是 Phase A 的 patterns 端，reporter 端 dispatcher 改寫見 reporter WORKLOG 同日條目。
+- 命名一致性：COMPUTATIONS 與 REPORTER_COMPUTED / 兩 consumer 內部命名統一（URR 用 BUN_pre / BUN_post、Ca×P 統一稱 CaxP）— 之前 COMPUTATIONS 的 BUNPre / BUNPost 沒對應任何 reporter id，URR 根本算不出來；renaming 後 dispatcher 才能正確跑。
+- 驗證：`npm run release` 全綠 — 80 catalog · 60 viewer · 15 viewer-A5 · 41 reporter · 14 computed · 9 reporter_computed；dist 48.8 KB；track-only 仍 4 條（4 個 Urine* catalog entry，CKD HTML 用 — 不變）。
+- 影響：
+  - reporter 兩個 sync entry-point（`sync-patterns.js` legacy + `build.js` Phase 1 pipeline）都要把 `patterns/computed.js` 一起 inline 才能讓 reporter dispatcher 用 COMPUTATIONS — 改動見 reporter WORKLOG 同日。
+  - viewer 端 `patterns-computed.js`（從 computed.js 整檔複製）需重 sync 拿到 URR / CaxP 新命名 — 已跑 `node sync-patterns.js`。viewer report.js 不用 URR / CaxP（只用 HBsAg / Anti-HBs / Anti-HCV display + eGFR helper），所以行為不變。
+  - OPD 端 24h 內透過 dist/patterns.json 自動拿到新 reporter_computed + computed_meta 區塊（但 viewer popup 不引用，純資訊性）。
+- 相依：本 commit 必須先 push，reporter / viewer commit 才接得上。
+
 ## 2026-05-20 — labs_storage_indexeddb brief 收尾（漏 commit 補正）
 
 - 作者:claude（與 YC 共同）

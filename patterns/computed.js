@@ -206,11 +206,13 @@ const COMPUTATIONS = [
     compute: ({ CREAT, age, gender }) => eGFR_CKDEPI_2021({ creatinine: CREAT, age, gender }),
     meta:{ unit:'mL/min/1.73m²', ref:'> 60', lo:60 } },
 
-  { id:'URR',        needs:['BUNPre', 'BUNPost'],
-    compute: ({ BUNPre, BUNPost }) => URR({ bun_pre: BUNPre, bun_post: BUNPost }),
+  // URR needs use the reporter / viewer id convention (BUN_pre / BUN_post).
+  { id:'URR',        needs:['BUN_pre', 'BUN_post'],
+    compute: ({ BUN_pre, BUN_post }) => URR({ bun_pre: BUN_pre, bun_post: BUN_post }),
     meta:{ unit:'%', ref:'> 65%', lo:65 } },
 
-  { id:'CaP',        needs:['Ca', 'P'],
+  // Renamed CaP → CaxP to match the reporter's UI/storage id (results['CaxP']).
+  { id:'CaxP',       needs:['Ca', 'P'],
     compute: ({ Ca, P }) => CaP({ Ca, P }),
     meta:{ unit:'', ref:'< 55', hi:55 } },
 
