@@ -8,6 +8,16 @@
 
 ---
 
+## 設計決策（2026-05-13 Cowork session 確認）
+
+| # | 決策 | 說明 |
+|---|---|---|
+| D1 | **Option A：擴展現有 DB** | bump `LabReporterOrdersCache` version 1→2，加 `labData` store |
+| D2 | **單一 store，keyPath = `chartno`** | 跨 disease group 共用，不用 groupId prefix；同一病人不重複儲存 |
+| D3 | **刪除前檢查其他 group** | `confirmRemovePatient` 時掃描所有 `patients_*` localStorage keys；chartno 仍在任一 group → 保留 IDB record |
+
+---
+
 ## Problem(2026-05-12 vhyl validation 期間發現)
 
 CKD reporter bulk-add 20 個病人後 `localStorage.setItem('labs_ckd', ...)` 噴 `QuotaExceededError`,剩下 26 人 lab data 全部丟失。控制台典型訊息:
@@ -42,11 +52,10 @@ dialysis HTML 不會這麼快踩到,因為 dialysis 不啟用 UACR sub-page enri
 
 僅 reporter repo。所有 changes 都在 `core/` 模組內,disease groups 不動。
 
-### 1. 新增 IndexedDB store(可選:擴展現有 DB)
+### 1. 擴展現有 DB — Option A（已確認 2026-05-13）
 
-兩個選項:
-
-**(A) 擴展現有 `LabReporterOrdersCache` DB,加一個 `labData` store**
+**決策：擴展現有 `LabReporterOrdersCache` DB，加一個 `labData` store。**
+單一 DB，connection 共用，跟 2026-05-08 milestone 維持「reporter 只有一個 IDB DB」原則。
 
 ```js
 // core/indexeddb-cache.js
@@ -56,15 +65,9 @@ const ORDERS_DB_VER = 2;   // bump from 1 → 2
 //     db.createObjectStore('labData', { keyPath: 'chartno' })
 ```
 
-優點:單一 DB,connection 共用。
-缺點:DB version 變動,需確保 viewer / 其他工具不會誤開 v1。
-
-**(B) 開新 DB `LabReporterLabData`,獨立 store**
-
-優點:清晰分離,upgrade path 簡單。
-缺點:多開一個 IDB connection。
-
-→ **建議 (A)**,跟 2026-05-08 milestone 維持「reporter 只有一個 IDB DB」原則。
+**Store 設計：單一 `labData` store，keyPath = `chartno`（已確認 2026-05-13）。**
+跨 disease group（dialysis / ckd）共用同一個 store，不用 groupId prefix。
+理由：同一個病人可能同時出現在 dialysis 和 ckd 兩個 group，lab data 本身跟 disease group 無關，共用避免重複儲存。
 
 ### 2. 新增 lab data CRUD helpers
 
@@ -85,6 +88,11 @@ async function labDataPut(chartno, lab) {
 
 async function labDataDelete(chartno) {
   // called when patient is removed (in confirmRemovePatient)
+  // ★ 刪除策略（已確認 2026-05-13）：
+  //   移除病人前，檢查所有 disease group 的 patient list
+  //   （localStorage keys: patients_dialysis, patients_ckd, ...）
+  //   只有 chartno 不在任何其他 group 時才從 IDB 刪除。
+  //   若仍在其他 group → 保留 IDB record，僅從當前 group list 移除。
 }
 ```
 
@@ -115,9 +123,14 @@ async function saveLabData(data) { /* per-chartno labDataPut for each key */ }
 
 全部都要 `await loadLabData()`。
 
-### 4. 一次性 migration IIFE(同 2026-05-08 ordersCache 模式)
+### 4. 一次性 migration IIFE（同 2026-05-08 ordersCache 模式）
 
-`core/init.js` 或 `core/indexeddb-cache.js` 開頭:
+`core/init.js` 或 `core/indexeddb-cache.js` 開頭。
+
+因為 store 現在是跨 group 共用（keyPath = chartno），migration 只需處理**當前 group**
+的 `labs_<groupId>`。每個 disease HTML 各自執行一次 migration；如果同一個 chartno
+已經被另一個 group 先 migrate 過，`labDataPut` 用 newer-wins 覆寫即可（lab data
+本身不分 group）。
 
 ```js
 (async function migrateLabsToIDB() {
@@ -131,10 +144,14 @@ async function saveLabData(data) { /* per-chartno labDataPut for each key */ }
     if (!obj || typeof obj !== 'object') return;
     let migrated = 0;
     for (const [cn, lab] of Object.entries(obj)) {
-      await labDataPut(cn, lab);
-      migrated++;
+      // newer-wins: if chartno already in IDB from another group's migration,
+      // overwrite only if this record is newer (compare _lastUpdate)
+      const existing = await labDataGet(cn);
+      if (!existing || (lab._lastUpdate || 0) >= (existing._lastUpdate || 0)) {
+        await labDataPut(cn, lab);
+        migrated++;
+      }
     }
-    // 保留 lsKey 作 backup,one-release 後再清。仿 2026-05-08 hd_* migration。
     console.log(`[migration] migrated ${migrated} labs from ${lsKey} → IDB`);
     localStorage.setItem(lsKey + '_legacy', lsData);   // backup
     localStorage.removeItem(lsKey);
@@ -158,7 +175,7 @@ const STORAGE_KEYS = {
 };
 ```
 
-`group.storageKey.labs` 在 `groups/dialysis.js` 與 `groups/early-ckd.js` 還是要保留(IDB store 內仍可拿來區分 disease,或當 fallback identifier),但 reporter 端不再直接用它讀 localStorage。
+`group.storageKey.labs` 在 `groups/dialysis.js` 與 `groups/early-ckd.js` 保留（migration IIFE 需要它來找舊的 localStorage key），但 reporter 端不再直接用它讀寫 localStorage。migration 完成後這些 key 只剩 `_legacy` backup。
 
 ---
 
@@ -166,8 +183,8 @@ const STORAGE_KEYS = {
 
 1. **乾淨環境**(清 localStorage + 清 IDB)bulk-add 30 個 CKD 病人 → 不該再爆 quota。
 2. **舊環境**(localStorage 已有 labs_dialysis 半滿)首次載入新版 → migration IIFE 把資料搬到 IDB,localStorage 清空,UI 仍顯示原本病人 list。
-3. **跨 group 隔離**:dialysis HTML 與 ckd HTML 各自 labs 互不污染(用 chartno + ACTIVE_GROUP_ID 做 key,或兩個 store)。
-4. **patient 刪除**:`confirmRemovePatient` 後 IDB store 內該 chartno 的 lab record 也清掉,避免 ghost。
+3. **跨 group 共用**:dialysis 和 ckd 共用同一個 IDB `labData` store（keyPath=chartno）。同一病人在兩邊都能讀到 lab data，不重複儲存。
+4. **patient 刪除（cross-group check）**:`confirmRemovePatient` 後，檢查所有 group 的 patient list（`patients_dialysis`, `patients_ckd`, ...）；chartno 仍在其他 group → 保留 IDB record；不在任何 group → 刪除 IDB record。
 5. **incremental fetch + extract**:`fetchAndStore` 跑完仍能正確把新 labs 寫進 IDB,reload 後讀回。
 6. **export CSV / xlsx**:KiDiTi + renal platform 兩個 exporter 跑 30 人 → 不該因 await 漏寫導致空欄。
 7. **WORKLOG**:照 5/8 ordersCache migration 的 entry 格式記錄。

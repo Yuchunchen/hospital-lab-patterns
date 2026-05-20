@@ -4,6 +4,16 @@ Chronological log of pattern catalog changes. Newest entries on top.
 
 ---
 
+## 2026-05-20 — labs_storage_indexeddb brief 收尾（漏 commit 補正）
+
+- 作者:claude（與 YC 共同）
+- 範圍:doc（brief 改名歸檔,rule #6）
+- 變更:重新命名
+- 影響檔:`docs/task-briefs/TASK_BRIEF_labs_storage_indexeddb.md` → `..._done.md`
+- 動機:2026-05-13 vhtt 已完成 reporter IndexedDB labs migration（reporter `indexeddb-cache.js` LABDATA_STORE + storage.js / ui-patient-crud.js 全面改用 IDB），brief 本機改名 `_done` 但漏了 `git add` + commit，導致 git 仍追蹤舊檔、Notion Dashboard 未同步。本次補正。
+- 跨 repo:無 — reporter 程式碼早已 push。
+- 相依:reporter 原始 commit 約 2026-05-13
+
 ## 2026-05-20 — A5 brief 歸檔完工(`_done.md`)
 
 - 作者:claude(與 YC 共同)
