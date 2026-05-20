@@ -1,6 +1,6 @@
 {
   "version": "0.4.0",
-  "synced_at": "2026-05-19T18:13:00.840Z",
+  "synced_at": "2026-05-20T15:37:05.405Z",
   "catalog": [
     {
       "id": "WBC",
@@ -2242,8 +2242,201 @@
       "label": "肝炎 / 感染"
     },
     {
+      "id": "STAGING",
+      "label": "腎臟病分期"
+    },
+    {
       "id": "COMPUTED",
       "label": "計算值"
+    }
+  ],
+  "reporter_computed": [
+    {
+      "id": "URR",
+      "cat": "COMPUTED",
+      "label": "URR",
+      "unit": "%",
+      "ref": ">65%",
+      "hi": null,
+      "lo": 65
+    },
+    {
+      "id": "CaxP",
+      "cat": "COMPUTED",
+      "label": "Ca×P",
+      "unit": "",
+      "ref": "<55",
+      "hi": 55,
+      "lo": null
+    },
+    {
+      "id": "eGFR",
+      "cat": "STAGING",
+      "label": "eGFR",
+      "unit": "mL/min/1.73m²",
+      "ref": ">60",
+      "hi": null,
+      "lo": 60
+    },
+    {
+      "id": "GFRStage",
+      "cat": "STAGING",
+      "label": "GFR 分期",
+      "kind": "staging"
+    },
+    {
+      "id": "UACRStage",
+      "cat": "STAGING",
+      "label": "UACR 分期",
+      "kind": "staging"
+    },
+    {
+      "id": "UPCRStage",
+      "cat": "STAGING",
+      "label": "UPCR 分期",
+      "kind": "staging"
+    },
+    {
+      "id": "KDIGORisk",
+      "cat": "STAGING",
+      "label": "KDIGO 風險",
+      "kind": "staging"
+    },
+    {
+      "id": "TaiwanCKD",
+      "cat": "STAGING",
+      "label": "台灣 CKD 分期",
+      "kind": "staging"
+    },
+    {
+      "id": "EarlyCKD",
+      "cat": "STAGING",
+      "label": "健保 CKD 分群",
+      "kind": "staging"
+    }
+  ],
+  "computed_meta": [
+    {
+      "id": "eGFR",
+      "needs": [
+        "CREAT",
+        "__patient.age",
+        "__patient.gender"
+      ],
+      "meta": {
+        "unit": "mL/min/1.73m²",
+        "ref": "> 60",
+        "lo": 60
+      }
+    },
+    {
+      "id": "URR",
+      "needs": [
+        "BUN_pre",
+        "BUN_post"
+      ],
+      "meta": {
+        "unit": "%",
+        "ref": "> 65%",
+        "lo": 65
+      }
+    },
+    {
+      "id": "CaxP",
+      "needs": [
+        "Ca",
+        "P"
+      ],
+      "meta": {
+        "unit": "",
+        "ref": "< 55",
+        "hi": 55
+      }
+    },
+    {
+      "id": "UIBC",
+      "needs": [
+        "TIBC",
+        "Fe"
+      ],
+      "meta": {
+        "unit": "µg/dL",
+        "ref": "110–370 µg/dL",
+        "lo": 110,
+        "hi": 370
+      }
+    },
+    {
+      "id": "PSARatio",
+      "needs": [
+        "PSA",
+        "FreePSA"
+      ],
+      "meta": {
+        "unit": "%",
+        "ref": ">25 normal, 10-25 caution, <10 warning"
+      }
+    },
+    {
+      "id": "GFRStage",
+      "needs": [
+        "eGFR"
+      ]
+    },
+    {
+      "id": "UACRStage",
+      "needs": [
+        "UACR"
+      ]
+    },
+    {
+      "id": "UPCRStage",
+      "needs": [
+        "UPCR"
+      ]
+    },
+    {
+      "id": "KDIGORisk",
+      "needs": [
+        "eGFR",
+        "UACR"
+      ]
+    },
+    {
+      "id": "TaiwanCKD",
+      "needs": [
+        "eGFR",
+        "UACR",
+        "UPCR"
+      ]
+    },
+    {
+      "id": "EarlyCKD",
+      "needs": [
+        "eGFR",
+        "TaiwanCKD"
+      ]
+    },
+    {
+      "id": "HBsAgDisplay",
+      "needs": [
+        "HBsAg",
+        "HBsAgTiter"
+      ]
+    },
+    {
+      "id": "AntiHBsDisplay",
+      "needs": [
+        "AntiHBs",
+        "AntiHBsTiter"
+      ]
+    },
+    {
+      "id": "HCV",
+      "needs": [
+        "AntiHCV",
+        "AntiHCVTiter"
+      ]
     }
   ]
 }

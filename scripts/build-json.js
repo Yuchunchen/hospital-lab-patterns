@@ -25,6 +25,7 @@ const path = require('path');
 const catalog        = require('../patterns/catalog');
 const viewerManifest = require('../patterns/viewer');
 const reporterPkg    = require('../patterns/reporter');
+const computedPkg    = require('../patterns/computed');
 const lib            = require('../patterns/index');
 
 let droppedFunctions = 0;
@@ -49,9 +50,14 @@ const snapshot = {
   viewer_a5_manifest: viewerManifest.VIEWER_A5_MANIFEST || [],
   reporter_manifest: reporterPkg.REPORTER_MANIFEST,
   reporter_categories: reporterPkg.CATEGORIES,
-  // Note: reporter_computed contains compute() functions, deliberately
-  // not snapshotted — reporter HTML is not designed for runtime updates
-  // and continues to use the bundled inline copy.
+  // REPORTER_COMPUTED is now pure render metadata (no compute fns — those
+  // live in COMPUTATIONS / patterns/computed.js, which the reporter inlines
+  // at build time). Safe to snapshot. computed_meta exposes the id + needs
+  // + meta of every computation (the compute fn itself is dropped by
+  // replacer; the reporter loads it via inlined patterns/computed.js, not
+  // from dist).
+  reporter_computed: reporterPkg.REPORTER_COMPUTED,
+  computed_meta:     computedPkg.COMPUTATIONS,
 };
 
 const distDir = path.resolve(__dirname, '..', 'dist');
@@ -67,5 +73,7 @@ console.log('  catalog entries:    ' + snapshot.catalog.length);
 console.log('  viewer manifest:    ' + snapshot.viewer_manifest.length);
 console.log('  viewer A5 manifest: ' + snapshot.viewer_a5_manifest.length);
 console.log('  reporter manifest:  ' + snapshot.reporter_manifest.length);
-console.log('  dropped functions:  ' + droppedFunctions + ' (compute fns in reporter_computed are intentionally omitted)');
+console.log('  reporter computed:  ' + snapshot.reporter_computed.length);
+console.log('  computed meta:      ' + snapshot.computed_meta.length);
+console.log('  dropped functions:  ' + droppedFunctions + ' (compute fns from COMPUTATIONS — reporter inlines patterns/computed.js at build time)');
 console.log('  synced_at:          ' + snapshot.synced_at);
