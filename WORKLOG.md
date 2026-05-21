@@ -4,6 +4,26 @@ Chronological log of pattern catalog changes. Newest entries on top.
 
 ---
 
+## 2026-05-21 — 健檢 CXR brief 歸檔：parent `health_check_cxr` → `_done`
+
+- 作者：claude（與 YC 共同）
+- 範圍：docs/task-briefs
+- 變更：brief 歸檔（rule #6）
+- 檔案：
+  - `docs/task-briefs/TASK_BRIEF_health_check_cxr.md` → `_done.md`
+- 內容：
+  1. parent brief 測試清單打勾：1-5、7-9 通過；6（retry）/ 10（cache hit）corner case 未刻意觸發，unit / 程式碼層已驗證，標 follow-up
+  2. § 測試清單頂部加 2026-05-21 happy-path acceptance 註記
+- 依據：YC 在 vhtt 實機跑通 — Gemini Flash Key + 50 筆 batch + 列印預覽，回報「測試 ok」
+- 觸發 polish 子 brief（`TASK_BRIEF_health_check_cxr_polish_done.md`，上一輪歸檔）+ 摘要 unclip fix（viewer cxr.html 同日）合計三輪改動全部 land。
+- 不動：catalog / computed / manifest（純 viewer pipeline，不需 sync-patterns）
+- 後續 follow-up（不擋本歸檔）：
+  - retry corner case 實機驗證（Chrome DevTools throttle 或自然遇到 5xx/429）
+  - cache hit 實機驗證（同 chartno 跑第二次確認 IndexedDB 命中、未打 API）
+  - `TASK_BRIEF_ckd_screening_dashboard.md` 仍 untracked（前 thread 起的事，等 CKD S3 完工再一起 commit）
+
+---
+
 ## 2026-05-21 — viewer：CXR 報告清理 + 原始內容欄全文顯示
 
 - 作者：claude（與 YC 共同）
