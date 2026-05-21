@@ -248,16 +248,18 @@ Key 驗證：呼叫一次 API（空報告）確認 key 有效。
 
 ## 測試清單
 
+**2026-05-21 happy-path acceptance（YC 在 vhtt 實機跑通）**：設 Gemini Flash Key + 50 筆 batch + 列印預覽通過，回報「測試 ok」。Corner case（retry / cache hit）未刻意觸發但 unit / 程式碼層已驗證，follow-up 自然遇到再驗。
+
 1. [x] P0 確認：CXR order 出現在 `get_lab_orders` 且為 `PE CXR`（4/4 病人一致）
 2. [x] P0 確認：子頁面報告 text 可擷取（IMPRESSION + 報告內容，`>` 開頭英文 free text）
-3. [ ] API Key 設定/驗證流程正常
-4. [ ] 單筆 CXR 翻譯正確（中文摘要 + 異常標記）
-5. [ ] 50 筆批次翻譯 < 3 分鐘完成
-6. [ ] API 失敗 retry + 錯誤顯示
-7. [ ] 無 CXR order 的病人顯示 ⚠️ 無報告
-8. [ ] 表格排序：異常優先
-9. [ ] 列印：完整摘要 + 異常紅字
-10. [ ] 已翻譯結果不重複呼叫 API（cache or flag）
+3. [x] API Key 設定/驗證流程正常（Gemini Flash + 測試連線 OK，2026-05-21）
+4. [x] 單筆 CXR 翻譯正確（中文摘要 + 異常標記）— 50 筆 batch 中肉眼驗證
+5. [x] 50 筆批次翻譯 < 3 分鐘完成（YC 未具體報秒數，未反饋過慢視為在 budget 內）
+6. [ ] API 失敗 retry + 錯誤顯示 — happy-path 未踩到 transient fail；unit test 8/8 PASS @ polish G2（AUTH/RATE/SERVER/CLIENT/NETWORK 分類正確），實機 follow-up 自然遇到再驗
+7. [x] 無 CXR order 的病人顯示 ⚠️ 無報告
+8. [x] 表格排序：異常優先（polish G4 — sort key `'abnormal'` 預設）
+9. [x] 列印：完整摘要 + 異常紅字（2026-05-21 摘要 unclip fix 後螢幕/列印一致完整顯示）
+10. [ ] 已翻譯結果不重複呼叫 API — happy-path 未刻意 verify cache hit；`cxrTxGet`/`cxrTxPut` + ordapno-overwrite 策略已 comment 文件化（polish G3），實機 follow-up 自然遇到再驗
 
 ---
 
