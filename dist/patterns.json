@@ -1,6 +1,6 @@
 {
   "version": "0.4.0",
-  "synced_at": "2026-05-21T00:25:06.931Z",
+  "synced_at": "2026-05-21T03:05:06.492Z",
   "catalog": [
     {
       "id": "WBC",
@@ -1591,6 +1591,54 @@
       "category": "檢查",
       "unit": "",
       "ref": "",
+      "lo": null,
+      "hi": null
+    },
+    {
+      "id": "BMD",
+      "displayName": "骨質密度 (BMD)",
+      "shortLabel": "BMD",
+      "pattern": {
+        "__regex": [
+          "Bone\\s+density",
+          "i"
+        ]
+      },
+      "category": "檢查",
+      "unit": null,
+      "ref": null,
+      "lo": null,
+      "hi": null
+    },
+    {
+      "id": "CAC",
+      "displayName": "冠狀動脈鈣化 (CAC)",
+      "shortLabel": "CAC",
+      "pattern": {
+        "__regex": [
+          "Coronary\\s+Calcium",
+          "i"
+        ]
+      },
+      "category": "檢查",
+      "unit": null,
+      "ref": null,
+      "lo": null,
+      "hi": null
+    },
+    {
+      "id": "LDCT",
+      "displayName": "低劑量肺部CT (LDCT)",
+      "shortLabel": "LDCT",
+      "pattern": {
+        "__regex": [
+          "Low\\s+Dose\\s+Chest\\s+CT",
+          "i"
+        ]
+      },
+      "category": "檢查",
+      "unit": null,
+      "ref": null,
       "lo": null,
       "hi": null
     }
