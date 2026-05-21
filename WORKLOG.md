@@ -4,6 +4,55 @@ Chronological log of pattern catalog changes. Newest entries on top.
 
 ---
 
+## 2026-05-21 — viewer：CXR 報告清理 + 原始內容欄全文顯示
+
+- 作者：claude（與 YC 共同）
+- 範圍：viewer（cxr.js）
+- 變更：改善
+- 影響檔：`cxr.js`
+- 內容：
+  1. **新增 `cxrCleanReportText()`**：移除報告中的免責聲明（box-drawing 字元 + 敬告/請病患行）、LDCT protocol 說明段落、檢查項目碼行（`檢查項目：數字`）、連續空行壓縮為單行。
+  2. **原始內容欄**：從 truncate + tooltip 改為 `white-space:pre-wrap; word-break:break-word` 全文顯示。
+- commit：d1a6711
+
+## 2026-05-21 — viewer：健檢報告擴充為四類影像 + 新欄位 + 篩選
+
+- 作者：claude（與 YC 共同）
+- 範圍：viewer（cxr.html / cxr.js）
+- 變更：擴充
+- 影響檔：`cxr.html`、`cxr.js`
+- 內容：
+  1. 從 CXR-only 擴充到 CXR / BMD / CAC / LDCT 四類影像，每人最多 4 列（每類一列）。
+  2. 表格 6 欄：病歷號 / 檢查類型（badge）/ 開單日期（生效時間）/ 檢查日期（簽收時間）/ 原始內容 / 摘要。
+  3. 篩選 UI：檢查類型 radio（全部/CXR/BMD/CAC/LDCT）+ 異常/無報告。
+  4. 排序：病歷號 → 檢查類型序（CXR=0, BMD=1, CAC=2, LDCT=3）。
+- commit：9a50877
+
+## 2026-05-21 — viewer：UI 重構 — popup 統一入口 + 按鈕改名
+
+- 作者：claude（與 YC 共同）
+- 範圍：viewer（popup.html / popup.js / dashboard.html / dashboard.js / cxr.html / cxr.js / manifest.json）
+- 變更：重構
+- 影響檔：7 檔，+152/−226
+- 內容：
+  1. 按鈕改名：Search→報告查詢 / Dashboard→📊 DM腎病個案管理 / CXR翻譯→🩻 健檢報告。
+  2. popup textarea 為唯一輸入入口，Dashboard/CXR 移除輸入區。
+  3. `chrome.storage.session` + `onChanged` 監聽實現跨視窗清單傳遞。
+  4. Dashboard/CXR 開啟時 focus 已開視窗（不重複開）。
+- commit：34119cd
+
+## 2026-05-21 — viewer：健檢 CXR 批次翻譯 pipeline（mock LLM）
+
+- 作者：claude（與 YC 共同）
+- 範圍：viewer（新增 cxr.html / cxr.js / llm-translate.js；修改 lab-core.js / popup.html / popup.js / manifest.json）
+- 變更：新增
+- 內容：
+  1. 健檢報告獨立視窗（CXR tab），batch fetch CXR order → 子頁面報告 → LLM 翻譯。
+  2. 四種 LLM backend：mock / gemini / claude / openai（llm-translate.js）。
+  3. IndexedDB `cxrTranslations` store（DB_VER 5→6），provider/model 快取失效。
+  4. CXR 按鈕加入 popup。
+- commit：906f32c
+
 ## 2026-05-21 — health_check_cxr S1 補充：catalog 新增 BMD / CAC / LDCT 三個檢查 pattern
 
 - 作者：claude（與 YC 共同）

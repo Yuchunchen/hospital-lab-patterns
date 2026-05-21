@@ -1,4 +1,4 @@
-# TASK_BRIEF: Viewer — 健檢 CXR 批次翻譯
+# TASK_BRIEF: Viewer — 健檢影像報告批次翻譯
 
 > **方向**：vhtt 提出 + 執行
 > **產出 session**：vhtt Cowork session, 2026-05-21
@@ -10,14 +10,23 @@
 
 ## Problem
 
-健康檢查門診每日約 50 人，每人需查看最近一次 CXR（胸部 X 光）報告。CXR 報告為英文，醫師需要：
+健康檢查門診每日約 50 人，每人需查看多種影像報告（CXR / BMD / CAC / LDCT）。報告為英文，醫師需要：
 
 1. 快速看到中文白話摘要（非逐字翻譯）
 2. 異常項目明確標記（方便一眼辨識需追蹤個案）
 
-目前流程：人工逐筆進 ernode → 開子頁面 → 讀英文報告 → 自行判讀。50 人需大量重複操作。
+目前流程：人工逐筆進 ernode → 開子頁面 → 讀英文報告 → 自行判讀。50 人 × 最多 4 類影像 = 大量重複操作。
 
-**目標**：批次抓取 CXR 報告 → Claude API（Haiku）自動翻譯 + 異常標記 → 表格呈現 + 列印。
+**目標**：批次抓取 4 類影像報告 → LLM 自動翻譯 + 異常標記 → 表格呈現 + 列印。
+
+### 涵蓋影像類型
+
+| 類型 | Order Name (vhtt) | Catalog Pattern |
+|---|---|---|
+| CXR（胸部X光）| `PE CXR` / `CHEST PA or AP View (TT)` | `/PE\s*CXR\|CHEST\s+PA\s+or\s+AP/i` |
+| BMD（骨質密度）| `PE Whole Body Bone density scan` | `/Bone\s+density/i` |
+| CAC（冠狀動脈鈣化）| `PE85 Coronary Calcium Score CT` | `/Coronary\s+Calcium/i` |
+| LDCT（低劑量肺部CT）| `PE Low Dose Chest CT` | `/Low\s+Dose\s+Chest\s+CT/i` |
 
 ---
 
@@ -28,7 +37,7 @@
 | Use case | 資料來源 | 處理方式 | 呈現 |
 |---|---|---|---|
 | CKD/DM Dashboard | ernode orders | Pattern match + 日期比對 | 篩檢表格 |
-| **健檢 CXR 翻譯** | **ernode orders → 子頁面報告** | **Claude API 翻譯** | **翻譯表格 + 列印** |
+| **健檢影像翻譯** | **ernode orders → 子頁面報告** | **LLM 翻譯（多 provider）** | **翻譯表格 + 列印** |
 
 與 CKD/DM Dashboard 共用：獨立視窗架構、批次 fetch pipeline、ernode API 呼叫邏輯。
 
@@ -101,17 +110,23 @@ ID 清單
   → 組裝表格資料
 ```
 
-### Claude API 設計
+### LLM 多 Provider 設計
+
+| Provider | Model | 成本 | 備註 |
+|---|---|---|---|
+| **Gemini Flash**（預設）| gemini-2.0-flash | **免費**（15 RPM, 1M TPM） | 免費額度足夠日常使用 |
+| Claude Haiku | claude-haiku-4-5-20251001 | ~$0.01/天 | 需 Anthropic API key |
+| GPT-4o-mini | gpt-4o-mini | ~$0.01/天 | 需 OpenAI API key |
+| Mock（測試用）| — | 免費 | 回傳固定 JSON，開發偵錯用 |
 
 | 項目 | 規格 |
 |---|---|
-| Model | claude-haiku-4-5-20251001（速度快、成本低） |
-| 呼叫方式 | Extension 直接呼叫 Anthropic API（`https://api.anthropic.com/v1/messages`） |
+| 呼叫方式 | Extension 直接呼叫各 provider REST API |
 | API Key 儲存 | `chrome.storage.local`（extension 內部，不同步到雲端） |
-| 每次 input | 單筆 CXR 英文報告 text（~200-500 tokens） |
+| 每次 input | 單筆影像英文報告 text（~200-500 tokens） |
 | 每次 output | 中文白話摘要 + 異常標記 JSON（~100-200 tokens） |
-| 成本估算 | ~50 人/天 × ~700 tokens/人 ≈ 35K tokens/天 ≈ **$0.01/天**（Haiku pricing） |
 | 並行 | 5 concurrent requests（避免 rate limit） |
+| 快取 | IndexedDB `cxrTranslations` store，provider/model 變更時自動失效 |
 
 #### API Prompt 設計
 
@@ -153,16 +168,18 @@ Key 驗證：呼叫一次 API（空報告）確認 key 有效。
 | 欄位 | 來源 | 說明 |
 |---|---|---|
 | 病歷號 | 輸入 | — |
-| 姓名 | ernode | — |
-| CXR 日期 | ernode order | 最近一筆 CXR 的生效時間 |
-| 狀態 | — | 🔴 異常 / ✅ 正常 / ⚠️ 無報告 |
-| 中文摘要 | Claude API | truncate + tooltip（列印為完整顯示） |
-| 異常項目 | Claude API | 僅顯示 status=abnormal 的 findings |
+| 檢查類型 | catalog match | CXR / BMD / CAC / LDCT（badge 顯示） |
+| 開單日期 | ernode order | 生效時間 |
+| 檢查日期 | ernode order | 簽收時間 |
+| 原始內容 | 子頁面 | 去表頭/免責聲明後全文顯示 |
+| 摘要 | LLM | 中文白話摘要 + 異常標記 |
+
+每人每種影像一列，最多 4 列。無該類 order 則不出該列。
 
 #### 排序/篩選
 
-- 預設：異常優先（🔴 → ⚠️ → ✅）
-- 可篩選：只看異常 / 只看無報告
+- 排序：病歷號 → 檢查類型序（CXR=0, BMD=1, CAC=2, LDCT=3）
+- 篩選：檢查類型 radio（全部/CXR/BMD/CAC/LDCT）+ 異常/無報告
 
 #### 列印
 
@@ -186,32 +203,34 @@ Key 驗證：呼叫一次 API（空報告）確認 key 有效。
 
 ## 分段計畫
 
-### S1：Catalog Pattern（Phase 0 已完成 ✅）
+### S1：Catalog Pattern ✅（已完成）
 
 1. ~~ernode 測試~~：✅ 已確認（`PE CXR`，unit=放射線）
 2. ~~子頁面 fetch~~：✅ 已確認（IMPRESSION + 報告內容，英文 `>` 開頭）
-3. 新增 catalog pattern：`CXR` pattern entry（patterns repo）
-   - regex: `/PE\s*CXR|CHEST\s+PA\s+or\s+AP/i`
-   - category: 檢查（與 EKG/ABI/PVR/Fundus 同類）
-   - track-only（不加 viewer/reporter manifest）
-4. sync viewer（reporter 不動）
+3. ~~CXR catalog pattern~~：✅ eabdf2a（catalog 84→85, track-only 8→9）
+4. ~~BMD/CAC/LDCT catalog patterns~~：✅ 11aebaf（catalog 85→88, track-only 9→12）
+5. ~~sync viewer~~：✅
 
 **成功標準**：
-- 用測試病人 chartno（19606F / 1063J / 21968B / 125957A）確認 CXR order 被 pattern match
-- 子頁面報告 text 可正確擷取
+- [x] CXR order 被 pattern match（PE CXR / CHEST PA or AP View）
+- [x] BMD/CAC/LDCT order 被 pattern match
+- [ ] 實機驗證（待 zip + 安裝）
 
-### S2：批次 CXR 報告 fetch + Claude API 翻譯
+### S2：批次影像報告 fetch + LLM 翻譯 ✅（已完成，mock provider）
 
-1. API Key 設定 UI（`chrome.storage.local` 存取）
-2. 批次 CXR order fetch（reuse S2 dashboard batch pipeline）
-3. 子頁面報告 text 擷取
-4. Claude API 呼叫（並行 5 requests，error handling）
-5. 翻譯結果暫存（`chrome.storage.session` 或 memory）
+1. ~~多 provider LLM 架構~~：✅ llm-translate.js（mock/gemini/claude/openai）
+2. ~~批次 4 類影像 order fetch~~：✅ cxr.js reuse lab-core loadData
+3. ~~子頁面報告 text 擷取 + 清理~~：✅ cxrCleanReportText() 去免責/protocol/項目碼
+4. ~~IndexedDB 快取~~：✅ cxrTranslations store（DB_VER 5→6）
+5. ~~UI 重構~~：✅ popup 統一入口、按鈕改名、chrome.storage.session 傳遞
+6. ~~6 欄表格 + 篩選~~：✅ 病歷號/檢查類型/開單日期/檢查日期/原始內容/摘要
 
 **成功標準**：
-- 50 筆 CXR 報告在 3 分鐘內完成翻譯
-- API 呼叫失敗有 retry + 錯誤訊息
-- API Key 無效時有明確提示
+- [x] Mock pipeline 架構完成
+- [ ] 50 筆影像報告在 3 分鐘內完成翻譯（待真實 API 測試）
+- [ ] API 呼叫失敗有 retry + 錯誤訊息（待真實 API 測試）
+- [ ] API Key 無效時有明確提示（待真實 API 測試）
+- [ ] 實機驗證 mock pipeline（待 zip + 安裝）
 
 ### S3：UI 呈現 + 列印
 
@@ -246,8 +265,9 @@ Key 驗證：呼叫一次 API（空報告）確認 key 有效。
 
 | 風險 | 影響 | 備案 |
 |---|---|---|
-| ~~CXR order 不在 `get_lab_orders`~~ | ~~無法用現有 pipeline 抓取~~ | ✅ 已排除 — `PE CXR` 確認在 `get_lab_orders` 回傳（unit=放射線） |
-| CXR 報告格式不固定 | Claude API prompt 需調整 | 多收集幾份報告樣本，調整 prompt + few-shot |
-| Anthropic API rate limit | 50 筆並行可能觸發 | 降低並行數（3）+ exponential backoff |
+| ~~CXR order 不在 `get_lab_orders`~~ | ~~無法用現有 pipeline 抓取~~ | ✅ 已排除 — 4 類影像均確認在 `get_lab_orders` 回傳 |
+| 報告格式不固定 | LLM prompt 需調整 | 多收集幾份報告樣本，調整 prompt + few-shot |
+| API rate limit | 50 人 × 4 類 = 最多 200 筆並行 | 並行 5 + exponential backoff；Gemini 免費 15 RPM 需注意 |
 | API Key 外洩風險 | — | `chrome.storage.local` 不同步；extension 僅本機使用 |
-| 報告含 PHI（Protected Health Information） | 送至外部 API 有隱私顧慮 | Haiku 處理後不留存；或改用 local model 替代 |
+| 報告含 PHI | 送至外部 API 有隱私顧慮 | 選 provider 時告知風險；或改用 local model 替代 |
+| BMD/CAC/LDCT 報告結構差異大 | 翻譯品質不一致 | 各類型分別設計 prompt template（S3） |
