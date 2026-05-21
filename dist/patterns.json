@@ -1,6 +1,6 @@
 {
   "version": "0.4.0",
-  "synced_at": "2026-05-20T22:03:36.979Z",
+  "synced_at": "2026-05-21T00:25:06.931Z",
   "catalog": [
     {
       "id": "WBC",
@@ -1569,6 +1569,22 @@
       "pattern": {
         "__regex": [
           "Fundoscopy|眼底鏡",
+          "i"
+        ]
+      },
+      "category": "檢查",
+      "unit": "",
+      "ref": "",
+      "lo": null,
+      "hi": null
+    },
+    {
+      "id": "CXR",
+      "displayName": "CXR (胸部X光)",
+      "shortLabel": "CXR",
+      "pattern": {
+        "__regex": [
+          "PE\\s*CXR|CHEST\\s+PA\\s+or\\s+AP",
           "i"
         ]
       },

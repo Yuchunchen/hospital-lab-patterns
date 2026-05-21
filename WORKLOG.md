@@ -4,6 +4,29 @@ Chronological log of pattern catalog changes. Newest entries on top.
 
 ---
 
+## 2026-05-21 — health_check_cxr S1：catalog 新增 CXR track-only pattern
+
+- 作者：claude（與 YC 共同）
+- 範圍：catalog（新增 1 個 track-only entry，category「檢查」）+ runtime-snapshot
+- 醫院 scope：both（vhtt 健檢用 `PE CXR`；臨床用 `CHEST PA or AP View (TT)`；vhyl 預期 alternation 同樣覆蓋）
+- 變更：新增
+- 影響檔：
+  - `patterns/catalog.js`：EXAMINATIONS section 尾端追加 `CXR` entry，緊接 Fundus。
+    - id: `CXR`、displayName: `CXR (胸部X光)`、shortLabel: `CXR`
+    - pattern: `/PE\s*CXR|CHEST\s+PA\s+or\s+AP/i`
+    - category: 檢查；`unit`/`ref` 留空、`lo`/`hi` null（沿用同 section EKG/ABI/PVR/Fundus 寫法）
+  - `dist/patterns.json`：跑完 `npm run release` 自動更新（50.1 KB；catalog 84 → 85）。
+- 動機：`TASK_BRIEF_health_check_cxr` Phase 0 已實測 `get_lab_orders` 四位健檢病人（19606F / 1063J / 21968B / 125957A）皆回傳 `PE CXR`（unit=放射線, IMPRESSION=Z00.00_體檢）；S1 就是把這個 order name 編入 catalog，讓 S2 批次 fetch pipeline 能 pattern match。本 commit 純加 catalog entry，不動 viewer / reporter manifest — track-only，現有單人報表零影響。
+- 驗證：
+  - `npm run release` 全綠 — 85 catalog · 60 viewer · 15 viewer-A5 · 41 reporter · 14 computed · 9 reporter_computed；dist 50.1 KB；track-only 從 8 → 9（多 CXR，符合預期）。
+  - regex 樣本對照測試（pass=3/3 必測 + 2 bonus）：
+    - `PE CXR` → [CXR] ✅
+    - `CHEST PA or AP View (TT)` → [CXR] ✅（match `CHEST PA or AP`）
+    - `Chest Left oblique(TT)` → [] ✅（不誤命中其他胸部影像 order）
+    - bonus `PECXR`（無空白）→ [CXR] ✅（`\s*` 允許 0 個空白）
+    - bonus `15001020 PE . C X R(TT)` → [] ✅（子頁面報告 header 帶 dot+space，但這不是 order name，不影響 S1）
+- 影響：viewer 需重 sync（已執行 `node sync-patterns.js`）；reporter 不動（catalog 變更但 reporter manifest 不引用，sync 與否結果一致——但若日後 reporter 也想顯示就要 sync）。OPD 端會在 24 小時內透過 `dist/patterns.json` 自動拿到。
+
 ## 2026-05-21 — docs：ernode 取樣 SOP 改為逐頁 fallback + 新增健檢 CXR brief
 
 - 作者：claude（與 YC 共同）
