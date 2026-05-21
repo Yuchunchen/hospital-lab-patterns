@@ -668,8 +668,13 @@ flow**，不要再問是 SOP A、B、F——自己選對。
 
 - ernode URL 支援 `&searchItem=<keyword>` 過濾，比翻頁快很多
 - 若 `searchItem=<英文名>` 0 筆，試中文（例 `searchItem=鋁`、`searchItem=磷`）
-- 仍 0 筆 → 該病人沒做過該 test，請使用者換病人或考慮跨醫院測試
-- 翻頁參數：`&limit=20&offset=N`，N 從 0 起
+- 仍 0 筆 → **不要直接判定病人沒做過**，改為逐頁瀏覽：
+  - 翻頁參數：`&offset=N`（N 從 1 起，每頁 20 筆）
+  - 從第 1 頁開始，逐頁 `get_page_text` 掃描所有 order name
+  - 直到最後一頁（頁面顯示「X 之 Y」可判斷總頁數）或找到目標 order
+  - 理由：searchItem 有時因 order name 格式不一致而漏（如含空格、縮寫、中英混雜）
+- 確認掃完全部頁面仍找不到 → 該病人確實沒做過該 test，請使用者換病人
+- 翻頁參數：`&offset=N`，N 從 1 起（offset=0 會回 400 error）
 
 **輸出格式**（讓使用者好貼進 Claude Code）：
 
