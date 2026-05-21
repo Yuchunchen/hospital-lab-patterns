@@ -4,6 +4,16 @@ Chronological log of pattern catalog changes. Newest entries on top.
 
 ---
 
+## 2026-05-21 — docs：ernode 取樣 SOP 改為逐頁 fallback + 新增健檢 CXR brief
+
+- 作者：claude（與 YC 共同）
+- 範圍：PROJECT_CONTEXT.md § 9 + 新 task brief
+- 變更：
+  1. **PROJECT_CONTEXT.md § 9 Chrome 自動化技巧**：`searchItem` 搜尋不到時，原本直接判定「病人沒做過」，改為**逐頁瀏覽**所有 order page，掃完全部頁面仍找不到才確認沒做過。同時修正 offset 參數從 1 起（offset=0 回 400 error）。
+  2. **TASK_BRIEF_health_check_cxr.md**：新增健檢 CXR 批次翻譯 brief。健檢門診每日 ~50 人，batch fetch CXR 英文報告 → Claude API（Haiku）翻譯為中文白話摘要 + 異常標記。Phase 0 CXR order name 待用健檢病人 chartno 確認（三位 CKD/DM Phase 0 病人的 ernode 均無放射線 order）。
+- 動機：Phase 0 掃 76708I（225 筆 12 頁）和 125509A（60 筆 3 頁）時，`searchItem` 搜不到 CXR 但逐頁也沒找到放射線 order，暴露 SOP 原先「searchItem 0 筆就放棄」太武斷的問題。
+- commit：627c87b
+
 ## 2026-05-21 — ckd_screening_dashboard S1：catalog 新增 EKG / ABI / PVR / Fundus 四個檢查 pattern
 
 - 作者：claude（與 YC 共同）

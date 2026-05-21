@@ -34,36 +34,48 @@
 
 ---
 
-## Phase 0：待確認事項
+## Phase 0：已完成 ✅（2026-05-21）
 
-### P0-1：CXR order name 確認（⚠️ 未完成）
+測試病人：19606F / 1063J / 21968B / 125957A（四位健檢個案）
 
-Phase 0 的三位測試病人（76708I / 125509A / 122426G）皆為 CKD/DM 門診個案，ernode `get_lab_orders` 回傳中**未出現任何放射線（Radiology）unit 的 order**。
+### P0-1：CXR order name 確認 ✅
 
-需要確認：
+| 問題 | 結論 |
+|---|---|
+| CXR order 在 `get_lab_orders`？ | **是**。放射線（Radiology）unit 有回傳 |
+| 健檢 CXR order name？ | **`PE CXR`**（四位病人一致） |
+| 一般 CXR order name？ | `CHEST PA or AP View (TT)`（19606F 有，其他三位無——屬臨床用） |
+| searchItem 可搜？ | **是**。`searchItem=CXR` 可命中 `PE CXR` |
 
-1. **CXR order 是否在 `get_lab_orders` 回傳範圍？**
-   - 已確認：檢驗（labs）、ER（EKG/ABI）、META（Fundoscopy/DM Education）都有回傳
-   - 未確認：放射線（Radiology）unit 是否也會回傳
-2. **CXR order name 格式？** 可能為 `Chest X-ray`、`CXR`、`Chest PA`、`X-Ray Chest` 等
-3. **CXR 報告位置？** 是否在子頁面（OpdOrderReport.aspx）、報告文字格式為何
+`PE CXR` 科別為「體檢科」，IMPRESSION 為 `Z00.00_體檢`。
+`CHEST PA or AP View (TT)` 科別為臨床科別（如「內科急診」）。
 
-**行動項目**：用一位已知有做過健檢 CXR 的病人 chartno 測試 ernode，確認上述三點。
+健檢 pipeline regex 建議：`/PE\s*CXR|CHEST\s+PA\s+or\s+AP/i`（優先 match PE CXR，也涵蓋一般 CXR）。
 
-### P0-2：CXR 報告文字結構
+### P0-2：CXR 報告文字結構 ✅
 
-預期子頁面報告為英文自由文字（free text），格式類似：
+子頁面 URL：`OpdOrderReport.aspx?OrdApNo={ordapno}&hisnum={chartno}&opid={opsid}`
+
+實際報告格式（與 DM Education 等子頁面同一頁面框架）：
 
 ```
-FINDINGS:
-The heart size is normal. The mediastinum is not widened.
-No focal consolidation, pleural effusion, or pneumothorax.
-...
-IMPRESSION:
-No active cardiopulmonary disease.
+檢查項目：15001020 PE . C X R(TT)
+------
+IMPRESSION：Z00.00_體檢
+------
+報告內容：
+> Cardiomegaly with tortuous aorta and atherosclerotic change
+> Mild DJD changes over T-L spine and osteoporosis change
+> Prominent bilateral hila
+> Elevated right hemidiaphragm
+> Increasing infiltration over left lower lung field with opacity
 ```
 
-需確認實際格式以設計 Claude API prompt。
+格式特徵：
+- `IMPRESSION:` 行含 ICD code + 診斷（健檢為 `Z00.00_體檢`）
+- `報告內容:` 之後為英文 free text，每行以 `>` 開頭
+- 無 `FINDINGS:` 區塊——直接是 findings 列表
+- 子頁面也含 `出生日期`（bonus data）
 
 ---
 
@@ -174,17 +186,18 @@ Key 驗證：呼叫一次 API（空報告）確認 key 有效。
 
 ## 分段計畫
 
-### S1：Phase 0 完成 + Catalog Pattern
+### S1：Catalog Pattern（Phase 0 已完成 ✅）
 
-**前置**：取得一位健檢病人 chartno
-
-1. ernode 測試：確認 CXR order 在 `get_lab_orders` 的 order name 和 unit
-2. 子頁面 fetch：確認 CXR 報告 text 結構
+1. ~~ernode 測試~~：✅ 已確認（`PE CXR`，unit=放射線）
+2. ~~子頁面 fetch~~：✅ 已確認（IMPRESSION + 報告內容，英文 `>` 開頭）
 3. 新增 catalog pattern：`CXR` pattern entry（patterns repo）
-4. sync viewer / reporter
+   - regex: `/PE\s*CXR|CHEST\s+PA\s+or\s+AP/i`
+   - category: 檢查（與 EKG/ABI/PVR/Fundus 同類）
+   - track-only（不加 viewer/reporter manifest）
+4. sync viewer（reporter 不動）
 
 **成功標準**：
-- 用測試病人 chartno 確認 CXR order 被 pattern match
+- 用測試病人 chartno（19606F / 1063J / 21968B / 125957A）確認 CXR order 被 pattern match
 - 子頁面報告 text 可正確擷取
 
 ### S2：批次 CXR 報告 fetch + Claude API 翻譯
@@ -216,8 +229,8 @@ Key 驗證：呼叫一次 API（空報告）確認 key 有效。
 
 ## 測試清單
 
-1. [ ] P0 確認：CXR order 出現在 `get_lab_orders` 且 pattern match 正確
-2. [ ] P0 確認：子頁面報告 text 可擷取、格式穩定
+1. [x] P0 確認：CXR order 出現在 `get_lab_orders` 且為 `PE CXR`（4/4 病人一致）
+2. [x] P0 確認：子頁面報告 text 可擷取（IMPRESSION + 報告內容，`>` 開頭英文 free text）
 3. [ ] API Key 設定/驗證流程正常
 4. [ ] 單筆 CXR 翻譯正確（中文摘要 + 異常標記）
 5. [ ] 50 筆批次翻譯 < 3 分鐘完成
@@ -233,7 +246,7 @@ Key 驗證：呼叫一次 API（空報告）確認 key 有效。
 
 | 風險 | 影響 | 備案 |
 |---|---|---|
-| CXR order 不在 `get_lab_orders` | 無法用現有 pipeline 抓取 | 需找其他 ernode endpoint（如 get_radiology_orders）或直接查 opdweb |
+| ~~CXR order 不在 `get_lab_orders`~~ | ~~無法用現有 pipeline 抓取~~ | ✅ 已排除 — `PE CXR` 確認在 `get_lab_orders` 回傳（unit=放射線） |
 | CXR 報告格式不固定 | Claude API prompt 需調整 | 多收集幾份報告樣本，調整 prompt + few-shot |
 | Anthropic API rate limit | 50 筆並行可能觸發 | 降低並行數（3）+ exponential backoff |
 | API Key 外洩風險 | — | `chrome.storage.local` 不同步；extension 僅本機使用 |
