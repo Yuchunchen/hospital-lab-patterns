@@ -4,6 +4,25 @@ Chronological log of pattern catalog changes. Newest entries on top.
 
 ---
 
+## 2026-05-21 — health_check_cxr S1 補充：catalog 新增 BMD / CAC / LDCT 三個檢查 pattern
+
+- 作者：claude（與 YC 共同）
+- 範圍：catalog（「檢查」category 新增 3 個 track-only entry）+ runtime-snapshot
+- 醫院 scope：vhtt 健檢（order name 為 `PE ...` 系列）
+- 變更：新增
+- 影響檔：
+  - `patterns/catalog.js`：EXAMINATIONS section 尾端 CXR 之後追加 3 條：
+    - `BMD`  : `/Bone\s+density/i`         — `PE Whole Body Bone density scan`
+    - `CAC`  : `/Coronary\s+Calcium/i`     — `PE85 Coronary Calcium Score CT`
+    - `LDCT` : `/Low\s+Dose\s+Chest\s+CT/i` — `PE Low Dose Chest CT`
+    依 brief 指定 `unit/ref/lo/hi` 全 `null`（同 section 既有 CXR/EKG 等用 `''`，純 cosmetic 差異，track-only 不渲染故不影響；未統一以保持外科手術式修改）。
+  - `dist/patterns.json`：`npm run release` 自動更新（51.0 KB；catalog 85 → 88）。
+- 動機：`TASK_BRIEF_health_check_cxr` S2 擴充 — 健檢報告視窗從只看 CXR 擴大到四類影像（CXR/BMD/CAC/LDCT），catalog 先補這 3 個 order name pattern 讓 cxr.js 能 pattern match。純加 catalog，不動 viewer/reporter manifest（track-only）。
+- 驗證：
+  - `npm run release` 全綠 — 88 catalog · 60 viewer · 15 viewer-A5 · 41 reporter · 14 computed · 9 reporter_computed；dist 51.0 KB；track-only 9 → 12（多 BMD/CAC/LDCT）。
+  - regex 樣本對照（6/6）：BMD/CAC/LDCT 各自命中對應 order name；`PE CXR` → 只 [CXR] 不誤命中三者；`CHEST PA or AP View (TT)` → [CXR]；`Chest Left oblique(TT)` → []。
+- 影響：viewer 需重 sync（已執行 `node sync-patterns.js`）；reporter 不動。OPD 端 24h 內自動拿到 dist/patterns.json。
+
 ## 2026-05-21 — health_check_cxr S1：catalog 新增 CXR track-only pattern
 
 - 作者：claude（與 YC 共同）
