@@ -812,6 +812,15 @@ const CATALOG = [
     category:'檢查',
     unit:'', ref:'', lo:null, hi:null },
 
+  // CXR — TASK_BRIEF_health_check_cxr S1（2026-05-21）。健檢 order name 為
+  // `PE CXR`（unit: 放射線, IMPRESSION: Z00.00_體檢）；臨床 order 為
+  // `CHEST PA or AP View (TT)`。alternation 同時涵蓋兩者，且不誤命中
+  // `Chest Left oblique(TT)` 等其他胸部影像。
+  { id:'CXR',    displayName:'CXR (胸部X光)', shortLabel:'CXR',
+    pattern: /PE\s*CXR|CHEST\s+PA\s+or\s+AP/i,
+    category:'檢查',
+    unit:'', ref:'', lo:null, hi:null },
+
 ];
 
 // ─── Exports (CommonJS + browser global) ─────────────────────────────────
