@@ -4,6 +4,26 @@ Chronological log of pattern catalog changes. Newest entries on top.
 
 ---
 
+## 2026-05-21 — Session SOP J wrap：vhtt thread（健檢 CXR 工作線完整收尾）
+
+- 作者：claude（與 YC 共同）
+- 範圍：docs/session-state（vhtt）
+- 變更：snapshot 更新 + archive
+- 檔案：
+  - `docs/session-state-vhtt.md`：overwrite 為 2026-05-21 22:13 wrap snapshot（health_check_cxr 工作線收尾、下個 thread 主題 CKD/DM Dashboard S3）
+  - `docs/session-state-archive/2026-05-21T2213-vhtt.md`：archive 舊版（前 wrap 2026-05-21 ~15:00；vhtt 首份 archive — 過去 wrap 只 overwrite 沒 archive）
+- 內容（snapshot 5 區）：
+  1. 本 session 完成 9 段（環境驗證 / 程式碼盤點 / sub-brief 撰寫 / Claude Code polish / Notion 同步 polish / 摘要 unclip fix / 實機 happy-path / parent brief 歸檔 / Notion 補建 parent row）
+  2. 本 thread 無工作未完（只剩 wrap 動作本身待 commit）
+  3. 下次該先做什麼：CKD/DM Dashboard S3（brief 仍 untracked，第一件事先 git add + Notion 補 row）
+  4. Active TODOs snapshot：parent / polish / A5 layout / Reporter Order 3-4 / 衛教格式
+  5. Parked：CKD brief untracked / retry-cache corner case 未實機驗 / Cowork memory 寫不進 / 長期 parked carry-over
+- 觸發 SOP：YC 訊息「我要開 new thread 以繼續 CKD/DM Dashboard S3」→ SOP G + SOP J（明確語「準備開新 thread」）
+- 規則對應：rule #2（改 code/docs 立刻寫 WORKLOG）、rule #7（push 後同步 Notion，本 wrap 不動 Notion 因為單純 snapshot 不影響 Dashboard 狀態）
+- 不動：catalog / computed / manifest / sibling repos（純文件操作）
+
+---
+
 ## 2026-05-21 — 健檢 CXR brief 歸檔：parent `health_check_cxr` → `_done`
 
 - 作者：claude（與 YC 共同）
