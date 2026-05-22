@@ -1,107 +1,124 @@
 # Session state — vhtt
 
 > 每次在 vhtt 觸發「階段完成」/「離開 vhtt」/「結束 session」時 overwrite 本檔。
-> 在 vhtt 開新 session 接續 vhtt（「接續上次」）或在 vhyl 接續 vhtt（「接續 vhtt」）時讀本檔。
+> 在 vhtt 開新 session 接續 vhtt(「接續上次」)或在 vhyl 接續 vhtt(「接續 vhtt」)時讀本檔。
 > 歷史版本在 `session-state-archive/`。
 > 檔結構見 PROJECT_CONTEXT.md § 12「Session snapshot 檔結構」。
 
 ---
 
-**Last wrap**: 2026-05-21 22:13（台北時間 / SOP G + SOP J）
-**Last session type**: Cowork（本 thread 從「接續上次工作」起；S2/S3 程式碼盤點、sub-brief 撰寫、摘要 unclip fix、parent brief 歸檔、Notion 兩處同步）+ Claude Code（polish G1-G5 一輪做掉）
-**Last action**: parent brief `TASK_BRIEF_health_check_cxr.md` 歸檔 `_done` + WORKLOG 條目 → YC push patterns；Notion 補建 parent row（id `3674b464-2c99-81ed-...`，Done / Order 2.7）+ 更新 polish row Notes（摘要 fix + parent 歸檔）
+**Last wrap**: 2026-05-22 12:26(台北時間 / SOP H + SOP J)
+**Last session type**: Cowork(SOP I 接續 2026-05-21 vhtt CKD/DM Dashboard S3;S3 brief 重寫 + LDCT 子頁面 read-only debug + Order 2.9 imaging cleaning brief)+ Claude Code(S3 + Order 2.9 兩輪實作)
+**Last action**: Order 2.9 imaging cleaning Claude Code 一輪做完 push → Notion 2.9 row Done(id `3684b464-2c99-819b-...`)→ 本 wrap
 
 ## 1. 本 session 完成
 
-本 thread 從「接續上次工作 — S3 工作 + 串接 api」開始，整 `health_check_cxr` 工作線完整收尾。
+本 thread 從 SOP I 接續 2026-05-21 vhtt CKD/DM Dashboard S3 起,land 兩條工作線:**S3(Order 2.8)+ Order 2.9 imaging cleaning**。
 
-(a) **環境驗證**：
-- SOP I pre-flight ✅ — Notion § 1.0 vhtt 顯示 2026-05-20 paste，已對齊。修正過時 cache（前輪 session-state-vhyl 寫 vhtt ⏳，實為 ✅；Notion 是 ground truth）
-- § 1.1 環境 sync：viewer / reporter `Already up to date`；patterns 初次 stale ORIG_HEAD.lock，清掉後 `Already up to date`
+(a) **SOP I pre-flight ✅** — Notion § 1.0 vhtt 顯示 2026-05-20 paste,已對齊。§ 1.1 sandbox 三 repo 同 origin/main(實機應同;sandbox `M docs/session-state-vhtt.md` 是鏡像 truncate 殘留,實機 git tracked = commit `862e1af` 完整版)
 
-(b) **程式碼盤點**：讀 cxr.js / llm-translate.js / cxr.html 發現 S2/S3 完成度遠超 brief 字面（multi-provider dispatcher、設定 modal、concurrency 5/3、IndexedDB cache、6 欄表格、列印 CSS、progressive render 等都已實作），實際剩 5 gap：retry、cache evict 文件化、異常排序、Tab 整合決策（→ 維持獨立視窗）、Mode B spec patch
+(b) **S3 brief 重寫(Cowork)** — 原 S3「CSV + 批列印 + Tab 1 收案按鈕」改為 **read-only 篩檢**:
+- § 設計總覽加 2026-05-22 修訂 banner
+- § S3 整段重寫:Dashboard 四欄並排(DM 衛教內容 / DM 天數 / Early CKD / Pre-ESRD)取代 S2 既有 Early-CKD / Pre-ESRD 單欄
+- DM 天數欄:固定「N 天」整數,>180 橘 / >365 紅;與 DM 衛教內容欄連動(「有內容」判定 = 此次問題 OR 衛教項目任一非空;往前最多看 5 筆跳過空的)
+- DM 衛教欄拆 truncate+tooltip → 表格內直接完整兩行顯示
+- Early CKD / Pre-ESRD 沿用 `EarlyCKD` computed(Pre-ESRD 不收緊到 <30,parked)
+- CSV UTF-8 BOM;批次列印篩選後可見列;不做 registry write / Tab 1 收案按鈕 / DM-CKD-PreESRD stage 引擎
+- 新增 § Follow-up 9 項(跨 repo 共享 registry DB blocker / DM stage 引擎 spec(A-B 兩層 + 84 天 + 365/4 上限 + P1407/8/9)/ Early CKD + Pre-ESRD stage 引擎 spec / 每階段檢查 checklist 自動提示 / 收案按鈕 / 糖網標示 / Pre-ESRD 門檻 <30 / registry source of truth / DM+CKD 同時符合 UX)
+- brief 從 untracked 進 git(修正上 thread silent miss)
 
-(c) **Sub-brief 撰寫**：`TASK_BRIEF_health_check_cxr_polish.md`（G1 Mode B / G2 retry+錯誤分類 / G3 cache 文件化 / G4 異常浮頂排序 / G5 收尾），Cowork commit + push 後 Claude Code 從 workspace root 一輪做掉
+(c) **S3 Claude Code 實作 + push** — node harness 26/26 PASS;registry UI 拆除(brief 寫「保留 store 不接 UI」,Claude Code 額外拆 UI 按鈕 — **YC confirm OK**);跨 repo 不動 catalog 不需 sync-patterns。Commit `e5803da` brief 改名 _done + WORKLOG
 
-(d) **Claude Code polish 實作**：
-- viewer ead73d3 — cxr.js + llm-translate.js + WORKLOG
-- patterns 35116d7 — polish sub-brief 改名 `_done`
-- node harness 8/8 PASS（cxrFetchWithRetry 五類分類）
-- 主動明示 3 處超出 brief snippet（G1 加 `skipped` status 避免「翻譯中…」蓋掉 Mode B 提示 / G4 tie-break `String(chartno||'')` / G2 略「(可選)」kind icon）— 全合理接受
+(d) **000034324I LDCT debug(Cowork, read-only)** — YC 回報 vhtt popup 主視窗 LDCT 報告查詢只顯示 letterhead:
+- patterns catalog LDCT pattern `/Low\s+Dose\s+Chest\s+CT/i` 確實 match `PE Low Dose Chest CT`,不是 pattern 問題
+- popup 主視窗 `popup.js renderSection` 用 `o.reportText`(`lab-core.js parseOrdersPage` 抓 master orders page `row.cells[2].textContent`),**不 fetch 子頁面、不做 cleaning**;cxr.html 健檢視窗才走 cxr.js + cxrCleanReportText
+- YC console evidence:master page `bodyLen 9443 vs innerText 1700` 落差 + `hasReportContentLabel: true` + `hasImpressionLabel: true` → body 已在 master page hidden 區段;YC 進一步貼 LDCT cell[2] 完整內容含「報告內容:...A 6mm subpleural nodule over RUL...Impression: 1...2...」
+- YC 進一步驗:ernode 正式報告 navigate page **反為空殼**(只 letterhead+header 沒 body)→ fix 不 fetch 子頁面,只需對既有 reportText 套 cleaning
+- 同 bug:CAC / Bone density(YC 確認 vhtt 000058895E 三筆都同)
+- 關鍵 phrasing 進 brief:不要寫成「從 hidden 抓」(cells[2].textContent 既有就把 hidden+visible 全部 concat,fix 是對既抓到字串套 cleaning)
 
-(e) **Notion 同步（polish）**：polish row Done id `3674b464-2c99-8167-a846-dd1c8a28df02`（Claude Code 加）
+(e) **Order 2.9 brief 寫(Cowork)** — `TASK_BRIEF_imaging_report_cleaning_share.md`:
+- 抽 cxr.js 三層 cleaning(「報告內容:」分隔線主路徑 + header rows strip 備援 + 通用清理:box字元/協議括號/檢查項目碼行)成共用 `cleanImagingReport(rawText)` 放 lab-core.js
+- popup.js renderSection 對 imaging row render 層套用
+- cxr.js refactor 改 call 同一份(行為一致)
+- 驗證 chartno:000034324I + 000058895E
+- Scope guard:不 fetch 子頁面 / 不對 lab orders 套 / 不改 parseOrdersPage
+- 預估 1–2 小時
 
-(f) **摘要 unclip fix**（Cowork session，YC 提 spec）：cxr.html `.clip2` 螢幕版規則 6 行 clip → 1 行 `line-height: 1.4`，列印 override 移除，class name 保留以維持 cxr.js 相容。螢幕跟列印一致完整顯示。viewer push
+(f) **Order 2.9 Claude Code 實作 + push** — viewer + brief 改名 _done;`node --check` 三檔 OK + vm-load node harness 17/17 PASS(LDCT 主路徑 body 斷言、BMD 備援、稽核 layer、邊界)。Commit `d88d03b`(brief)+ `eb0ba3f`(brief 歸檔 _done + WORKLOG)
 
-(g) **實機 happy-path**：YC 在 vhtt 跑 — `chrome://extensions/` reload viewer + Gemini Flash API Key + Test 連線 + 50 筆 batch + 🖨️ 列印預覽 OK，回報「測試 ok」
-
-(h) **parent brief 歸檔**：
-- `TASK_BRIEF_health_check_cxr.md` 測試清單 1-5/7-9 打勾，§ 測試清單頂部加 happy-path acceptance 註記，6/10 標 follow-up（retry corner case / cache hit 未刻意觸發）
-- `git mv` → `_done.md` + patterns WORKLOG 加歸檔條目
-- YC push patterns repo
-
-(i) **Notion 同步（parent）**：
-- 新建 parent row（**前輪 vhtt session 寫 parent brief 時 silent miss rule #7**）：id `3674b464-2c99-81ed-8b0d-e2bf5804e29d`，Status=Done / Done date=2026-05-21 / Effort=multi-day / Repo=viewer / Order=2.7 / Brief path 指向 `_done.md`
-- polish row Notes 更新：補「+ 摘要不 truncate fix」+「parent brief 同日歸檔 _done」
+(g) **Notion 同步**:
+- 2.8 row 新建 Done(id `3684b464-2c99-81eb-8ef4-c38e4a8cc40e`,Order 2.8,Repo viewer,Effort half-day,Brief path 指 `_done.md`);Notes 含 registry UI 拆除 = YC confirm OK + 實機驗證 deferred
+- 2.9 row 新建 Open → 同日改 Done(id `3684b464-2c99-819b-a1c3-cbe1adae5242`,Order 2.9,Repo viewer,Effort half-day,Brief path 指 `_done.md`);Notes 含 root cause + fix + 驗證 chartno + 實機驗證 deferred
 
 ## 2. 本 thread 未完
 
-**無工作未完** — `health_check_cxr` 工作線完整 land。
+**無工作未完** — S3 + Order 2.9 兩條工作線完整 land,Notion 兩 row 都 Done。
 
-唯一 outstanding（本 wrap 動作本身待 commit + push）：
-- `docs/session-state-vhtt.md`（本檔，本次 wrap 新寫）
-- `docs/session-state-archive/2026-05-21T2213-vhtt.md`（archive，本次 wrap 新加 — vhtt 首份 archive）
-- patterns `WORKLOG.md`（SOP J wrap 條目，本次 wrap 新加）
+唯一 outstanding(本 wrap 動作本身待 commit + push):
+- `docs/session-state-vhtt.md`(本檔,本次 wrap 新寫 overwrite)
+- `docs/session-state-archive/2026-05-22T1226-vhtt.md`(archive,本次 wrap 新加)
+- patterns `WORKLOG.md`(SOP J wrap 條目,本次 wrap 新加)
 
-要進下一個 commit。指令見本檔末尾 SOP J 收尾步驟（給 YC 在 vhtt PowerShell 跑）。
+要進下一個 commit。指令見本檔末尾 SOP J 收尾步驟(給 YC 在 vhtt PowerShell 跑)。
+
+無 cross-machine handoff brief(對方 vhyl 接這條只需讀本檔 + Notion 開機 SOP 即可,無 in-progress 工作線交接)。
 
 ## 3. 下次該先做什麼
 
-### **YC 明確指示：CKD/DM Dashboard S3**
+### 沒有明確接續工作 — 下次任一機 session 開場可選
 
-- brief：`docs/task-briefs/TASK_BRIEF_ckd_screening_dashboard.md`（**目前 untracked**，跨機器看不到，本輪未 git add，下個 thread 開做前要決定）
-- 前期狀態：上輪 vhtt session（2026-05-21 ~15:00 wrap）已完成 S1（catalog patterns — EKG/ABI/PVR/Fundus，patterns commit `225d177`）+ S2（批次 fetch + Dashboard 獨立視窗 + DM Education 子頁面 + registry IndexedDB store，DB_VER 5）
-- **S3 預期內容**（從上輪 session-state，待新 thread 重新確認/拆解）：
-  1. CSV export
-  2. batch print
-  3. Tab 1「加入個案管理」按鈕
+優先序由高到低(YC 拍板):
 
-### 下個 thread 開場句範例（SOP J Step 2）
+1. **S3 + Order 2.9 實機驗證**(兩條 deferred):
+   - reload extension(`chrome://extensions/` 重新載入未封裝)
+   - S3:列印 A4 預覽 + Tab 1 dialysis regression + S2 候診/手動/batch/排序篩選 regression
+   - Order 2.9:vhtt 000034324I + 000058895E LDCT/CAC/Bone density popup 顯示 body 驗證 + cxr.html 健檢視窗 refactor 無 regression
+   - 跑完 → Notion 2.8 + 2.9 row Notes 加「實機 happy-path OK」
+2. **Reporter Order 3 — labs_<group> storage → IndexedDB**:parked 已久,self-tag 適合 vhtt(已切到 vhtt 但連續被 CXR + CKD/DM 線插隊兩次)
+3. **CKD/DM Dashboard Follow-up #1 跨 repo 共享 registry DB 設計討論**:解這條才能解 #2–9(stage 引擎、收案按鈕、糖網標示等)。技術路線待 YC 拍板(中央 registry API / 本地 JSON sync / 雲端後端 / 個管師人工貼上)
+4. YC 提別的方向
 
-> 接續 2026-05-21 vhtt CKD/DM Dashboard S3。請讀 `patterns/docs/session-state-vhtt.md` + Notion 開機 SOP 後，告訴我 S3 該怎麼動。brief 在 `docs/task-briefs/TASK_BRIEF_ckd_screening_dashboard.md`（目前 untracked，第一件事先決定要不要 git add + Notion 加 row）。
+### 下個 thread 開場句範例(SOP J Step 2)
 
-## 4. Active TODOs（snapshot at wrap；以 Notion Dashboard 為準）
+> 接續 2026-05-22 vhtt 兩條工作線(CKD/DM Dashboard S3 + popup imaging cleaning)。請讀 `patterns/docs/session-state-vhtt.md` + Notion 開機 SOP 後,告訴我下一步該做什麼。
+
+## 4. Active TODOs(snapshot at wrap;以 Notion Dashboard 為準)
 
 | Title | Status | Order | 備註 |
 |---|---|---|---|
-| 健檢報告批次翻譯（CXR/BMD/CAC/LDCT） | **Done（2026-05-21）** | 2.7 | parent brief，本 thread 歸檔；補建 row |
-| 健檢 CXR S2/S3 polish | Done（2026-05-21） | — | sub-brief，上輪 Claude Code 歸檔 + 本 thread Notes 補摘要 fix |
+| **Viewer CKD/DM 篩檢 Dashboard S3(read-only)** | **Done(2026-05-22)** | 2.8 | 本 thread land;registry UI 拆除 YC confirm OK;實機驗證 deferred |
+| **Viewer popup imaging report 套 cleaning(共用 cxr.js)** | **Done(2026-05-22)** | 2.9 | 本 thread land;node harness 17/17 PASS;實機驗證 deferred |
+| 健檢報告批次翻譯(CXR/BMD/CAC/LDCT) | Done(2026-05-21) | 2.7 | parent brief,上 thread 歸檔 |
+| 健檢 CXR S2/S3 polish | Done(2026-05-21) | — | sub-brief,上 thread Claude Code 歸檔 |
 | Viewer A5 landscape 單表版型 (v1.4.0) | Done | 2.6 | 前 thread |
-| **CKD/DM Dashboard S3** | **Open（brief untracked，Notion 無 row）** | 待補 | **下個 thread 主題** |
-| Reporter Order 3 — `labs_<group>` storage → IndexedDB | Open | 3 | parked，self-tag 適合 vhtt（已切到 vhtt 但被 CXR 線插隊） |
-| Reporter Order 4 — CKD eGFR/GFRStage/KDIGORisk/TaiwanCKD dispatcher | Open（depends on Order 3） | 4 | parked |
-| viewer 簡化版衛教格式 | parked | — | A5 layout（v1.4.0）已部分滿足，等 YC 評估是否還要寫 brief |
+| Reporter Order 3 — `labs_<group>` storage → IndexedDB | Open | 3 | parked,self-tag 適合 vhtt(連續被 CXR / CKD-DM 線插隊) |
+| Reporter Order 4 — CKD eGFR/GFRStage/KDIGORisk/TaiwanCKD dispatcher | Open(depends on Order 3) | 4 | parked |
+| viewer 簡化版衛教格式 | parked | — | A5 layout(v1.4.0)已部分滿足,等 YC 評估是否還要寫 brief |
 
 ## 5. Parked questions
 
-### 本 thread 新產生（都非 blocking）
+### 本 thread 新產生(都非 blocking)
 
-- **`TASK_BRIEF_ckd_screening_dashboard.md` 仍 untracked**：上輪 vhtt session 寫 brief 沒 git add，patterns S1/S2 catalog/UI commits 已 push 但 brief 本身沒進 git；Notion Dashboard 也沒對應 row。**下個 thread 第一件事**：決定 git add（推薦）+ Notion Dashboard 補 Open row，讓 S3 進度跨機器可見。已寫進下個 thread 開場句指引
-- **retry / cache hit corner case 未實機驗證**：happy-path 沒踩到 transient 5xx / 429，也沒刻意 verify 第二次跑同 chartno 是否從 IndexedDB 拿（未打 API）。程式碼層 + unit test 已驗（cxrFetchWithRetry 8/8 PASS；cxrTxGet/Put + ordapno overwrite comment 已文件化）。自然遇到再驗
-- **Cowork memory 系統寫不進**：本 thread 末嘗試記 feedback memory（sandbox patterns repo `D+untracked` 是 line-ending 鏡像、實機是 ground truth、不要嚇用戶），Write tool 回 `outside connected folders`。memory dir 屬 app-internal，工具警告不要 request。**對 YC 工作沒影響**，但下次 session 不會記得這條 lesson；下次踩同樣鏡像問題時要花時間重新判讀
+- **S3 實機驗證 deferred**:列印 A4 預覽 / Tab 1 dialysis regression / S2 各功能 regression(候診清單 / 手動輸入 / batch fetch / 排序 / 篩選)— YC 2026-05-22 決定下次測試。完成後 Notion 2.8 row Notes 加「實機 happy-path OK」
+- **Order 2.9 實機驗證 deferred**:vhtt 000034324I + 000058895E 三筆 imaging(LDCT / CAC / Bone density)popup 顯示 body + cxr.html 健檢視窗 refactor 無 regression — YC 2026-05-22 決定下次測試。完成後 Notion 2.9 row Notes 加「實機 happy-path OK」
+- **CKD/DM Dashboard § Follow-up 9 項**:跨 repo 共享 registry DB(blocker for #2–9)/ DM stage 引擎(A-B 兩層 + 84 天 + 365/4 上限 + P1407/8/9)/ Early CKD + Pre-ESRD stage 引擎(spec 待 YC 補,可能不同階段集合與申報代碼)/ 每階段檢查 checklist 自動提示 / 收案按鈕(語意依跨 repo DB 路線)/ 糖網標示(判定來源待 YC)/ Pre-ESRD 門檻收緊 <30(KDIGO Stage 3b–5)/ registry source of truth 確認(健保署 VPN / 中榮 HIS / 院內 web app)/ DM+Early CKD 同時符合 UX。**全部 parked,等 #1 跨 repo DB 設計拍板才能往下**
 
-### 長期 parked（從前 thread 帶來，仍未解）
+### 長期 parked(從前 thread 帶來,仍未解)
 
-- **vhtt 有一個 CLAUDE.md 不在 `D:\self\hospital-lab\`** — 路徑、用途、是否與本專案規則衝突，未釐清
-- **YC 提過「修改 project instruction, claude.md」** — 是 vhyl 還 vhtt？是 Cowork app UI 還 git canonical？具體改了什麼，未釐清
-- ernode birthDate → DM Education 子頁面有 `出生日期`，S2 可順便升級 eGFR（carry from vhtt 前輪）
-- vhyl 的 ABI / PVR / BMD / CAC / LDCT order name 未實測（只在 vhtt 確認 `PE *` 前綴）
-- reporter `file://` origin sub-page fetch CORS blocked（未來新 test 可能觸發）
-- B&W 老印表機 dither（#AAAAAA）風險（未換印表機驗證 A5 layout）
-- viewer CLAUDE.md zip include-list 過時（沒列 cxr.js / llm-translate.js / cxr.html / lab-core.js）— 不影響 vhtt 自身 reload 本地 source；若 vhyl 要 sync 才要更新清單 + 重打包
+- **vhtt 有一個 CLAUDE.md 不在 `D:\self\hospital-lab\`** — 路徑、用途、是否與本專案規則衝突,未釐清
+- **YC 提過「修改 project instruction, claude.md」** — 是 vhyl 還 vhtt?是 Cowork app UI 還 git canonical?具體改了什麼,未釐清
+- ernode birthDate → DM Education 子頁面有 `出生日期`,可順便升級 eGFR(carry from vhtt 前 thread)
+- vhyl 的 ABI / PVR / BMD / CAC / LDCT order name 未實測(只在 vhtt 確認 `PE *` 前綴)
+- reporter `file://` origin sub-page fetch CORS blocked(未來新 test 可能觸發)
+- B&W 老印表機 dither(#AAAAAA)風險(未換印表機驗證 A5 layout)
+- viewer CLAUDE.md zip include-list 過時(沒列 cxr.js / llm-translate.js / cxr.html / lab-core.js / dashboard.js / dashboard.html)— 不影響 vhtt 自身 reload 本地 source;若 vhyl 要 sync 才要更新清單 + 重打包
+- **Cowork memory 系統寫不進**(carry from 上 thread):memory dir 屬 app-internal,Write tool 回 outside connected folders。下次踩同樣 sandbox vs 實機鏡像問題時要花時間重新判讀
 
-### 本 thread 學到（給未來 self）
+### 本 thread 學到(給未來 self)
 
-- **「先實機 happy-path 再寫 polish brief」vs「先寫 polish brief 一次包 implementation + 實機」**：本 thread 選後者（YC 改 spec 後沒先實機），polish 完一次跑通。乾淨。下次面對「YC 已先想到 spec 改動」場景沿用此路徑
-- **Notion search 對 dashboard row 索引不完整**：搜「健檢 CXR」/「批次翻譯」都找不到 parent brief row（本 thread 才發現前輪 silent miss）。**SOP G step 6 同步 Notion 時建議直接 fetch dashboard data source 確認 row 存在**，不要依賴 search
-- **Claude Code 主動明示「超出 brief snippet」+ 列理由** 是好的 collaboration pattern。Sub-brief 寫 minimal snippet 可接受，留 Claude Code 必要時自我擴張，但要求他明示
+- **read-only debug 階段不動 code 是對的**:Claude Code S3 跑時 YC 提 LDCT bug,本 Cowork thread 只 read-only diagnose / 寫 brief / 給 console 指令;沒去碰 viewer 避免衝突。等 Claude Code 完成 S3 + push 後才動 Order 2.9。乾淨無 race condition
+- **沒實機 fetch 能力時,console evidence 蒐集要逐步推**:本 thread LDCT debug 跑 3 輪 console:(1) master page bodyLen vs innerText 落差(2) `hasReportContentLabel / hasImpressionLabel`(3) ernode 正式報告 navigate 路徑驗證。最後 YC 自己貼 cell[2] 完整內容 + 確認 navigate page 反為空殼,root cause + fix 同時定案。逐步推比一次給大指令好
+- **Brief 寫「不做的事」比「要做的事」重要**:S3 brief 加 § 「S3 不做的事」(7 條明示)+ § Follow-up(9 項 parked),Claude Code 完全遵守。Order 2.9 brief 加「關鍵 phrasing 提醒」(不要寫成『從 hidden 抓』)+ scope guard 5 條,Claude Code 也完全遵守。下次 brief 都該寫這兩段
+- **YC confirm 不對稱的快慢**:brief sketch 通常 YC 一句話拍板(「Order 2.8 ok」/「OK 開始 Claude Code」)很快。但 spec ambiguity 必須先用 AskUserQuestion tappable 確認,直接寫進 brief 反而會被改 — 例如 DM 衛教欄位處置 YC 選「原欄位不要 truncate+tooltip + 新增一欄」,我若直接猜「取代」就會做錯
+- **sandbox vs 實機鏡像 lesson 仍 carry**:本 thread 多次踩到 sandbox bash `git status` 顯示 dirty 但實機乾淨(viewer M WORKLOG.md / cxr.html / cxr.js;patterns session-state-vhtt.md 後段 truncate)。處理方式:從實機角度判讀(YC PowerShell 結果為準),sandbox 看到 dirty 直接 disclose 給 YC 但不阻擋動作
