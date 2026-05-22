@@ -4,6 +4,23 @@ Chronological log of pattern catalog changes. Newest entries on top.
 
 ---
 
+## 2026-05-22 — CKD/DM 篩檢 Dashboard S3 收尾：brief 歸檔 _done（無 pattern 變更）
+
+- 作者：claude（與 YC 共同）
+- 範圍：docs/task-briefs（brief 歸檔；無 catalog / computed / manifest 變更）
+- 變更：git add（先前 untracked）+ 改名 `_done` + 勾選 S3 測試清單
+- 測試 ID：無（本輪不動任何 pattern）
+- 原因：`TASK_BRIEF_ckd_screening_dashboard` S3（read-only 篩檢）由 viewer 一輪做掉 —
+  四欄資格並排（DM 衛教內容 / DM 天數 / Early CKD / Pre-ESRD）、拆 DM 衛教 truncate+tooltip、
+  CSV export（UTF-8 BOM）、批次列印（A4 橫印、篩選後可見列）。brief 先前 untracked，
+  本輪 `git add` + 改名 `TASK_BRIEF_ckd_screening_dashboard_done.md`，勾選測試清單
+  （邏輯項 ✅、實機項 ⏳ 待 YC）。
+- 驗證：無 pattern 變更，未跑 `validate` / `build-json`（`dist/patterns.json` 不動）；
+  viewer 端 `node --check` + vm-load node harness 26/26 PASS。
+- 影響：S3 不動 catalog，sibling repo 不需重 sync。registry 寫入 / DM·CKD·Pre-ESRD
+  stage 引擎 / 收案按鈕 / Pre-ESRD 門檻收緊到 eGFR<30 等均 parked 至下一個 brief
+  （brief § Follow-up）。Notion Dashboard row 由 YC 切回 Cowork 後更新。
+
 ## 2026-05-21 — Session SOP J wrap：vhtt thread（健檢 CXR 工作線完整收尾）
 
 - 作者：claude（與 YC 共同）
