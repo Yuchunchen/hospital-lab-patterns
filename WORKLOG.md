@@ -4,6 +4,20 @@ Chronological log of pattern catalog changes. Newest entries on top.
 
 ---
 
+## 2026-05-22 — vhtt SOP H + SOP J wrap（本 thread 結束、離開 vhtt）
+
+- 作者：claude（與 YC 共同）
+- 範圍：`docs/session-state-vhtt.md`（overwrite）+ `docs/session-state-archive/2026-05-22T1226-vhtt.md`（新 archive）+ 本檔（SOP wrap 條目）；無 catalog / computed / manifest 變更
+- 本 thread 動作：從 SOP I 接續 2026-05-21 vhtt CKD/DM Dashboard S3,land 兩條工作線：
+  - **S3（Order 2.8）read-only 篩檢**：Dashboard 四欄並排（DM 衛教內容 / DM 天數 / Early CKD / Pre-ESRD）取代單欄 / DM 衛教欄拆 truncate+tooltip / CSV UTF-8 BOM / 批次列印篩選後可見列。registry write / DM-CKD-PreESRD stage 引擎 / 收案按鈕 parked → Follow-up 9 項。Commit `e5803da`
+  - **Order 2.9 imaging report cleaning**：抽 cxr.js 三層 cleaning 變共用 `cleanImagingReport(rawText)` 放 lab-core.js + popup imaging row render 層套用 + cxr.js refactor。Commit `d88d03b`（brief）+ `eb0ba3f`（歸檔 _done）
+- 測試 ID：無（本輪 wrap 不動 catalog;S3 node harness 26/26 PASS 跟 Order 2.9 17/17 PASS 在各自 commit 已記錄）
+- Notion 同步：2.8 row Done id `3684b464-2c99-81eb-...` + 2.9 row Done id `3684b464-2c99-819b-...`（2026-05-22）。registry UI 拆除 YC confirm OK + S3/Order 2.9 實機驗證 deferred 已寫進兩 row Notes
+- 跨機接手：無 handoff brief（兩條工作線完整 land;vhyl 接這條只需讀 `docs/session-state-vhtt.md` + Notion 開機 SOP）
+- 影響：本 thread 結束（YC 訊息「結束 vhtt 工作」= SOP H + SOP J）;下次任一機開新 thread 接續
+
+---
+
 ## 2026-05-22 — popup imaging cleaning 收尾：brief 歸檔 _done（無 pattern 變更）
 
 - 作者：claude（與 YC 共同）
