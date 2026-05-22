@@ -4,6 +4,22 @@ Chronological log of pattern catalog changes. Newest entries on top.
 
 ---
 
+## 2026-05-22 — popup imaging cleaning 收尾：brief 歸檔 _done（無 pattern 變更）
+
+- 作者：claude（與 YC 共同）
+- 範圍：docs/task-briefs（brief 歸檔；無 catalog / computed / manifest 變更）
+- 變更：改名 `TASK_BRIEF_imaging_report_cleaning_share_done.md` + 勾選測試清單
+- 測試 ID：無（本輪不動任何 pattern）
+- 原因：`TASK_BRIEF_imaging_report_cleaning_share` 由 viewer 一輪做掉 —— 把 cxr.js
+  既有三層 cleaning 抽到 `lab-core.js` 的共用 `cleanImagingReport(rawText)`，popup
+  `renderSection` 對 imaging row 在 render 層套用，使 popup 主視窗 LDCT/CAC/BMD row
+  顯示 finding/impression 而非 letterhead；cxr.js 改 call 同一份（行為一致）。
+- 驗證：無 pattern 變更，未跑 `validate` / `build-json`（`dist/patterns.json` 不動）；
+  viewer 端 `node --check` 三檔 OK + vm-load node harness 17/17 PASS（LDCT 主路徑 body
+  斷言、BMD 備援、稽核 layer、邊界）。
+- 影響：純 viewer 行為，不動 catalog，sibling repo 不需重 sync；OPD 端無 dist 變更。
+  實機驗證（vhtt 院內網）列 follow-up 待 YC。
+
 ## 2026-05-22 — CKD/DM 篩檢 Dashboard S3 收尾：brief 歸檔 _done（無 pattern 變更）
 
 - 作者：claude（與 YC 共同）

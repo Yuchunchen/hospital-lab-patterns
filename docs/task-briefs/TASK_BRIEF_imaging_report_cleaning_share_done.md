@@ -64,12 +64,24 @@ vhtt 病歷號 [病歷號] 的「報告查詢」(popup 主視窗)LDCT row 顯示
 
 ## 測試清單
 
-1. ✅ **[病歷號]**(原 reported case,vhtt)— popup 主視窗 LDCT row 點 + 展開後顯示 body 含「A 6mm subpleural nodule over RUL」「Mild fibrotic change over LLL」等 finding,不只 letterhead
-2. ✅ **[病歷號]**(vhtt 驗證 case)— LDCT / CAC / Bone density 三筆 popup row 都顯示完整 finding,letterhead 被 strip
-3. ✅ cxr.html 健檢報告獨立視窗 LDCT 翻譯結果與 refactor 前一致(用同病人前後對照,無 regression)
-4. ✅ Lab orders popup 顯示完全不受影響(regression — 隨抽一個 dialysis 病人如 [病歷號] 看 lab 結果格式不變)
-5. ✅ Cleaning 各層 regex 都運作:`報告內容:` 分隔線主路徑 / box 字元行 / 協議括號段 / 檢查項目碼行 / header rows 備援
+> 邏輯項以 vm-load 真實 `lab-core.js` 的 node harness 驗（17/17 PASS）；實機項
+> （需 vhtt 院內網 + OPSID）列 follow-up 待 YC，見下方「實機驗證 follow-up」。
+
+1. ⏳ **[病歷號]**(原 reported case,vhtt)— popup 主視窗 LDCT row 點 + 展開後顯示 body 含「A 6mm subpleural nodule over RUL」「Mild fibrotic change over LLL」等 finding,不只 letterhead 〔harness 已驗同款 cells[2] 字串 → body 兩條 finding 皆出、letterhead strip;待 YC 實機〕
+2. ⏳ **[病歷號]**(vhtt 驗證 case)— LDCT / CAC / Bone density 三筆 popup row 都顯示完整 finding,letterhead 被 strip 〔待 YC 實機〕
+3. ⏳ cxr.html 健檢報告獨立視窗 LDCT 翻譯結果與 refactor 前一致(用同病人前後對照,無 regression)〔cxr.js 改 call 的 `cleanImagingReport` 為原 `cxrExtractReportText` 逐字抽出,行為由構造一致;待 YC 實機對照〕
+4. ⏳ Lab orders popup 顯示完全不受影響(regression — 隨抽一個 dialysis 病人如 [病歷號] 看 lab 結果格式不變)〔cleaning 只套 `isRad` row,lab row 不過;待 YC 實機〕
+5. ✅ Cleaning 各層 regex 都運作:`報告內容:` 分隔線主路徑 / box 字元行 / 協議括號段 / 檢查項目碼行 / header rows 備援 〔harness Case 1–3 全綠〕
 6. ✅ patterns(brief 改名 _done)+ viewer(WORKLOG)各記一條繁中
+
+### 實機驗證 follow-up（待 YC,brief § 執行模式 contingency clause）
+
+Claude Code 在 vhtt 但本輪未連 ernode 實機,依 brief 末段授權以 node harness
+（vm-load 真實 `lab-core.js`,模擬 master `cells[2].textContent` → `cleanImagingReport`
+→ 預期 body 字串斷言）替代邏輯驗證,實機列為 follow-up:
+
+- [ ] 1 / 2 / 3 / 4 上列實機項由 YC 於 vhtt 載入未封裝擴充功能後核對。
+- 程式碼驗證:`node --check` 三檔 OK(無 const 重複宣告)+ harness 17/17 PASS。
 
 ---
 
