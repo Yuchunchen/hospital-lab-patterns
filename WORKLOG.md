@@ -4,6 +4,27 @@ Chronological log of pattern catalog changes. Newest entries on top.
 
 ---
 
+## 2026-05-25 — Session SOP G wrap:vhyl thread(桶 4-A/B + UPCR + 桶 5 light-touch)
+
+- 作者:claude(與 YC 共同,在 vhyl Cowork 動手)
+- 範圍:docs/session-state(vhyl)
+- 變更:snapshot 更新 + archive
+- 檔案:
+  - `docs/session-state-vhyl.md`:overwrite 為 2026-05-25 13:44 wrap snapshot(本 thread 接續 vhtt 上週進度 + 修 vhyl-specific silent miss + slid in UPCR/欄序)
+  - `docs/session-state-archive/2026-05-25T1344-vhyl.md`:archive 舊版(前 wrap 2026-05-20 03:18,A5 layout 完工 wrap)
+- 內容(snapshot 5 區):
+  1. 本 thread 完成 5 段(SOP I resume / 桶 4-A/B ABI/Fundus regex 修 / UPCR 18 欄重排 / 桶 5 light-touch / SOP G 本動作)
+  2. 本 thread 無大件未完(桶 3/1/2/4-C 按 YC 順位 deferred 至下次)
+  3. 下次該先做什麼:桶 3 reporter CKD HTML staging(費工 — bulk-add vhyl stage 3 病人)
+  4. Active TODOs snapshot:Order 2.95 加入(UPCR brief Done)
+  5. Parked:vhyl 健檢業務範圍 / 桶 5 light-touch / vhyl regex 變體完整性 / Notion Order numeric collapse lesson + 長期 parked carry-over
+- 觸發 SOP:YC 訊息「今天先這樣 — 接 SOP G 寫 session-state snapshot」→ SOP G(階段完成,thread 不關)
+- 規則對應:rule #2(改 docs 立刻寫 WORKLOG)、rule #7(本 wrap 不動 Notion 因為本 session 內已同步過 brief Done + SOP G 本身不觸發 Notion)
+- 兩台 paste 追蹤:本 wrap 未動 `docs/cowork-project-instructions.md` → § 1.0 兩格不重置
+- 不動:catalog / computed / manifest / sibling repos(純文件操作)
+
+---
+
 ## 2026-05-25 — Brief 新增 + viewer DM Dashboard UPCR / 欄序實作 pointer
 
 - 作者:claude(與 YC 共同,在 vhyl Cowork 動手)
