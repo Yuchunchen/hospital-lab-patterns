@@ -798,7 +798,7 @@ const CATALOG = [
     unit:'', ref:'', lo:null, hi:null },
 
   { id:'ABI',    displayName:'ABI',
-    pattern: /\bABI\b|Doppling ex\./i,
+    pattern: /\bABI\b|Doppling ex\.|四肢血流探測/i,
     category:'檢查',
     unit:'', ref:'', lo:null, hi:null },
 
@@ -808,7 +808,7 @@ const CATALOG = [
     unit:'', ref:'', lo:null, hi:null },
 
   { id:'Fundus', displayName:'眼底鏡',
-    pattern: /Fundoscopy|眼底鏡/i,
+    pattern: /Fundoscopy|眼底鏡|Fundus\s+color/i,
     category:'檢查',
     unit:'', ref:'', lo:null, hi:null },
 

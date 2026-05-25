@@ -4,6 +4,29 @@ Chronological log of pattern catalog changes. Newest entries on top.
 
 ---
 
+## 2026-05-25 — catalog:ABI / Fundus 加 vhyl alternation
+
+- 作者:claude(與 YC 共同,在 vhyl Cowork 動手)
+- 範圍:catalog(2 條 regex 擴 alternation)+ runtime-snapshot
+- 醫院 scope:vhyl(新增字串;vhtt 既有 alternation 不動)
+- 變更:修改
+- 影響檔:
+  - `patterns/catalog.js`:
+    - ABI:`/\bABI\b|Doppling ex\./i` → `/\bABI\b|Doppling ex\.|四肢血流探測/i`
+    - Fundus:`/Fundoscopy|眼底鏡/i` → `/Fundoscopy|眼底鏡|Fundus\s+color/i`
+  - `dist/patterns.json`:跑 `npm run release` 重新產出(51.0 KB,catalog 88 不變)
+- 動機:vhyl DM Dashboard S2 實機驗發現 — 16 位 DM 病人 ABI 欄全空。進 ernode 確認 vhyl ABI 的 order name 字面為 `四肢血流探測,壓力測量並記錄(YL)`(不含 `ABI` 字、不含 `Doppling ex.`)→ silent miss。同時看到 vhyl 至少兩個 Fundus 變體:`Fundoscopy(眼底鏡檢查)`(舊 regex cover)+ `Fundus color photo pictureX2(YL)`(舊 regex miss)。
+- 設計邊界:
+  - `四肢血流探測` 不會誤 match vhyl PVR 的 `動脈分段血流及壓力之測定(YL)`,也不會 match vhtt(vhtt 用 `Doppling ex.` 仍走 alternation cover)
+  - `Fundus\s+color` 比單 `Fundus` 安全 — 避免將來如 `Fundus uteri`(產科)等 order 誤命中
+- 驗證:
+  - `npm run release` 全綠 — 88 catalog · 60 viewer · 15 viewer-A5 · 41 reporter,dist 51.0 KB,track-only 12 條不變
+  - vhyl 16 位 DM 病人 Chrome extension reload + 重 fetch:ABI 與 Fundus 兩欄都補上日期(YC 在 vhyl Cowork 2026-05-25 實機驗證 PASS)
+- 影響:viewer 需重 sync(已執行 `node sync-patterns.js`);reporter 不動(track-only,不在 REPORTER_MANIFEST)。OPD 端 24h 內透過 `dist/patterns.json` 自動拿到。
+- 相依:本 commit 推 main 後,viewer sync commit 才接得上。
+
+---
+
 ## 2026-05-22 — vhtt SOP H + SOP J wrap（本 thread 結束、離開 vhtt）
 
 - 作者：claude（與 YC 共同）

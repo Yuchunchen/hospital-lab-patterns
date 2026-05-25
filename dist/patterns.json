@@ -1,6 +1,6 @@
 {
   "version": "0.4.0",
-  "synced_at": "2026-05-21T03:05:06.492Z",
+  "synced_at": "2026-05-25T02:48:31.230Z",
   "catalog": [
     {
       "id": "WBC",
@@ -1538,7 +1538,7 @@
       "displayName": "ABI",
       "pattern": {
         "__regex": [
-          "\\bABI\\b|Doppling ex\\.",
+          "\\bABI\\b|Doppling ex\\.|四肢血流探測",
           "i"
         ]
       },
@@ -1568,7 +1568,7 @@
       "displayName": "眼底鏡",
       "pattern": {
         "__regex": [
-          "Fundoscopy|眼底鏡",
+          "Fundoscopy|眼底鏡|Fundus\\s+color",
           "i"
         ]
       },
