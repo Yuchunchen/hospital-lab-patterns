@@ -4,6 +4,29 @@ Chronological log of pattern catalog changes. Newest entries on top.
 
 ---
 
+## 2026-05-25 — catalog:CEA regex 放寬支援 vhyl (YL) suffix
+
+- 作者:claude(與 YC 共同,在 vhyl Cowork 動手)
+- 範圍:catalog(1 條 regex 加 (TT|YL) 可選後綴 + value capture 對齊)+ runtime-snapshot
+- 醫院 scope:vhyl(新增字串;vhtt 既有行為不變)
+- 變更:修改
+- 影響檔:
+  - `patterns/catalog.js`:
+    - CEA:`/CEA:\s*([<>]?[\d.]+)/` → `/CEA\s*(?:\((?:TT|YL)\))?:\s*([<>]?\s*[\d.]+)/`
+  - `dist/patterns.json`:跑 `npm run release` 重新產出(51.0 KB,catalog 88 不變)
+- 測試 ID:CEA
+- 動機:vhyl/000023172B(陳添枝 M 72,抽血 115/04/21 16:00)CEA value line 字面為 `CEA(YL): 7.37`,viewer 漏抓(refHi=5 → 該值應 alarm)。2026-05-05「vhyl 五批修正」當時同 section AFP 已修(line 501 加 (TT|YL) alternation),CEA 同期遺漏。
+- 設計邊界:
+  - 順手 value capture `([<>]?[\d.]+)` → `([<>]?\s*[\d.]+)` 對齊同期 detection-limit style(防備未來 `CEA: < 0.5`)
+  - 同 session 順手實證 vhyl 同 section 其他 test value line 都不帶 (YL):PSA `PSA: 5.830` ✓ / Free PSA `FREE PSA/PSA RATIO: 1.286` ✓ / CA-199 `CA 19-9: 37.6` ✓ → 不擴張本 fix 範圍
+- 驗證:
+  - regex:`CEA(YL): 7.37` → "7.37" ✓ / `CEA: 5.0` → "5.0" ✓(不 regress)/ `CEA(TT): 3.2` → "3.2" ✓(對稱防備)/ `CEA: < 0.5` → "< 0.5" ✓(detection-limit)
+  - `npm run release` 全綠 — 88 catalog · 60 viewer · 15 viewer-A5 · 41 reporter,dist 51.0 KB,track-only 12 條不變
+- 影響:viewer 需重 sync(CEA 在 viewer manifest);reporter sync 跑保持紀律(無 CEA manifest,inline pattern block 更新但無實質效果)。OPD 端 24h 內透過 `dist/patterns.json` 自動拿到。
+- 相依:本 commit 推 main 後,viewer sync commit 才接得上。
+
+---
+
 ## 2026-05-25 — Session SOP G wrap:vhyl thread(桶 4-A/B + UPCR + 桶 5 light-touch)
 
 - 作者:claude(與 YC 共同,在 vhyl Cowork 動手)
