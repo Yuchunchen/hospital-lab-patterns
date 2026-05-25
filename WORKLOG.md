@@ -4,6 +4,27 @@ Chronological log of pattern catalog changes. Newest entries on top.
 
 ---
 
+## 2026-05-25 — Brief 新增 + viewer DM Dashboard UPCR / 欄序實作 pointer
+
+- 作者:claude(與 YC 共同,在 vhyl Cowork 動手)
+- 範圍:doc(本 repo 加 1 個 brief 檔;**catalog 完全無動,viewer/reporter 不需 sync-patterns**)
+- 醫院 scope:both
+- 變更:新增
+- 影響檔:
+  - `docs/task-briefs/TASK_BRIEF_dm_dashboard_upcr_and_reorder_done.md`(直接以 `_done` 進 git;brief 在本 session 內寫完 + 實作 + 驗收一輪結束)
+- 動機:vhyl DM Dashboard 加 UPCR 欄(KDIGO A 軸並列指標,有些病人只做 UPCR 沒做 UACR)+ 18 欄重排(同質指標聚集 — 實驗值 / 影像 / 蛋白尿 / 計算分期 / DM 衛教 / 動作),臨床瀏覽動線更順。
+- 實作 commit(viewer repo):`9d40e88` feat(dashboard): 加 UPCR 欄 + 18 欄重排
+- 設計重點:
+  - UPCR 顯示同 UACR(`renderLabCell` raw value + 異常紅字),不另加 UPCRStage 欄
+  - TaiwanCKD 順手修 pre-existing bug:UPCR 原硬寫 null → 改傳 upcrVal,UPCR-only 病人 staging 從此算得出來
+- Spec 邊界:CSV 含 性別/年齡 故 CSV 比畫面多 2 欄(20 vs 18);動作欄列印隱藏(沿用既有 `.action-col` 規則)。
+- 跨 repo 副作用:**無** — catalog 沒動,UPCR catalog entry 已於 2026-05-08 Phase 3 Early CKD brief 加入(`T.PROT/CREAT` alternation)。viewer/reporter 不需 sync-patterns。
+- Notion 同步:Dashboard 加一條 Done(Done date 2026-05-25)— push 後處理(rule #7)。
+- 相依:無
+- 兩台 paste 追蹤:本 commit **未**動 `docs/cowork-project-instructions.md` → § 1.0 兩格狀態不重置
+
+---
+
 ## 2026-05-25 — catalog:ABI / Fundus 加 vhyl alternation
 
 - 作者:claude(與 YC 共同,在 vhyl Cowork 動手)
