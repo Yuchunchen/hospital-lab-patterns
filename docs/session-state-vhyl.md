@@ -8,116 +8,145 @@
 
 ---
 
-**Last wrap**: 2026-05-20 03:18(Taiwan)
-**Last session type**: Cowork(設計 / brief)+ Claude Code(實作,YC 另開 session)
-**Last action**: SOP G + SOP J + SOP H — End thread + Leave machine(vhyl → vhtt)。本 thread 重點:viewer A5 landscape 單表版型 (v1.4.0) brief 設計 + Mockup + 實作交給 Claude Code + Notion 同步 一氣呵成。時間軸接續上 thread 01:21 收工後
+**Last wrap**: 2026-05-25 13:44(Taiwan)
+**Last session type**: Cowork(SOP I resume → 驗證上週 vhtt 進度 + UPCR 增強)
+**Last action**: SOP G — 階段段落收尾(thread 不關,本對話可能還繼續或之後新 thread 接續)。本 thread 重點:vhyl 接續驗證上週(2026-05-19 ~ 2026-05-22)vhtt push 的 viewer / patterns / reporter 變更,實際 ship 桶 4-A/B(ABI/Fundus regex 修)+ UPCR / 18 欄重排(slid in 新需求);桶 5 light-touch PASS;桶 3 / 1 / 2 / 4-C 按 YC 順位 deferred。
 
 ## 1. 本 thread 完成
 
-工作量:Cowork 端設計 + brief,Claude Code 端實作。目標 = viewer A5 landscape 單表版型(v1.4.0)。
+工作量:Cowork 端設計 + edit + 直接 ship,3 輪 push 跨兩 repo。
 
-**A. SOP I resume**(無 explicit trigger)
-- 本 thread YC 直接從新需求開頭(Excel 列印版圖 + 「以 A4 為基礎改 A5,加 GFR、最新 CKD 分期」),沒走「接續」trigger 語,所以 pre-flight check 沒跑
-- 但時間軸上連續 — 沒換機器、沒大改規則,直接 pick up
+**A. SOP I resume(明確 trigger:「i am in vhyl now」)**
+- pre-flight § 1.0 兩台 paste 追蹤:vhyl ✅ up to date(2026-05-19 paste),跳過貼上動作
+- § 1.1 環境 sync:三 repo `git pull` 全部 `Already up to date`(vhyl 之前已同步過 vhtt push 的 commits)
+- 讀 WORKLOG.md(三 repo,2026-05-19 ~ 2026-05-22 區段)+ Notion Dashboard,整理出五桶 verification 計畫:
+  1. 桶 1:meta-rules / SOPs(規則層,5 分鐘)
+  2. 桶 2:A5 + visit serial(vhyl 上週已動手 + 列印過,可能 skip)
+  3. 桶 3:CKD eGFR staging dispatcher(reporter,費工)
+  4. 桶 4:CKD/DM Dashboard + 健檢 CXR(viewer,vhyl-specific 風險最高)
+  5. 桶 5:popup imaging cleaning(viewer)
+- YC 順位拍板:**桶 4 → 桶 5 → 桶 3 → 桶 1 → 桶 2**
 
-**B. Mockup 設計階段(Cowork)**
-- 釐清版型基準(Excel 風單表 vs A4 viewer 壓縮)→ AskUserQuestion 二選一 → YC 選兩個都看 → 出 mockup HTML 兩版型並列
-- 驗算謝冉妹 eGFR ≈ 99 + UACR 45.9 → P1 早期(damage marker 觸發),範例展示三層腎臟 summary
-- Iterate 多輪:
-  - 加圓角(`border-collapse: separate` + `border-radius: 6px` + `overflow: hidden`)
-  - eGFR 分期(GFRStage)插在「蛋白尿」下、「慢性腎臟病分期」(EarlyCKD)前
-  - visitSerial overlay 40pt(A5 比 A4 縮 8pt)
-- YC 拍板 Mockup A、砍 Mockup B、移除「新增」chip + 淺藍底(正式版型不標記新項目)
-- 出 mockup 檔:`hospital-lab-viewer/mockups/a5-layout-mockup.html`
+**B. 桶 4-A/B:Dashboard ABI/Fundus regex 修正(vhyl-specific silent miss)**
+- YC 提供 16 位 vhyl DM 病人 chartno(000000022G ~ 000003937C)
+- popup → Dashboard 16 列 → 觀察:**ABI 全空**(silent miss),其他欄正常
+- 診斷:vhyl ABI order name = `四肢血流探測,壓力測量並記錄(YL)`(不含 `ABI` 字、不含 `Doppling ex.`),catalog regex 沒 cover
+- 順帶發現 Fundus 有兩個 vhyl 變體:`Fundoscopy(眼底鏡檢查)`(舊 regex cover)+ `Fundus color photo pictureX2(YL)`(舊 regex miss)
+- 修法 catalog.js 兩條 regex 加 alternation:
+  - ABI:`/\bABI\b|Doppling ex\.|四肢血流探測/i`
+  - Fundus:`/Fundoscopy|眼底鏡|Fundus\s+color/i`
+- `npm run release` 全綠(88 catalog 不變,dist 51.0 KB)→ viewer `node sync-patterns.js` → Chrome reload → 16 位重 fetch:ABI/Fundus 兩欄都補上日期 ✅
+- 2 commits ship:patterns `d4bbef0` + viewer `510782a`(兩 repo WORKLOG 各一條)
+- **無寫 Notion**(無 brief 改名 _done 觸發,純 catalog 修正;rule #7 + #11 已在回應內明示)
 
-**C. Brief 撰寫(Cowork)**
-- 寫 `docs/task-briefs/TASK_BRIEF_viewer_a5_layout.md`(規則 #9 結構)
-- § 10 列 4 個決策待回 → YC 一輪回完:
-  1. Manifest 來源 = patterns 加 `VIEWER_A5_MANIFEST`(乾淨,跨 repo)
-  2. 三層腎臟 summary `GFRStage` + `EarlyCKD` 兩個都留
-  3. 項目順序 OK(血糖→血脂→腎(BUN/Cr/eGFR)→肝→尿酸→UACR→分期)
-  4. UI = checkbox(`📄 A5單頁`,勾了 disable 僅第1頁/HIV)
-  5. 附加:正式版型不標記新項目
-- 收斂進 brief,§ 10 改成「YC 已決議事項」清單
-- 實機列印發現 90° 翻轉 → CSS `@page size: 210mm 148mm`(顯式寬高)取代 `A5 landscape` keyword,brief § 7 風險區跟 § 4.3 測試清單同步更新
+**C. UPCR + 18 欄重排(slid in 新需求)**
+- YC 在驗 ABI/Fundus 後提:DM Dashboard 加 UPCR 欄 + 欄序重排為 `id / name / 最近抽血 / Sugar / HBA1c / EKG / ABI / PVR / 眼底鏡 / UACR / UPCR / eGFR / DM衛教 / DM天數 / EarlyCKD / GFR分期 / preESRD`
+- 我先 push back(rule #10 自我複述):桶 4 regex 還沒 commit,UPCR 是另一條獨立工作線,建議 split commit;YC 空回答 → default A(先驗 regex + commit + push,UPCR 另開)
+- 寫 brief `TASK_BRIEF_dm_dashboard_upcr_and_reorder.md`(rule #9,18 欄 spec + 16 條測試清單,§4 邏輯 5 + 實機 7 + regression 4)
+- YC OK → 編 dashboard.html + dashboard.js(9 個 edit:thead 重排 / extractLatestLabValue UPCR / TaiwanCKD upcrVal / values.upcr / row HTML 18 cols / compareForSort upcr / CSV header + row 20 cells / colspan 17→18 / error colspan 16→17)
+- 順手修 pre-existing bug:TaiwanCKD 原硬寫 `UPCR: null` → 改傳 upcrVal,UPCR-only 病人 staging 從此能算
+- node --check PASS + 實機 vhyl 16 位 PASS
+- 2 commits ship:patterns brief `0695c00`(初次寫 + 直接以 _done 進 git + WORKLOG pointer 一輪,跟 2026-05-20 visit_serial 範式一致)+ viewer dashboard `9d40e88`
+- Notion Dashboard 加 Done row(Order **2.95**,viewer repo)— 過程中踩到 2.10 → 2.1 numeric collapse silent failure,主動修正
+- **rule #11 兩次主動 flag**:(a) patterns 第一次 commit 沒 git add(brief 是 Write tool 創,還沒進 git tracking);(b) Notion Order numeric collapse
 
-**D. 實作(Claude Code,YC 另開 session 跑)**
-- patterns repo:`patterns/viewer.js` 加 `VIEWER_A5_MANIFEST`(15 個 id)
-- viewer repo:
-  - `popup.js`:加 `📄 A5單頁` checkbox + mutual-exclusive listener + handlePrint 讀 a5Layout flag
-  - `report.js`:新增 `buildA5Page()` + `REPORT_CSS_A5`(圓角單表、@page 顯式寬高)
-  - `manifest.json`:1.3.0 → 1.4.0
-- YC 自行兩 repo commit + push,brief 改名 `_done.md`
+**D. 桶 5:popup imaging cleaning(light-touch 驗證)**
+- 給 YC 完整測試 checklist(預期看到 finding/impression、不該看到 letterhead/稽核表單/box 字元)
+- YC 簡短回「報告抓取 ok」 — 細部殘留沒明確核對
+- task 標 complete,但 **rule #11 標記為 light-touch**(parked 在下方 § 5,vhyl 影像報告若日後格式變需回頭補測)
 
-**E. Notion 同步(Cowork 回來做)**
-- TASK_BRIEF Dashboard 加 Done 條目:
-  - Title: Viewer A5 landscape 單表版型 (v1.4.0)
-  - Status: Done / Done date 2026-05-20 / Effort one-day / Repo cross-repo / Order 2.6
-  - Depends on: visit serial 2.5(時間上接續)
-
-**F. 新 memory feedback**
-- `mockup_visual_scaffolding.md` — 未來做 lab 列印版型 mockup,開發期視覺標記(highlight、chip)不要留到 production 版
+**E. SOP G wrap(本動作)**
+- archive 舊 snapshot(2026-05-20T0318 vhyl wrap)→ `session-state-archive/2026-05-25T1344-vhyl.md`
+- overwrite 本檔(本份新 snapshot)
+- patterns WORKLOG 加 SOP G pointer 條目
 
 ## 2. 本 thread 未完
 
-(無 — A5 layout 已完整 ship,brief `_done`,Notion 同步完成)
+(無大件未完 — 主目標桶 4-A/B 已 ship,加碼的 UPCR / 桶 5 也 ship)
 
-剩下唯一**本機未 commit 的檔**:
+剩下未動的桶(按 YC 拍板順位 deferred 至下次):
+
+- **桶 4-C:健檢 CXR vhyl 驗證**(deferred 至 YC 確認 vhyl 是否跑健檢業務;若否 → 永久 skip)
+- **桶 3:reporter hospital-lab-ckd.html staging 欄**(費工 — 需 bulk-add vhyl stage 3 病人,看 STAGING 7 欄 + csv 多 7 欄)
+- **桶 1:meta-rules / SOPs 對齊**(輕 — 5 分鐘 grep CLAUDE.md / PROJECT_CONTEXT.md)
+- **桶 2:A5 + visit serial**(vhyl 上週已動手 + 列印過,可能 skip)
+
+本機未 commit(本次 wrap 動作產生):
 - `docs/session-state-vhyl.md`(本檔,本次 wrap 新寫)
-- `docs/session-state-archive/2026-05-20T0318-vhyl.md`(本次 wrap 新加 archive)
+- `docs/session-state-archive/2026-05-25T1344-vhyl.md`(本次 wrap 新加 archive)
+- `WORKLOG.md`(SOP G wrap pointer 條目)
 
 要進下一個 commit。給 YC 的指令見本檔末尾 SOP G Step 5。
 
 ## 3. 下次該先做什麼
 
-### **★ 沒有 hard-pinned 優先項**
+按 YC 本 thread 開頭拍板的順位:**桶 3 → 桶 1 → 桶 2 → 桶 4-C**
 
-本 thread + 上 thread 兩個 viewer 工作(visit serial 1.3.0、A5 layout 1.4.0)都已 ship。下個 thread 由 YC 決定走向。預期路線跟上 thread 收工時類似(時間上連續、沒新需求進來):
+### 桶 3(reporter CKD HTML staging)— **下次先動**
 
-**(a) 接 reporter #3 / #4(self-tagged「適合 vhtt」)** — 本次切 vhtt 正好對應
-- Order 3:reporter `labs_<group>` storage → IndexedDB(localStorage QuotaExceededError 已知問題)
-- Order 4:reporter CKD eGFR/GFRStage/KDIGORisk/TaiwanCKD dispatcher(depends on Order 3)
-- 兩條都標「適合 vhtt session 接」(多檔重構,Claude Code 友善)
+開啟 `hospital-lab-ckd.html`,bulk-add vhyl stage 3 病人(YC 手選 chartno),看:
+1. STAGING category 是否出現 7 欄(eGFR / GFRStage / UACRStage / UPCRStage / KDIGORisk / TaiwanCKD / EarlyCKD)
+2. 顏色對 KDIGO 階級(normal/mild/moderate/severe)
+3. `hospital-lab-dialysis.html` 不出現 staging(regression — 透析 eGFR<15 全紅沒意義)
+4. csv 匯出 header 末尾多 7 欄
 
-**(b) viewer 簡化版衛教格式 brief**
-- 上上 thread 提及。本 thread 的 A5 layout 已部分滿足衛教用途(單頁、單表、最新值)
-- 若 YC 認為 A5 layout 已足夠,parked 可刪;若還有缺(例如更白話的 ref range 註解),由 YC 主動 spec
+需要 chartno list — YC 在 vhyl HIS 可查到(找 CREAT + UACR / UPCR 都有抓的病人)。
 
-**(c) 其他 OPD-driven 新需求**
-- viewer 1.3.0 + 1.4.0 都剛上,門診實用後可能冒新需求(列印方向、字級、紙匣)
+### 桶 1(meta-rules / SOPs 對齊)— **快速,5 分鐘**
 
-### vhtt 切過去時的 pre-flight 注意 ⚠️
+純文件對齊 grep,無實機行為:
+- 三 repo CLAUDE.md 都有 § Coding behavior contract A–C
+- PROJECT_CONTEXT 有 § 12(Session SOPs)+ § 13(Cowork↔Chat handoff)
+- cowork-project-instructions.md 含規則 #7–#12 + Session 切換 trigger 兩段式
 
-**vhtt Cowork UI paste 仍 ⏳(從未驗收)** — 開新 vhtt session 跑 SOP I 時,pre-flight 會 block,提示 YC:
+### 桶 2(A5 + visit serial)— **可能 skip**
 
-> 「本機 Cowork app UI 的 Project Instructions 跟 git canonical(`docs/cowork-project-instructions.md`)未對齊(§ 1.0 表顯示 ⏳)。請打開 Cowork → Project Instructions → 把舊內容清空、從 canonical 的 code block 複製貼上、覆蓋。貼完跟我說『貼好了』,我把 § 1.0 那格改成 ✅ + 填今天日期再繼續 SOP I。」
+vhyl 上週已動手 + 實機列印 Brother HL-L5100DN PASS。本次只需確認在 vhyl 機器仍 work,UI checkbox mutually-exclusive 行為正常 — 視 YC 是否想驗。
 
-**這是必跑步驟**,不能跳。理由:vhtt Cowork UI 上跑的 Project Instructions 還是舊版,不貼會 silent drift(本 thread 的設計 / 工作流規則全是新版,vhtt 接不到)。
+### 桶 4-C(健檢 CXR)— **等 YC 確認**
+
+若 vhyl 玉里完全不跑健檢業務 → 永久 skip 本桶。
 
 ## 4. Active TODOs(snapshot at wrap;以 Notion Dashboard 為準)
 
 | Order | Brief | Repo | Status |
 |---|---|---|---|
-| 2.5 | viewer 看診序號右上角 overlay (v1.3.0) | viewer | Done(上 thread) |
-| 2.6 | viewer A5 landscape 單表版型 (v1.4.0) | cross-repo | **Done ✅ 本 thread** |
-| 3 | labs_<group> storage → IndexedDB | reporter | Open(self-tag 適合 vhtt,本次切過去剛好接) |
-| 4 | CKD eGFR / GFRStage / KDIGORisk / TaiwanCKD dispatcher | reporter | Open(depends on Order 3) |
-| — | viewer 簡化版衛教格式(brief 未寫) | viewer | parked(A5 可能已部分滿足,等 YC 評估是否還要寫) |
+| 2.5 | viewer 看診序號 overlay (v1.3.0) | viewer | Done |
+| 2.6 | viewer A5 landscape (v1.4.0) | cross-repo | Done |
+| 2.8 | CKD/DM Dashboard S3 read-only | viewer | Done(vhtt 2026-05-22) |
+| 2.9 | popup imaging report cleaning | viewer | Done(vhtt 2026-05-22) |
+| **2.95** | **DM Dashboard 加 UPCR 欄 + 18 欄重排** | **viewer** | **Done ✅ 本 thread(2026-05-25)** |
+| 3 | labs_<group> storage → IndexedDB | reporter | Done(vhtt 2026-05-13;brief 2026-05-20 補正改名 _done) |
+| 4 | CKD eGFR staging dispatcher | reporter | Done(vhtt 2026-05-20) |
+| — | viewer 簡化版衛教格式(brief 未寫) | viewer | parked(A5 可能已滿足) |
+
+### 本 thread 未進 Notion 的工作
+
+| 內容 | Commit | Notion 寫入? |
+|---|---|---|
+| ABI/Fundus regex 加 vhyl alternation | patterns `d4bbef0` + viewer `510782a` | **無**(無 brief 改名 _done 觸發,純 catalog tweak;rule #7 + #11 已明示) |
 
 ## 5. Parked questions
 
-**長期 parked(從上 thread 帶來,仍未解)**:
-- **vhtt 有一個 CLAUDE.md 不在 `D:\self\hospital-lab\`** — 路徑是什麼?哪種 CLAUDE.md(workspace-level / user-level / 其他工具)?跟本專案規則衝突嗎?**本次切 vhtt 時順便問 YC**
-- **YC 提過「我有修改 project instruction, claude.md」** — vhyl 還 vhtt?Cowork app UI 還是 git canonical?具體改了什麼?
-
 **本 thread 新出現 parked**:
-- **A5 landscape 列印實機 90° 翻轉** — 已用顯式寬高(`size: 210mm 148mm`)fix,brief § 7 風險區記載。但「不是所有 driver 都吃這套」的可能性還沒在 vhtt / 不同印表機驗證過 → **切 vhtt 時順手測一次 A5 列印**
-- **Brief 集中慣例重議**(從上 thread 帶來,non-blocking):viewer 工作的 brief 放 patterns/docs/task-briefs/ 直覺不自然,但因 viewer/reporter `.gitignore` 排除 `TASK_BRIEF*.md` 所以集中到 patterns。三個替代方案見上版 archive(2026-05-20T0121-vhyl.md § 3 末段)
-- **B&W 老印表機 dither (#AAAAAA) 風險**(從上 thread 帶來,仍未換印表機驗證)
 
-**Cowork UI paste 兩台狀況(2026-05-20T0318 更新)**:
+- **vhyl 是否跑健檢業務?** — 桶 4-C 等這個確認。是 → 找一位健檢病人驗 CXR 視窗 + 四類影像;否 → 桶 4-C 永久 skip
+- **桶 5 light-touch 驗證細部殘留**:YC 只回「報告抓取 ok」,letterhead / 稽核表單 / box 字元殘留 / 空行收斂沒對 checklist 逐項驗。vhyl 影像報告若日後格式變需回頭補測
+- **vhyl ABI / Fundus 變體完整性**:本次 cover 兩個變體(`四肢血流探測` + `Fundus color photo`)。vhyl 可能還有其他 order name 變體 — 看後續 Dashboard 實用是否有 silent miss
+- **Notion Order numeric 欄填 2.10 會 collapse 成 2.1**(本 thread 踩到 + 主動修為 2.95)— 未來 Order 跨整數小數時要用 2.95 / 2.99 之類唯一非衝突值
+
+**長期 parked(從上 thread 帶來,仍未解)**:
+- vhtt 有一個 CLAUDE.md 不在 `D:\self\hospital-lab\` — 路徑是?哪種 CLAUDE.md?切 vhtt 時順便問 YC
+- YC 提過「我有修改 project instruction, claude.md」— 哪台 / 哪個改了?未釐清
+- A5 landscape 列印實機 90° 翻轉 fix 在不同 driver / 不同印表機驗證範圍
+- B&W 老印表機 dither (#AAAAAA) 風險
+- Brief 集中慣例重議(viewer 工作 brief 放 patterns/docs/task-briefs/ 的直覺性問題)
+
+**Cowork UI paste 兩台狀況(2026-05-25T1344 更新)**:
 - vhyl:✅ up to date(本 thread `cowork-project-instructions.md` **未動**,§ 1.0 不重置)
-- vhtt:**仍 ⏳ 未驗收** — 下次切 vhtt SOP I pre-flight 會 block,YC 要先在 vhtt Cowork app UI 重貼 canonical
+- vhtt:✅(2026-05-20 起 ✅;本 thread 未跨機,vhtt 狀態不變)
 
-**本 thread 學到的 lesson(已存 memory,不需 parked)**:
-- `mockup_visual_scaffolding.md`(2026-05-20 新):lab 列印版型 mockup 開發期視覺標記(highlight / chip)不要留到 production layout;YC review 後該主動移除而非等 YC 提
+**本 thread 學到的 lesson(可考慮存 memory)**:
+- **Notion Order numeric collapse** — 2.10 → 2.1 silent rounding,跨整數小數時要用唯一非衝突小數
+- **patterns 首次 commit 沒 git add untracked brief** — Write tool 創的檔在 git 是 untracked,`git mv` 對 untracked 會 fatal,要先 `Move-Item` rename 再 `git add` 新路徑
+- **規則 #11 silent failure 暴露 vs 用戶簡短回答的 tension** — 本 thread 兩次主動 flag(commit 沒 add / Order numeric collapse),避免使用者下次踩到
