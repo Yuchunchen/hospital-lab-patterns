@@ -4,6 +4,35 @@ Chronological log of pattern catalog changes. Newest entries on top.
 
 ---
 
+## 2026-05-27 — docs/task-briefs:寫 TASK_BRIEF_ref_range_machine_time_dim.md
+
+- 作者:claude(與 YC 共同,在 vhtt Cowork 動手)
+- 範圍:docs/task-briefs(新 brief 設計 + § 7 議題 lock)
+- 變更:新增 brief
+- 影響檔:
+  - `docs/task-briefs/TASK_BRIEF_ref_range_machine_time_dim.md`:新增,約 16 KB
+- 動機:catalog ref range 目前只 universal 一份,沒 machine(vhtt/vhyl)維度也沒時間維度;實際儀器試劑校正會差,且男女有差異的檢查在 vhtt/vhyl 也可能各自不同 — 需擴 schema 表達。
+- 設計拍板(YC 2026-05-27 lock 11 條):
+  1. validFrom 起點 = `1900-01-01`(實用第一,lookup 永遠有 candidate)
+  2. machine awareness 三層 — pattern-learning(session 開頭明示 + trigger 語前綴)+ runtime(viewer chrome.storage / reporter localStorage first-run prompt)+ setup-time 不用
+  3. catalog model — Central + refHistory[].machine 內嵌(不分流兩份 catalog)
+  4. reportDate 缺 fallback = today + console.warn 同 chartno 一次
+  5. SOP C trigger 不衝突,parser 邏輯寫進文件
+  6. viewer + reporter 各自 first-run prompt(localStorage / chrome.storage 各寫一次)
+  7. inline 性別 override = 版本 A 保留(cover machine × gender 交叉差異)
+  8. BUN_pre/post 列入 in-scope 但 ref 繼承 BUN
+  9. HIVLoad 進 scope
+  10. resolveRef 共享 `patterns/lib/resolveRef.js`(sync-patterns 拉到 viewer/reporter)
+  11. Order = 5.0 放 Notion Dashboard
+- in-scope:53 個 id(CBC/蛋白質/肝/血脂/血糖/腎非計算/電解質/鐵/副甲腺/重金屬/腫瘤/甲狀腺/肝炎 Titer/HIV 量化)
+- out-of-scope:35 個 id(computed / UACR / UPCR / eGFR / 影像 / 尿液定性 / 定性血清)
+- 設計過程 lesson:Claude 推 (B') merge 路線是 over-engineering — YC 釐清「awareness 在哪一層」(pattern-learning + runtime 兩層 explicit)後落回 (A) Central + inline。下次類似 schema 設計拷問先問「awareness 在哪一層」再展開分析。
+- 後續:本 brief commit + push 後同步 Notion(Order 5.0 Open);Claude Code 第一輪做 § 8 prep work(grep ref 引用點 surface / 確認 reportDate 欄位 / sync-patterns 拉 lib 邏輯)後動手實作 catalog migration + resolveRef helper + viewer/reporter first-run wizard
+- 模式聲明:本 brief 在 Cowork 寫,實作交 Claude Code(workspace root,跨 3 repo)
+- 整合驗證:A+B(5/22 vhtt deferred Order 2.8 S3 + Order 2.9 popup imaging cleaning 實機驗證)押到 ref range Claude Code 改完一起跑(共用 chrome reload + vhtt 病人 fetch,邊際成本最低)
+
+---
+
 ## 2026-05-25 — catalog:CEA regex 放寬支援 vhyl (YL) suffix
 
 - 作者:claude(與 YC 共同,在 vhyl Cowork 動手)
