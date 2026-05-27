@@ -4,6 +4,27 @@ Chronological log of pattern catalog changes. Newest entries on top.
 
 ---
 
+## 2026-05-28T0711 — Session SOP J wrap:vhtt thread(ref range brief + Claude Code 一輪實作 + 16 chartno hand-off)
+
+- 作者:claude(與 YC 共同,在 vhtt Cowork 動手)
+- 範圍:docs/session-state(vhtt)
+- 變更:snapshot 更新 + archive
+- 檔案:
+  - `docs/session-state-vhtt.md`:overwrite 為 2026-05-28T0711 wrap snapshot(本 thread 跨 ref range schema 設計 → Claude Code 一輪實作 → 16 chartno cross-reference hand-off)
+  - `docs/session-state-archive/2026-05-28T0711-vhtt.md`:archive 舊版(前 wrap 2026-05-22T1226,S3 + Order 2.9 land + 無 in-progress)
+- 內容(snapshot 5 區):
+  1. 本 session 完成 11 段:SOP I 隱式 resume(YC 開頭「im in vhtt now」)/ § 1.1 env sync sandbox 撞 mounted .git permission YC PowerShell 補跑 / A+B(5/22 deferred + 5/25 sanity)押到 ref range 整合驗證 / ref range brief 設計 + 寫 + 11 議題 lock / brief commit + push (`79bbf5a`) / Notion Order 5.0 Open 同步 / Claude Code 一輪實作 land (`cf9abd7`) / 三 repo HEAD = origin/main / SOP C 速查語法 confirmed / 16 chartno hand-off / SOP J wrap
+  2. 本 thread 主要交付都 land,4 條 open 押到下一階段:16 chartno cross-reference(新 thread 接)/ 顯示欄印最新 ref(Claude Code memory)/ 真機整合驗證(Claude Code memory)/ brief _done + Notion Done(等前 3 條 land)
+  3. 下次主路徑 — vhtt 16 chartno × 51 entry cross-reference(Claude in Chrome 抓 ernode 正式報告 ref 對齊 catalog `*` ref);Active TODOs + Parked questions(短期 4 + 長期 8 + 本 thread 6 lesson)
+  4. 規則 #11 暴露重點:「報告 print ref」(hospital-wide 通用)vs「試劑校正 ref」(校正單)識別 — 本批 chartno 抓的多半是前者,意涵是 universal `*` 對齊而非 vhtt-specific machine override
+  5. 16 chartno 含重複(`124879J` ×2、`43524F` ×2)— typo/刻意未確認,新 thread 開頭問 YC
+- 模式:Cowork(本 thread)→ 新 thread Cowork(continue cross-reference)
+- 沒有 cross-machine handoff brief 產生
+- 本 thread 跨度:單 thread 完成 brief 設計 + 11 議題 lock + Claude Code 一輪 hand-off + 16 chartno hand-off
+- 主要 lesson(存進新 session-state § 5 本 thread 學到):Schema 設計拷問先問 awareness 在哪一層(不要先推 model 才被 push back)/ sandbox 不動 mounted .git 寫操作(第二次踩,read-only ops only)/ Write tool 創檔在 git untracked(5/25 vhyl lesson 再次驗證)/ TODO 結構解讀需要規則 #12 不猜先問 / context mentor 提示時機:自然斷點優先(brief commit/push + Notion 是斷點,YC 想繼續就讓他繼續;工作量明確膨脹時 SOP J 才順 land)/ 規則 #11 silent failure 暴露無漏
+
+---
+
 ## 2026-05-28 — catalog/schema/lib:refHistory 機器×時間×性別 ref(patterns 端基礎,Claude Code)
 
 - 作者:claude(與 YC 共同,workspace root 跨 repo session)
