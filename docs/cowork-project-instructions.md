@@ -53,8 +53,16 @@ All public on github.com/Yuchunchen.
 
 - <vhyl|vhtt>/<chartno> <test_name>            → SOP A（新增 pattern）
 - <vhyl|vhtt>/<chartno> <test_name> 沒抓到/missing → SOP F→B/D（偵錯）
-- <test_id> ref range 改成 lo/hi               → SOP C
+- <test_id> ref range 改成 lo/hi               → SOP C（universal，改 refHistory `*` 筆）
+- <vhyl|vhtt>/<test_id> ref range 改成 lo/hi   → SOP C（machine-specific，refHistory 末加一筆）
 - 把 <test_id> 從 viewer/reporter 拿掉         → SOP E
+
+**SOP C parser（ref range 三維 refHistory，2026-05-28 Order 5.0）：** 含「ref range
+改成」keyword → 第二 token 帶 `vhyl/`/`vhtt/` 前綴=machine-specific（末加一筆
+`{machine, refLo, refHi, validFrom:今天, source}`），沒前綴=universal（改 `*` 筆）。
+性別差異不寫 trigger，用對話補述（例「男 4.0-6.0，女 3.5-5.5」）→ 寫進該筆
+inline `refLoM/refHiM/refLoF/refHiF`。session 開頭「im in vhtt/vhyl」carry 整個
+session。細節見 PROJECT_CONTEXT.md § 9 SOP C。
 
 預設：opsid = A123456789；Claude in Chrome 已連線。
 完整流程細節（步驟、Chrome 自動化技巧、輸出格式）見

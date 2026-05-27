@@ -1,6 +1,6 @@
 {
   "version": "0.4.0",
-  "synced_at": "2026-05-25T11:20:37.050Z",
+  "synced_at": "2026-05-27T22:04:35.992Z",
   "catalog": [
     {
       "id": "WBC",
@@ -20,7 +20,16 @@
       "hi": 11,
       "lo": 4,
       "normalize": "wbcCount",
-      "notes": "Negative lookahead in pattern rejects urine routine \"WBC: 0-5\". Normalize handles /µL (e.g. 6700) → ×10³/µL (6.7)."
+      "notes": "Negative lookahead in pattern rejects urine routine \"WBC: 0-5\". Normalize handles /µL (e.g. 6700) → ×10³/µL (6.7).",
+      "refHistory": [
+        {
+          "machine": "*",
+          "refLo": 4,
+          "refHi": 11,
+          "validFrom": "1900-01-01",
+          "source": "migration 起點 — universal ref 既有值"
+        }
+      ]
     },
     {
       "id": "RBC",
@@ -43,7 +52,16 @@
       "hiF": 5.5,
       "lo": 3.7,
       "hi": 6.2,
-      "notes": "Negative lookahead rejects urine routine \"RBC: 0-2/HPF\" ranges (2026-05-12, parallel to WBC). vhyl 000012148C surfaced URINE ROUTINE(YL) \"RBC: 0-2\" being captured as blood RBC=0."
+      "notes": "Negative lookahead rejects urine routine \"RBC: 0-2/HPF\" ranges (2026-05-12, parallel to WBC). vhyl 000012148C surfaced URINE ROUTINE(YL) \"RBC: 0-2\" being captured as blood RBC=0.",
+      "refHistory": [
+        {
+          "machine": "*",
+          "refLo": 3.7,
+          "refHi": 6.2,
+          "validFrom": "1900-01-01",
+          "source": "migration 起點 — universal ref 既有值"
+        }
+      ]
     },
     {
       "id": "Hb",
@@ -66,7 +84,16 @@
       "hiF": 16,
       "lo": 12,
       "hi": 18,
-      "notes": "Pattern matches both \"Hb:\" and \"HGB:\" labels."
+      "notes": "Pattern matches both \"Hb:\" and \"HGB:\" labels.",
+      "refHistory": [
+        {
+          "machine": "*",
+          "refLo": 12,
+          "refHi": 18,
+          "validFrom": "1900-01-01",
+          "source": "migration 起點 — universal ref 既有值"
+        }
+      ]
     },
     {
       "id": "HCT",
@@ -88,7 +115,16 @@
       "loF": 33,
       "hiF": 47,
       "lo": 33,
-      "hi": 53
+      "hi": 53,
+      "refHistory": [
+        {
+          "machine": "*",
+          "refLo": 33,
+          "refHi": 53,
+          "validFrom": "1900-01-01",
+          "source": "migration 起點 — universal ref 既有值"
+        }
+      ]
     },
     {
       "id": "MCV",
@@ -106,7 +142,16 @@
       "refLo": 79,
       "refHi": 99,
       "hi": 99,
-      "lo": 79
+      "lo": 79,
+      "refHistory": [
+        {
+          "machine": "*",
+          "refLo": 79,
+          "refHi": 99,
+          "validFrom": "1900-01-01",
+          "source": "migration 起點 — universal ref 既有值"
+        }
+      ]
     },
     {
       "id": "Platelet",
@@ -126,7 +171,16 @@
       "hi": 400,
       "lo": 150,
       "normalize": "plateletCount",
-      "notes": "Normalize handles /µL (e.g. 250000) → ×10³/µL (250)."
+      "notes": "Normalize handles /µL (e.g. 250000) → ×10³/µL (250).",
+      "refHistory": [
+        {
+          "machine": "*",
+          "refLo": 150,
+          "refHi": 400,
+          "validFrom": "1900-01-01",
+          "source": "migration 起點 — universal ref 既有值"
+        }
+      ]
     },
     {
       "id": "TP",
@@ -144,7 +198,16 @@
       "refLo": 6,
       "refHi": 8.3,
       "hi": 8.3,
-      "lo": 6
+      "lo": 6,
+      "refHistory": [
+        {
+          "machine": "*",
+          "refLo": 6,
+          "refHi": 8.3,
+          "validFrom": "1900-01-01",
+          "source": "migration 起點 — universal ref 既有值"
+        }
+      ]
     },
     {
       "id": "Albumin",
@@ -164,7 +227,16 @@
       "hi": 5,
       "lo": 3.5,
       "meaning": "營養狀態指標",
-      "notes": "Boundary requirement (^ or whitespace/semicolon) prevents matching \"U-Albumin:\" or \"Microalbumin:\"."
+      "notes": "Boundary requirement (^ or whitespace/semicolon) prevents matching \"U-Albumin:\" or \"Microalbumin:\".",
+      "refHistory": [
+        {
+          "machine": "*",
+          "refLo": 3.5,
+          "refHi": 5,
+          "validFrom": "1900-01-01",
+          "source": "migration 起點 — universal ref 既有值"
+        }
+      ]
     },
     {
       "id": "GOT",
@@ -182,7 +254,16 @@
       "refLo": 5,
       "refHi": 34,
       "hi": 34,
-      "lo": null
+      "lo": null,
+      "refHistory": [
+        {
+          "machine": "*",
+          "refLo": null,
+          "refHi": 34,
+          "validFrom": "1900-01-01",
+          "source": "migration 起點 — universal ref 既有值"
+        }
+      ]
     },
     {
       "id": "GPT",
@@ -202,7 +283,16 @@
       "hiM": 45,
       "hiF": 34,
       "hi": 45,
-      "lo": null
+      "lo": null,
+      "refHistory": [
+        {
+          "machine": "*",
+          "refLo": null,
+          "refHi": 45,
+          "validFrom": "1900-01-01",
+          "source": "migration 起點 — universal ref 既有值"
+        }
+      ]
     },
     {
       "id": "RGT",
@@ -223,7 +313,16 @@
       "hiF": 38,
       "hi": 55,
       "lo": null,
-      "notes": "Pattern matches r-GT, R-GT, γ-GT, GGT, RGT — hospitals use various labels."
+      "notes": "Pattern matches r-GT, R-GT, γ-GT, GGT, RGT — hospitals use various labels.",
+      "refHistory": [
+        {
+          "machine": "*",
+          "refLo": null,
+          "refHi": 55,
+          "validFrom": "1900-01-01",
+          "source": "migration 起點 — universal ref 既有值"
+        }
+      ]
     },
     {
       "id": "ALP",
@@ -241,7 +340,16 @@
       "refLo": 34,
       "refHi": 130,
       "hi": 130,
-      "lo": 34
+      "lo": 34,
+      "refHistory": [
+        {
+          "machine": "*",
+          "refLo": 34,
+          "refHi": 130,
+          "validFrom": "1900-01-01",
+          "source": "migration 起點 — universal ref 既有值"
+        }
+      ]
     },
     {
       "id": "TBIL",
@@ -259,7 +367,16 @@
       "refLo": 0.3,
       "refHi": 1,
       "hi": 1,
-      "lo": null
+      "lo": null,
+      "refHistory": [
+        {
+          "machine": "*",
+          "refLo": null,
+          "refHi": 1,
+          "validFrom": "1900-01-01",
+          "source": "migration 起點 — universal ref 既有值"
+        }
+      ]
     },
     {
       "id": "DBIL",
@@ -277,7 +394,16 @@
       "refLo": 0.03,
       "refHi": 0.18,
       "hi": 0.18,
-      "lo": null
+      "lo": null,
+      "refHistory": [
+        {
+          "machine": "*",
+          "refLo": null,
+          "refHi": 0.18,
+          "validFrom": "1900-01-01",
+          "source": "migration 起點 — universal ref 既有值"
+        }
+      ]
     },
     {
       "id": "CHOL",
@@ -295,7 +421,16 @@
       "refLo": null,
       "refHi": 200,
       "hi": 200,
-      "lo": null
+      "lo": null,
+      "refHistory": [
+        {
+          "machine": "*",
+          "refLo": null,
+          "refHi": 200,
+          "validFrom": "1900-01-01",
+          "source": "migration 起點 — universal ref 既有值"
+        }
+      ]
     },
     {
       "id": "HDLC",
@@ -314,7 +449,16 @@
       "refHi": null,
       "hi": null,
       "lo": 40,
-      "meaning": "俗稱「好膽固醇」"
+      "meaning": "俗稱「好膽固醇」",
+      "refHistory": [
+        {
+          "machine": "*",
+          "refLo": 40,
+          "refHi": null,
+          "validFrom": "1900-01-01",
+          "source": "migration 起點 — universal ref 既有值"
+        }
+      ]
     },
     {
       "id": "LDL",
@@ -333,7 +477,16 @@
       "refHi": 130,
       "hi": 130,
       "lo": null,
-      "meaning": "俗稱「壞膽固醇」"
+      "meaning": "俗稱「壞膽固醇」",
+      "refHistory": [
+        {
+          "machine": "*",
+          "refLo": null,
+          "refHi": 130,
+          "validFrom": "1900-01-01",
+          "source": "migration 起點 — universal ref 既有值"
+        }
+      ]
     },
     {
       "id": "TG",
@@ -351,7 +504,16 @@
       "refLo": null,
       "refHi": 150,
       "hi": 150,
-      "lo": null
+      "lo": null,
+      "refHistory": [
+        {
+          "machine": "*",
+          "refLo": null,
+          "refHi": 150,
+          "validFrom": "1900-01-01",
+          "source": "migration 起點 — universal ref 既有值"
+        }
+      ]
     },
     {
       "id": "GluAC",
@@ -370,7 +532,16 @@
       "refHi": 100,
       "hi": 100,
       "lo": 74,
-      "notes": "Matches Glucose(<site>), GLU, GLU-AC, Sugar(<site>), AC Sugar, 飯前血糖. Bare \"Glucose:\" intentionally NOT matched — urine routine Glucose: 4+ would otherwise capture \"4\" as a serum mg/dL value. 2026-05-12: also reject `+`-qualified gradient values (vhyl URINE ROUTINE(YL) GLU: 4+ was capturing 4)."
+      "notes": "Matches Glucose(<site>), GLU, GLU-AC, Sugar(<site>), AC Sugar, 飯前血糖. Bare \"Glucose:\" intentionally NOT matched — urine routine Glucose: 4+ would otherwise capture \"4\" as a serum mg/dL value. 2026-05-12: also reject `+`-qualified gradient values (vhyl URINE ROUTINE(YL) GLU: 4+ was capturing 4).",
+      "refHistory": [
+        {
+          "machine": "*",
+          "refLo": 74,
+          "refHi": 100,
+          "validFrom": "1900-01-01",
+          "source": "migration 起點 — universal ref 既有值"
+        }
+      ]
     },
     {
       "id": "HbA1c",
@@ -389,7 +560,16 @@
       "refHi": 6,
       "hi": 6,
       "lo": null,
-      "notes": "Pattern allows HBA1C and HBAIC (some systems print I instead of 1)."
+      "notes": "Pattern allows HBA1C and HBAIC (some systems print I instead of 1).",
+      "refHistory": [
+        {
+          "machine": "*",
+          "refLo": null,
+          "refHi": 6,
+          "validFrom": "1900-01-01",
+          "source": "migration 起點 — universal ref 既有值"
+        }
+      ]
     },
     {
       "id": "BUN",
@@ -410,7 +590,16 @@
       "hiF": 18.7,
       "hi": 25.7,
       "lo": null,
-      "notes": "Fallback hi:25.7 is the original soft buffer for unknown gender; known-gender uses hiM/hiF for precision."
+      "notes": "Fallback hi:25.7 is the original soft buffer for unknown gender; known-gender uses hiM/hiF for precision.",
+      "refHistory": [
+        {
+          "machine": "*",
+          "refLo": null,
+          "refHi": 25.7,
+          "validFrom": "1900-01-01",
+          "source": "migration 起點 — universal ref 既有值"
+        }
+      ]
     },
     {
       "id": "BUN_pre",
@@ -483,7 +672,16 @@
       "hiF": 1,
       "hi": 1.2,
       "lo": null,
-      "notes": "Pattern matches \"Creatinine(serum):\" and \"CREAT:\" but NOT \"Creatinine(24hrs Urine):\"."
+      "notes": "Pattern matches \"Creatinine(serum):\" and \"CREAT:\" but NOT \"Creatinine(24hrs Urine):\".",
+      "refHistory": [
+        {
+          "machine": "*",
+          "refLo": null,
+          "refHi": 1.2,
+          "validFrom": "1900-01-01",
+          "source": "migration 起點 — universal ref 既有值"
+        }
+      ]
     },
     {
       "id": "UA",
@@ -503,7 +701,16 @@
       "hiM": 7.7,
       "hiF": 6.2,
       "hi": 7.7,
-      "lo": null
+      "lo": null,
+      "refHistory": [
+        {
+          "machine": "*",
+          "refLo": null,
+          "refHi": 7.7,
+          "validFrom": "1900-01-01",
+          "source": "migration 起點 — universal ref 既有值"
+        }
+      ]
     },
     {
       "id": "eGFR",
@@ -637,7 +844,16 @@
       "refLo": 136,
       "refHi": 145,
       "hi": 145,
-      "lo": 136
+      "lo": 136,
+      "refHistory": [
+        {
+          "machine": "*",
+          "refLo": 136,
+          "refHi": 145,
+          "validFrom": "1900-01-01",
+          "source": "migration 起點 — universal ref 既有值"
+        }
+      ]
     },
     {
       "id": "K",
@@ -655,7 +871,16 @@
       "refLo": 3.5,
       "refHi": 5.1,
       "hi": 5.1,
-      "lo": 3.5
+      "lo": 3.5,
+      "refHistory": [
+        {
+          "machine": "*",
+          "refLo": 3.5,
+          "refHi": 5.1,
+          "validFrom": "1900-01-01",
+          "source": "migration 起點 — universal ref 既有值"
+        }
+      ]
     },
     {
       "id": "Cl",
@@ -673,7 +898,16 @@
       "refLo": 98,
       "refHi": 107,
       "hi": 107,
-      "lo": 98
+      "lo": 98,
+      "refHistory": [
+        {
+          "machine": "*",
+          "refLo": 98,
+          "refHi": 107,
+          "validFrom": "1900-01-01",
+          "source": "migration 起點 — universal ref 既有值"
+        }
+      ]
     },
     {
       "id": "Ca",
@@ -691,7 +925,16 @@
       "refLo": 8.6,
       "refHi": 10.3,
       "hi": 10.3,
-      "lo": 8.6
+      "lo": 8.6,
+      "refHistory": [
+        {
+          "machine": "*",
+          "refLo": 8.6,
+          "refHi": 10.3,
+          "validFrom": "1900-01-01",
+          "source": "migration 起點 — universal ref 既有值"
+        }
+      ]
     },
     {
       "id": "FreeCa",
@@ -709,7 +952,16 @@
       "refLo": 1.15,
       "refHi": 1.32,
       "hi": 1.32,
-      "lo": 1.15
+      "lo": 1.15,
+      "refHistory": [
+        {
+          "machine": "*",
+          "refLo": 1.15,
+          "refHi": 1.32,
+          "validFrom": "1900-01-01",
+          "source": "migration 起點 — universal ref 既有值"
+        }
+      ]
     },
     {
       "id": "P",
@@ -727,7 +979,16 @@
       "refLo": 2.5,
       "refHi": 5,
       "hi": 5,
-      "lo": 2.5
+      "lo": 2.5,
+      "refHistory": [
+        {
+          "machine": "*",
+          "refLo": 2.5,
+          "refHi": 5,
+          "validFrom": "1900-01-01",
+          "source": "migration 起點 — universal ref 既有值"
+        }
+      ]
     },
     {
       "id": "Mg",
@@ -745,7 +1006,16 @@
       "refLo": 1.6,
       "refHi": 2.6,
       "hi": 2.6,
-      "lo": 1.6
+      "lo": 1.6,
+      "refHistory": [
+        {
+          "machine": "*",
+          "refLo": 1.6,
+          "refHi": 2.6,
+          "validFrom": "1900-01-01",
+          "source": "migration 起點 — universal ref 既有值"
+        }
+      ]
     },
     {
       "id": "Fe",
@@ -767,7 +1037,16 @@
       "loF": 50,
       "hiF": 170,
       "lo": 50,
-      "hi": 175
+      "hi": 175,
+      "refHistory": [
+        {
+          "machine": "*",
+          "refLo": 50,
+          "refHi": 175,
+          "validFrom": "1900-01-01",
+          "source": "migration 起點 — universal ref 既有值"
+        }
+      ]
     },
     {
       "id": "TIBC",
@@ -789,7 +1068,16 @@
       "loF": 120,
       "hiF": 480,
       "lo": 120,
-      "hi": 480
+      "hi": 480,
+      "refHistory": [
+        {
+          "machine": "*",
+          "refLo": 120,
+          "refHi": 480,
+          "validFrom": "1900-01-01",
+          "source": "migration 起點 — universal ref 既有值"
+        }
+      ]
     },
     {
       "id": "TSAT",
@@ -807,7 +1095,16 @@
       "refLo": 20,
       "refHi": 45,
       "hi": 45,
-      "lo": 20
+      "lo": 20,
+      "refHistory": [
+        {
+          "machine": "*",
+          "refLo": 20,
+          "refHi": 45,
+          "validFrom": "1900-01-01",
+          "source": "migration 起點 — universal ref 既有值"
+        }
+      ]
     },
     {
       "id": "UIBC",
@@ -845,7 +1142,16 @@
       "hiF": 204,
       "lo": 4.63,
       "hi": 274.66,
-      "notes": "Capture allows leading <> operator (handles \"<5.0\", \">2000\" results)."
+      "notes": "Capture allows leading <> operator (handles \"<5.0\", \">2000\" results).",
+      "refHistory": [
+        {
+          "machine": "*",
+          "refLo": 4.63,
+          "refHi": 274.66,
+          "validFrom": "1900-01-01",
+          "source": "migration 起點 — universal ref 既有值"
+        }
+      ]
     },
     {
       "id": "iPTH",
@@ -863,7 +1169,16 @@
       "refLo": 15,
       "refHi": 68.3,
       "hi": 68.3,
-      "lo": 15
+      "lo": 15,
+      "refHistory": [
+        {
+          "machine": "*",
+          "refLo": 15,
+          "refHi": 68.3,
+          "validFrom": "1900-01-01",
+          "source": "migration 起點 — universal ref 既有值"
+        }
+      ]
     },
     {
       "id": "VitB12",
@@ -882,7 +1197,16 @@
       "refHi": 883,
       "hi": 883,
       "lo": 187,
-      "notes": "Matches \"Vit. B12:\", \"Vitamin B12:\", \"VIT.B12:\", \"B12:\"."
+      "notes": "Matches \"Vit. B12:\", \"Vitamin B12:\", \"VIT.B12:\", \"B12:\".",
+      "refHistory": [
+        {
+          "machine": "*",
+          "refLo": 187,
+          "refHi": 883,
+          "validFrom": "1900-01-01",
+          "source": "migration 起點 — universal ref 既有值"
+        }
+      ]
     },
     {
       "id": "FolicAcid",
@@ -901,7 +1225,16 @@
       "refHi": 20.5,
       "hi": 20.5,
       "lo": 3.1,
-      "notes": "Allows variable internal whitespace (some hospitals print \"Folic  acid:\" with double space)."
+      "notes": "Allows variable internal whitespace (some hospitals print \"Folic  acid:\" with double space).",
+      "refHistory": [
+        {
+          "machine": "*",
+          "refLo": 3.1,
+          "refHi": 20.5,
+          "validFrom": "1900-01-01",
+          "source": "migration 起點 — universal ref 既有值"
+        }
+      ]
     },
     {
       "id": "Aluminum",
@@ -936,7 +1269,16 @@
         },
         "synthLabel": "Al鋁"
       },
-      "notes": "Annual test. vhtt confirmed 2026-05-07 (18-patient survey, 12 with data). Main pattern matches both \"Al鋁: N\" (in-house) and \"BALR0101: N\" (out-sourced lab code). Capture allows leading <> operator (handles \"<2\" below detection limit; reporter extractLabValues preserves \"<N\" as string since 2026-05-07). Ref <20 µg/L per KDOQI guidelines."
+      "notes": "Annual test. vhtt confirmed 2026-05-07 (18-patient survey, 12 with data). Main pattern matches both \"Al鋁: N\" (in-house) and \"BALR0101: N\" (out-sourced lab code). Capture allows leading <> operator (handles \"<2\" below detection limit; reporter extractLabValues preserves \"<N\" as string since 2026-05-07). Ref <20 µg/L per KDOQI guidelines.",
+      "refHistory": [
+        {
+          "machine": "*",
+          "refLo": null,
+          "refHi": 20,
+          "validFrom": "1900-01-01",
+          "source": "migration 起點 — universal ref 既有值"
+        }
+      ]
     },
     {
       "id": "AFP",
@@ -954,7 +1296,16 @@
       "refLo": null,
       "refHi": 20,
       "hi": 20,
-      "lo": null
+      "lo": null,
+      "refHistory": [
+        {
+          "machine": "*",
+          "refLo": null,
+          "refHi": 20,
+          "validFrom": "1900-01-01",
+          "source": "migration 起點 — universal ref 既有值"
+        }
+      ]
     },
     {
       "id": "CEA",
@@ -972,7 +1323,16 @@
       "refLo": null,
       "refHi": 5,
       "hi": 5,
-      "lo": null
+      "lo": null,
+      "refHistory": [
+        {
+          "machine": "*",
+          "refLo": null,
+          "refHi": 5,
+          "validFrom": "1900-01-01",
+          "source": "migration 起點 — universal ref 既有值"
+        }
+      ]
     },
     {
       "id": "CA199",
@@ -990,7 +1350,16 @@
       "refLo": null,
       "refHi": 37,
       "hi": 37,
-      "lo": null
+      "lo": null,
+      "refHistory": [
+        {
+          "machine": "*",
+          "refLo": null,
+          "refHi": 37,
+          "validFrom": "1900-01-01",
+          "source": "migration 起點 — universal ref 既有值"
+        }
+      ]
     },
     {
       "id": "PSA",
@@ -1009,7 +1378,16 @@
       "refHi": 4,
       "hi": 4,
       "lo": null,
-      "gender": "M"
+      "gender": "M",
+      "refHistory": [
+        {
+          "machine": "*",
+          "refLo": null,
+          "refHi": 4,
+          "validFrom": "1900-01-01",
+          "source": "migration 起點 — universal ref 既有值"
+        }
+      ]
     },
     {
       "id": "FreePSA",
@@ -1029,7 +1407,16 @@
       "shortLabel": "Free PSA",
       "unit": "ng/mL",
       "category": "癌症指數",
-      "gender": "M"
+      "gender": "M",
+      "refHistory": [
+        {
+          "machine": "*",
+          "refLo": null,
+          "refHi": null,
+          "validFrom": "1900-01-01",
+          "source": "migration 起點 — universal ref 既有值"
+        }
+      ]
     },
     {
       "id": "PSARatio",
@@ -1060,7 +1447,16 @@
       "refHi": 35,
       "hi": 35,
       "lo": null,
-      "gender": "F"
+      "gender": "F",
+      "refHistory": [
+        {
+          "machine": "*",
+          "refLo": null,
+          "refHi": 35,
+          "validFrom": "1900-01-01",
+          "source": "migration 起點 — universal ref 既有值"
+        }
+      ]
     },
     {
       "id": "TSH",
@@ -1078,7 +1474,16 @@
       "refLo": 0.35,
       "refHi": 4.94,
       "hi": 4.94,
-      "lo": 0.35
+      "lo": 0.35,
+      "refHistory": [
+        {
+          "machine": "*",
+          "refLo": 0.35,
+          "refHi": 4.94,
+          "validFrom": "1900-01-01",
+          "source": "migration 起點 — universal ref 既有值"
+        }
+      ]
     },
     {
       "id": "FreeT4",
@@ -1096,7 +1501,16 @@
       "refLo": 0.7,
       "refHi": 1.48,
       "hi": 1.48,
-      "lo": 0.7
+      "lo": 0.7,
+      "refHistory": [
+        {
+          "machine": "*",
+          "refLo": 0.7,
+          "refHi": 1.48,
+          "validFrom": "1900-01-01",
+          "source": "migration 起點 — universal ref 既有值"
+        }
+      ]
     },
     {
       "id": "HBsAg",
@@ -1152,7 +1566,16 @@
       "shortLabel": "HBsAg titer",
       "unit": "",
       "category": "肝炎 / 感染",
-      "notes": "Numeric titer for HBsAg. Consumed by HBsAgDisplay computed wrapper."
+      "notes": "Numeric titer for HBsAg. Consumed by HBsAgDisplay computed wrapper.",
+      "refHistory": [
+        {
+          "machine": "*",
+          "refLo": null,
+          "refHi": null,
+          "validFrom": "1900-01-01",
+          "source": "migration 起點 — universal ref 既有值"
+        }
+      ]
     },
     {
       "id": "AntiHBsTiter",
@@ -1166,7 +1589,16 @@
       "shortLabel": "Anti-HBs titer",
       "unit": "",
       "category": "肝炎 / 感染",
-      "notes": "Numeric titer for Anti-HBs. Consumed by AntiHBsDisplay computed wrapper."
+      "notes": "Numeric titer for Anti-HBs. Consumed by AntiHBsDisplay computed wrapper.",
+      "refHistory": [
+        {
+          "machine": "*",
+          "refLo": null,
+          "refHi": null,
+          "validFrom": "1900-01-01",
+          "source": "migration 起點 — universal ref 既有值"
+        }
+      ]
     },
     {
       "id": "AntiHCVTiter",
@@ -1180,7 +1612,16 @@
       "shortLabel": "Anti-HCV titer",
       "unit": "",
       "category": "肝炎 / 感染",
-      "notes": "Numeric titer for Anti-HCV. Consumed by HCV computed wrapper."
+      "notes": "Numeric titer for Anti-HCV. Consumed by HCV computed wrapper.",
+      "refHistory": [
+        {
+          "machine": "*",
+          "refLo": null,
+          "refHi": null,
+          "validFrom": "1900-01-01",
+          "source": "migration 起點 — universal ref 既有值"
+        }
+      ]
     },
     {
       "id": "HBsAgDisplay",
@@ -1278,7 +1719,16 @@
       "displayName": "HIV 病毒量 (Viral Load)",
       "shortLabel": "HIV VL",
       "category": "HIV",
-      "notes": "Capture allows commas (thousands separator)."
+      "notes": "Capture allows commas (thousands separator).",
+      "refHistory": [
+        {
+          "machine": "*",
+          "refLo": null,
+          "refHi": null,
+          "validFrom": "1900-01-01",
+          "source": "migration 起點 — universal ref 既有值"
+        }
+      ]
     },
     {
       "id": "CD4",
@@ -1290,7 +1740,16 @@
       },
       "displayName": "CD4 淋巴球 (LEU3AN)",
       "shortLabel": "CD4",
-      "category": "HIV"
+      "category": "HIV",
+      "refHistory": [
+        {
+          "machine": "*",
+          "refLo": null,
+          "refHi": null,
+          "validFrom": "1900-01-01",
+          "source": "migration 起點 — universal ref 既有值"
+        }
+      ]
     },
     {
       "id": "UrineOB",

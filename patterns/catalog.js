@@ -31,7 +31,8 @@ const CATALOG = [
     ref:'4.0–11.0 ×10³/µL',
     refLo:4.0, refHi:11.0, hi:11, lo:4,
     normalize: 'wbcCount',
-    notes:'Negative lookahead in pattern rejects urine routine "WBC: 0-5". Normalize handles /µL (e.g. 6700) → ×10³/µL (6.7).' },
+    notes:'Negative lookahead in pattern rejects urine routine "WBC: 0-5". Normalize handles /µL (e.g. 6700) → ×10³/µL (6.7).',
+    refHistory: [{ machine:'*', refLo:4, refHi:11, validFrom:'1900-01-01', source:'migration 起點 — universal ref 既有值' }] },
 
   { id:'RBC',
     pattern: /\bRBC:\s*([<>]?\s*[\d.]+)(?!\s*[-–]\s*\d)/,
@@ -41,7 +42,8 @@ const CATALOG = [
     refLo:3.7, refHi:6.2,
     loM:4.2, hiM:6.2, loF:3.7, hiF:5.5,
     lo:3.7, hi:6.2,
-    notes:'Negative lookahead rejects urine routine "RBC: 0-2/HPF" ranges (2026-05-12, parallel to WBC). vhyl 000012148C surfaced URINE ROUTINE(YL) "RBC: 0-2" being captured as blood RBC=0.' },
+    notes:'Negative lookahead rejects urine routine "RBC: 0-2/HPF" ranges (2026-05-12, parallel to WBC). vhyl 000012148C surfaced URINE ROUTINE(YL) "RBC: 0-2" being captured as blood RBC=0.',
+    refHistory: [{ machine:'*', refLo:3.7, refHi:6.2, validFrom:'1900-01-01', source:'migration 起點 — universal ref 既有值' }] },
 
   { id:'Hb',
     pattern: /(?:Hb|HGB):\s*([<>]?\s*[\d.]+)/,
@@ -51,7 +53,8 @@ const CATALOG = [
     refLo:12, refHi:18,
     loM:14, hiM:18, loF:12, hiF:16,
     lo:12, hi:18,
-    notes:'Pattern matches both "Hb:" and "HGB:" labels.' },
+    notes:'Pattern matches both "Hb:" and "HGB:" labels.',
+    refHistory: [{ machine:'*', refLo:12, refHi:18, validFrom:'1900-01-01', source:'migration 起點 — universal ref 既有值' }] },
 
   { id:'HCT',
     pattern: /HCT:\s*([<>]?\s*[\d.]+)/,
@@ -60,14 +63,16 @@ const CATALOG = [
     ref:'男 39–53，女 33–47 %',
     refLo:33, refHi:53,
     loM:39, hiM:53, loF:33, hiF:47,
-    lo:33, hi:53 },
+    lo:33, hi:53,
+    refHistory: [{ machine:'*', refLo:33, refHi:53, validFrom:'1900-01-01', source:'migration 起點 — universal ref 既有值' }] },
 
   { id:'MCV',
     pattern: /MCV:\s*([<>]?\s*[\d.]+)/,
     displayName:'平均紅血球容積 (MCV)', shortLabel:'MCV',
     unit:'fL', category:'血液',
     ref:'79–99 fL',
-    refLo:79, refHi:99, hi:99, lo:79 },
+    refLo:79, refHi:99, hi:99, lo:79,
+    refHistory: [{ machine:'*', refLo:79, refHi:99, validFrom:'1900-01-01', source:'migration 起點 — universal ref 既有值' }] },
 
   { id:'Platelet',
     pattern: /Platelet:\s*([<>]?\s*[\d.]+)/,
@@ -76,7 +81,8 @@ const CATALOG = [
     ref:'150–400 ×10³/µL',
     refLo:150, refHi:400, hi:400, lo:150,
     normalize: 'plateletCount',
-    notes:'Normalize handles /µL (e.g. 250000) → ×10³/µL (250).' },
+    notes:'Normalize handles /µL (e.g. 250000) → ×10³/µL (250).',
+    refHistory: [{ machine:'*', refLo:150, refHi:400, validFrom:'1900-01-01', source:'migration 起點 — universal ref 既有值' }] },
 
   // ═══════════════════════════════════════════════════════════════════════
   // PROTEINS
@@ -87,7 +93,8 @@ const CATALOG = [
     displayName:'總蛋白 (Total Protein)', shortLabel:'TP',
     unit:'g/dL', category:'蛋白質',
     ref:'6.0–8.3 g/dL',
-    refLo:6.0, refHi:8.3, hi:8.3, lo:6.0 },
+    refLo:6.0, refHi:8.3, hi:8.3, lo:6.0,
+    refHistory: [{ machine:'*', refLo:6.0, refHi:8.3, validFrom:'1900-01-01', source:'migration 起點 — universal ref 既有值' }] },
 
   { id:'Albumin',
     pattern: /(?:^|[\s;])Albumin(?:\([^)]*\))?:\s*([<>]?\s*[\d.]+)/i,
@@ -96,7 +103,8 @@ const CATALOG = [
     ref:'3.5–5.0 g/dL',
     refLo:3.5, refHi:5.0, hi:5.0, lo:3.5,
     meaning:'營養狀態指標',
-    notes:'Boundary requirement (^ or whitespace/semicolon) prevents matching "U-Albumin:" or "Microalbumin:".' },
+    notes:'Boundary requirement (^ or whitespace/semicolon) prevents matching "U-Albumin:" or "Microalbumin:".',
+    refHistory: [{ machine:'*', refLo:3.5, refHi:5.0, validFrom:'1900-01-01', source:'migration 起點 — universal ref 既有值' }] },
 
   // ═══════════════════════════════════════════════════════════════════════
   // LIVER FUNCTION
@@ -107,7 +115,8 @@ const CATALOG = [
     displayName:'天門冬胺酸轉氨酶 (GOT / AST)', shortLabel:'GOT/AST',
     unit:'U/L', category:'肝功能',
     ref:'5–34 U/L',
-    refLo:5, refHi:34, hi:34, lo:null },
+    refLo:5, refHi:34, hi:34, lo:null,
+    refHistory: [{ machine:'*', refLo:null, refHi:34, validFrom:'1900-01-01', source:'migration 起點 — universal ref 既有值' }] },
 
   { id:'GPT',
     pattern: /GPT:\s*([<>]?\s*[\d.]+)/,
@@ -116,7 +125,8 @@ const CATALOG = [
     ref:'男<45，女<34 U/L',
     refLo:7, refHi:45,
     hiM:45, hiF:34,
-    hi:45, lo:null },
+    hi:45, lo:null,
+    refHistory: [{ machine:'*', refLo:null, refHi:45, validFrom:'1900-01-01', source:'migration 起點 — universal ref 既有值' }] },
 
   { id:'RGT',
     pattern: /(?:r-?GT|R-?GT|γ-?GT|GGT|RGT):\s*([<>]?\s*[\d.]+)/i,
@@ -126,28 +136,32 @@ const CATALOG = [
     refLo:0, refHi:55,
     hiM:55, hiF:38,
     hi:55, lo:null,
-    notes:'Pattern matches r-GT, R-GT, γ-GT, GGT, RGT — hospitals use various labels.' },
+    notes:'Pattern matches r-GT, R-GT, γ-GT, GGT, RGT — hospitals use various labels.',
+    refHistory: [{ machine:'*', refLo:null, refHi:55, validFrom:'1900-01-01', source:'migration 起點 — universal ref 既有值' }] },
 
   { id:'ALP',
     pattern: /(?:Alk[\s.\-]*P|ALP|Alkaline\s*Phosphatase):\s*([<>]?\s*[\d.]+)/i,
     displayName:'鹼性磷酸酶 (Alk-P / ALP)', shortLabel:'Alk-P',
     unit:'U/L', category:'肝功能',
     ref:'40–130 U/L',
-    refLo:34, refHi:130, hi:130, lo:34 },
+    refLo:34, refHi:130, hi:130, lo:34,
+    refHistory: [{ machine:'*', refLo:34, refHi:130, validFrom:'1900-01-01', source:'migration 起點 — universal ref 既有值' }] },
 
   { id:'TBIL',
     pattern: /T-BIL:\s*([<>]?\s*[\d.]+)/,
     displayName:'總膽紅素 (T-BIL)', shortLabel:'T-BIL',
     unit:'mg/dL', category:'肝功能',
     ref:'0.3–1.0 mg/dL',
-    refLo:0.3, refHi:1.0, hi:1.0, lo:null },
+    refLo:0.3, refHi:1.0, hi:1.0, lo:null,
+    refHistory: [{ machine:'*', refLo:null, refHi:1.0, validFrom:'1900-01-01', source:'migration 起點 — universal ref 既有值' }] },
 
   { id:'DBIL',
     pattern: /D-BIL:\s*([<>]?\s*[\d.]+)/,
     displayName:'直接膽紅素 (D-BIL)', shortLabel:'D-BIL',
     unit:'mg/dL', category:'肝功能',
     ref:'0.03–0.18 mg/dL',
-    refLo:0.03, refHi:0.18, hi:0.18, lo:null },
+    refLo:0.03, refHi:0.18, hi:0.18, lo:null,
+    refHistory: [{ machine:'*', refLo:null, refHi:0.18, validFrom:'1900-01-01', source:'migration 起點 — universal ref 既有值' }] },
 
   // ═══════════════════════════════════════════════════════════════════════
   // LIPIDS
@@ -158,7 +172,8 @@ const CATALOG = [
     displayName:'總膽固醇 (Cholesterol)', shortLabel:'CHOL',
     unit:'mg/dL', category:'血脂',
     ref:'< 200 mg/dL',
-    refLo:null, refHi:200, hi:200, lo:null },
+    refLo:null, refHi:200, hi:200, lo:null,
+    refHistory: [{ machine:'*', refLo:null, refHi:200, validFrom:'1900-01-01', source:'migration 起點 — universal ref 既有值' }] },
 
   { id:'HDLC',
     pattern: /HDLC:\s*([<>]?\s*[\d.]+)/,
@@ -166,7 +181,8 @@ const CATALOG = [
     unit:'mg/dL', category:'血脂',
     ref:'男 >40 mg/dL',
     refLo:40, refHi:null, hi:null, lo:40,
-    meaning:'俗稱「好膽固醇」' },
+    meaning:'俗稱「好膽固醇」',
+    refHistory: [{ machine:'*', refLo:40, refHi:null, validFrom:'1900-01-01', source:'migration 起點 — universal ref 既有值' }] },
 
   { id:'LDL',
     pattern: /LDL-C:\s*([<>]?\s*[\d.]+)/,
@@ -174,14 +190,16 @@ const CATALOG = [
     unit:'mg/dL', category:'血脂',
     ref:'< 130 mg/dL',
     refLo:null, refHi:130, hi:130, lo:null,
-    meaning:'俗稱「壞膽固醇」' },
+    meaning:'俗稱「壞膽固醇」',
+    refHistory: [{ machine:'*', refLo:null, refHi:130, validFrom:'1900-01-01', source:'migration 起點 — universal ref 既有值' }] },
 
   { id:'TG',
     pattern: /Triglyceride:\s*([<>]?\s*[\d.]+)/,
     displayName:'三酸甘油脂 (Triglyceride)', shortLabel:'TG',
     unit:'mg/dL', category:'血脂',
     ref:'< 150 mg/dL',
-    refLo:null, refHi:150, hi:150, lo:null },
+    refLo:null, refHi:150, hi:150, lo:null,
+    refHistory: [{ machine:'*', refLo:null, refHi:150, validFrom:'1900-01-01', source:'migration 起點 — universal ref 既有值' }] },
 
   // ═══════════════════════════════════════════════════════════════════════
   // GLUCOSE
@@ -202,7 +220,8 @@ const CATALOG = [
     unit:'mg/dL', category:'血糖',
     ref:'74–100 mg/dL',
     refLo:74, refHi:100, hi:100, lo:74,
-    notes:'Matches Glucose(<site>), GLU, GLU-AC, Sugar(<site>), AC Sugar, 飯前血糖. Bare "Glucose:" intentionally NOT matched — urine routine Glucose: 4+ would otherwise capture "4" as a serum mg/dL value. 2026-05-12: also reject `+`-qualified gradient values (vhyl URINE ROUTINE(YL) GLU: 4+ was capturing 4).' },
+    notes:'Matches Glucose(<site>), GLU, GLU-AC, Sugar(<site>), AC Sugar, 飯前血糖. Bare "Glucose:" intentionally NOT matched — urine routine Glucose: 4+ would otherwise capture "4" as a serum mg/dL value. 2026-05-12: also reject `+`-qualified gradient values (vhyl URINE ROUTINE(YL) GLU: 4+ was capturing 4).',
+    refHistory: [{ machine:'*', refLo:74, refHi:100, validFrom:'1900-01-01', source:'migration 起點 — universal ref 既有值' }] },
 
   { id:'HbA1c',
     pattern: /HBA[I1]C%?:\s*([<>]?\s*[\d.]+)/i,
@@ -210,7 +229,8 @@ const CATALOG = [
     unit:'%', category:'血糖',
     ref:'4–6 %',
     refLo:4, refHi:6, hi:6, lo:null,
-    notes:'Pattern allows HBA1C and HBAIC (some systems print I instead of 1).' },
+    notes:'Pattern allows HBA1C and HBAIC (some systems print I instead of 1).',
+    refHistory: [{ machine:'*', refLo:null, refHi:6, validFrom:'1900-01-01', source:'migration 起點 — universal ref 既有值' }] },
 
   // ═══════════════════════════════════════════════════════════════════════
   // RENAL FUNCTION
@@ -224,7 +244,8 @@ const CATALOG = [
     refLo:7, refHi:25,
     hiM:20.6, hiF:18.7,
     hi:25.7, lo:null,
-    notes:'Fallback hi:25.7 is the original soft buffer for unknown gender; known-gender uses hiM/hiF for precision.' },
+    notes:'Fallback hi:25.7 is the original soft buffer for unknown gender; known-gender uses hiM/hiF for precision.',
+    refHistory: [{ machine:'*', refLo:null, refHi:25.7, validFrom:'1900-01-01', source:'migration 起點 — universal ref 既有值' }] },
 
   // BUN_pre / BUN_post — dialysis-specific. Only the reporter uses these.
   // The orderNameFilter discriminates pre-dialysis (composite panel
@@ -257,7 +278,8 @@ const CATALOG = [
     refLo:0.5, refHi:1.3,
     hiM:1.2, hiF:1.0,
     hi:1.2, lo:null,
-    notes:'Pattern matches "Creatinine(serum):" and "CREAT:" but NOT "Creatinine(24hrs Urine):".' },
+    notes:'Pattern matches "Creatinine(serum):" and "CREAT:" but NOT "Creatinine(24hrs Urine):".',
+    refHistory: [{ machine:'*', refLo:null, refHi:1.2, validFrom:'1900-01-01', source:'migration 起點 — universal ref 既有值' }] },
 
   { id:'UA',
     pattern: /(?:UA|Uric\s*acid):\s*([<>]?\s*[\d.]+)/i,
@@ -266,7 +288,8 @@ const CATALOG = [
     ref:'男 3.3–7.7，女 2.5–6.2 mg/dL',
     refLo:2.5, refHi:7.7,
     hiM:7.7, hiF:6.2,
-    hi:7.7, lo:null },
+    hi:7.7, lo:null,
+    refHistory: [{ machine:'*', refLo:null, refHi:7.7, validFrom:'1900-01-01', source:'migration 起點 — universal ref 既有值' }] },
 
   { id:'eGFR',
     pattern: /(?:Creatinine\(serum\)|CREAT):\s*([<>]?\s*[\d.]+)/i,
@@ -342,49 +365,56 @@ const CATALOG = [
     displayName:'鈉 (Na)', shortLabel:'Na',
     unit:'mmol/L', category:'電解質',
     ref:'136–145 mmol/L',
-    refLo:136, refHi:145, hi:145, lo:136 },
+    refLo:136, refHi:145, hi:145, lo:136,
+    refHistory: [{ machine:'*', refLo:136, refHi:145, validFrom:'1900-01-01', source:'migration 起點 — universal ref 既有值' }] },
 
   { id:'K',
     pattern: /K \(Serum\):\s*([<>]?\s*[\d.]+)/,
     displayName:'鉀 (K)', shortLabel:'K',
     unit:'mmol/L', category:'電解質',
     ref:'3.5–5.1 mmol/L',
-    refLo:3.5, refHi:5.1, hi:5.1, lo:3.5 },
+    refLo:3.5, refHi:5.1, hi:5.1, lo:3.5,
+    refHistory: [{ machine:'*', refLo:3.5, refHi:5.1, validFrom:'1900-01-01', source:'migration 起點 — universal ref 既有值' }] },
 
   { id:'Cl',
     pattern: /Cl\(Serum\):\s*([<>]?\s*[\d.]+)/,
     displayName:'氯 (Cl)', shortLabel:'Cl',
     unit:'mmol/L', category:'電解質',
     ref:'98–107 mmol/L',
-    refLo:98, refHi:107, hi:107, lo:98 },
+    refLo:98, refHi:107, hi:107, lo:98,
+    refHistory: [{ machine:'*', refLo:98, refHi:107, validFrom:'1900-01-01', source:'migration 起點 — universal ref 既有值' }] },
 
   { id:'Ca',
     pattern: /Calcium\(Serum\):\s*([<>]?\s*[\d.]+)/,
     displayName:'鈣 (Ca)', shortLabel:'Ca',
     unit:'mg/dL', category:'電解質',
     ref:'8.6–10.3 mg/dL',
-    refLo:8.6, refHi:10.3, hi:10.3, lo:8.6 },
+    refLo:8.6, refHi:10.3, hi:10.3, lo:8.6,
+    refHistory: [{ machine:'*', refLo:8.6, refHi:10.3, validFrom:'1900-01-01', source:'migration 起點 — universal ref 既有值' }] },
 
   { id:'FreeCa',
     pattern: /Free Ca\+\+:\s*([<>]?\s*[\d.]+)/,
     displayName:'游離鈣 (Free Ca)', shortLabel:'Free Ca',
     unit:'mmol/L', category:'電解質',
     ref:'1.15–1.32 mmol/L',
-    refLo:1.15, refHi:1.32, hi:1.32, lo:1.15 },
+    refLo:1.15, refHi:1.32, hi:1.32, lo:1.15,
+    refHistory: [{ machine:'*', refLo:1.15, refHi:1.32, validFrom:'1900-01-01', source:'migration 起點 — universal ref 既有值' }] },
 
   { id:'P',
     pattern: /Phosphorus:\s*([<>]?\s*[\d.]+)/,
     displayName:'磷 (P)', shortLabel:'P',
     unit:'mg/dL', category:'電解質',
     ref:'2.5–5.0 mg/dL',
-    refLo:2.5, refHi:5.0, hi:5.0, lo:2.5 },
+    refLo:2.5, refHi:5.0, hi:5.0, lo:2.5,
+    refHistory: [{ machine:'*', refLo:2.5, refHi:5.0, validFrom:'1900-01-01', source:'migration 起點 — universal ref 既有值' }] },
 
   { id:'Mg',
     pattern: /MG:\s*([<>]?\s*[\d.]+)/,
     displayName:'鎂 (Magnesium, Mg)', shortLabel:'Mg',
     unit:'mg/dL', category:'電解質',
     ref:'1.6–2.6 mg/dL',
-    refLo:1.6, refHi:2.6, hi:2.6, lo:1.6 },
+    refLo:1.6, refHi:2.6, hi:2.6, lo:1.6,
+    refHistory: [{ machine:'*', refLo:1.6, refHi:2.6, validFrom:'1900-01-01', source:'migration 起點 — universal ref 既有值' }] },
 
   // ═══════════════════════════════════════════════════════════════════════
   // IRON METABOLISM
@@ -398,7 +428,8 @@ const CATALOG = [
     ref:'男 65–175，女 50–170 µg/dL',
     refLo:50, refHi:175,
     loM:65, hiM:175, loF:50, hiF:170,
-    lo:50, hi:175 },
+    lo:50, hi:175,
+    refHistory: [{ machine:'*', refLo:50, refHi:175, validFrom:'1900-01-01', source:'migration 起點 — universal ref 既有值' }] },
 
   { id:'TIBC',
     pattern: /TIBC:\s*([<>]?\s*[\d.]+)/,
@@ -407,7 +438,8 @@ const CATALOG = [
     ref:'男 134–415，女 120–480 µg/dL',
     refLo:120, refHi:480,
     loM:134, hiM:415, loF:120, hiF:480,
-    lo:120, hi:480 },
+    lo:120, hi:480,
+    refHistory: [{ machine:'*', refLo:120, refHi:480, validFrom:'1900-01-01', source:'migration 起點 — universal ref 既有值' }] },
 
   // vhyl sample (2026-05-05): "更正報告 FE: 58TIBC: 267.00TS: 22"
   { id:'TSAT',
@@ -415,7 +447,8 @@ const CATALOG = [
     displayName:'鐵飽和度 (TSAT)', shortLabel:'TSAT',
     unit:'%', category:'鐵代謝',
     ref:'20–45 %',
-    refLo:20, refHi:45, hi:45, lo:20 },
+    refLo:20, refHi:45, hi:45, lo:20,
+    refHistory: [{ machine:'*', refLo:20, refHi:45, validFrom:'1900-01-01', source:'migration 起點 — universal ref 既有值' }] },
 
   { id:'UIBC', computed:'UIBC', pattern:null,
     displayName:'不飽和鐵結合力 (UIBC)', shortLabel:'UIBC',
@@ -432,7 +465,8 @@ const CATALOG = [
     refLo:4.63, refHi:274.66,
     loM:21.81, hiM:274.66, loF:4.63, hiF:204.00,
     lo:4.63, hi:274.66,
-    notes:'Capture allows leading <> operator (handles "<5.0", ">2000" results).' },
+    notes:'Capture allows leading <> operator (handles "<5.0", ">2000" results).',
+    refHistory: [{ machine:'*', refLo:4.63, refHi:274.66, validFrom:'1900-01-01', source:'migration 起點 — universal ref 既有值' }] },
 
   // ═══════════════════════════════════════════════════════════════════════
   // PARATHYROID + VITAMINS
@@ -443,7 +477,8 @@ const CATALOG = [
     displayName:'副甲狀腺素 (iPTH)', shortLabel:'i-PTH',
     unit:'pg/mL', category:'副甲狀腺',
     ref:'15–68.3 pg/mL',
-    refLo:15, refHi:68.3, hi:68.3, lo:15 },
+    refLo:15, refHi:68.3, hi:68.3, lo:15,
+    refHistory: [{ machine:'*', refLo:15, refHi:68.3, validFrom:'1900-01-01', source:'migration 起點 — universal ref 既有值' }] },
 
   { id:'VitB12',
     pattern: /(?:Vit(?:amin)?\.?\s*B12|VIT\.?\s*B12|B12):\s*([<>]?\s*[\d.]+)/i,
@@ -451,7 +486,8 @@ const CATALOG = [
     unit:'pg/mL', category:'維生素',
     ref:'187–883 pg/mL',
     refLo:187, refHi:883, hi:883, lo:187,
-    notes:'Matches "Vit. B12:", "Vitamin B12:", "VIT.B12:", "B12:".' },
+    notes:'Matches "Vit. B12:", "Vitamin B12:", "VIT.B12:", "B12:".',
+    refHistory: [{ machine:'*', refLo:187, refHi:883, validFrom:'1900-01-01', source:'migration 起點 — universal ref 既有值' }] },
 
   { id:'FolicAcid',
     pattern: /(?:Folic\s+acid|Folate):\s*([<>]?\s*[\d.]+)/i,
@@ -459,7 +495,8 @@ const CATALOG = [
     unit:'ng/mL', category:'維生素',
     ref:'3.1–20.5 ng/mL',
     refLo:3.1, refHi:20.5, hi:20.5, lo:3.1,
-    notes:'Allows variable internal whitespace (some hospitals print "Folic  acid:" with double space).' },
+    notes:'Allows variable internal whitespace (some hospitals print "Folic  acid:" with double space).',
+    refHistory: [{ machine:'*', refLo:3.1, refHi:20.5, validFrom:'1900-01-01', source:'migration 起點 — universal ref 既有值' }] },
 
   // ═══════════════════════════════════════════════════════════════════════
   // TRACE METALS
@@ -490,7 +527,8 @@ const CATALOG = [
       resultPattern:  /Result:\s*([<>]?\s*[\d.]+)/,
       synthLabel:     'Al鋁',
     },
-    notes:'Annual test. vhtt confirmed 2026-05-07 (18-patient survey, 12 with data). Main pattern matches both "Al鋁: N" (in-house) and "BALR0101: N" (out-sourced lab code). Capture allows leading <> operator (handles "<2" below detection limit; reporter extractLabValues preserves "<N" as string since 2026-05-07). Ref <20 µg/L per KDOQI guidelines.' },
+    notes:'Annual test. vhtt confirmed 2026-05-07 (18-patient survey, 12 with data). Main pattern matches both "Al鋁: N" (in-house) and "BALR0101: N" (out-sourced lab code). Capture allows leading <> operator (handles "<2" below detection limit; reporter extractLabValues preserves "<N" as string since 2026-05-07). Ref <20 µg/L per KDOQI guidelines.',
+    refHistory: [{ machine:'*', refLo:null, refHi:20, validFrom:'1900-01-01', source:'migration 起點 — universal ref 既有值' }] },
 
   // ═══════════════════════════════════════════════════════════════════════
   // TUMOR MARKERS
@@ -502,7 +540,8 @@ const CATALOG = [
     displayName:'甲胎蛋白 (AFP)', shortLabel:'AFP',
     unit:'ng/mL', category:'癌症指數',
     ref:'< 20 ng/mL（肝臟）',
-    refLo:null, refHi:20, hi:20, lo:null },
+    refLo:null, refHi:20, hi:20, lo:null,
+    refHistory: [{ machine:'*', refLo:null, refHi:20, validFrom:'1900-01-01', source:'migration 起點 — universal ref 既有值' }] },
 
   // vhyl sample (2026-05-25): "正式報告 CEA(YL): 7.37" — chartno 000023172B
   // 比照 AFP / Fe / TSAT 同期 fix 加 (TT|YL) 可選後綴。
@@ -513,14 +552,16 @@ const CATALOG = [
     displayName:'癌胚抗原 (CEA)', shortLabel:'CEA',
     unit:'ng/mL', category:'癌症指數',
     ref:'< 5 ng/mL（大腸直腸）',
-    refLo:null, refHi:5, hi:5, lo:null },
+    refLo:null, refHi:5, hi:5, lo:null,
+    refHistory: [{ machine:'*', refLo:null, refHi:5, validFrom:'1900-01-01', source:'migration 起點 — universal ref 既有值' }] },
 
   { id:'CA199',
     pattern: /CA.?19.?9:\s*([<>]?[\d.]+)/i,
     displayName:'CA-199', shortLabel:'CA-199',
     unit:'U/mL', category:'癌症指數',
     ref:'< 37 U/mL（胰臟、膽道）',
-    refLo:null, refHi:37, hi:37, lo:null },
+    refLo:null, refHi:37, hi:37, lo:null,
+    refHistory: [{ machine:'*', refLo:null, refHi:37, validFrom:'1900-01-01', source:'migration 起點 — universal ref 既有值' }] },
 
   { id:'PSA',
     pattern: /\bPSA:\s*([<>]?\s*[\d.]+)/,
@@ -528,7 +569,8 @@ const CATALOG = [
     unit:'ng/mL', category:'癌症指數',
     ref:'< 4 ng/mL（男性／攝護腺）',
     refLo:null, refHi:4, hi:4, lo:null,
-    gender:'M' },
+    gender:'M',
+    refHistory: [{ machine:'*', refLo:null, refHi:4, validFrom:'1900-01-01', source:'migration 起點 — universal ref 既有值' }] },
 
   { id:'FreePSA',
     // 2026-05-08: 原本移除 `|RATIO` alternation，錯誤假設 vhtt `RATIO:` 值為
@@ -544,7 +586,8 @@ const CATALOG = [
     orderNameFilter: /Free\s*PSA/i,
     displayName:'游離 PSA (Free PSA)', shortLabel:'Free PSA',
     unit:'ng/mL', category:'癌症指數',
-    gender:'M' },
+    gender:'M',
+    refHistory: [{ machine:'*', refLo:null, refHi:null, validFrom:'1900-01-01', source:'migration 起點 — universal ref 既有值' }] },
 
   { id:'PSARatio', computed:'PSARatio', pattern:null,
     displayName:'Free/Total PSA 比值', shortLabel:'F/T PSA',
@@ -559,7 +602,8 @@ const CATALOG = [
     unit:'U/mL', category:'癌症指數',
     ref:'< 35 U/mL（女性／卵巢）',
     refLo:null, refHi:35, hi:35, lo:null,
-    gender:'F' },
+    gender:'F',
+    refHistory: [{ machine:'*', refLo:null, refHi:35, validFrom:'1900-01-01', source:'migration 起點 — universal ref 既有值' }] },
 
   // ═══════════════════════════════════════════════════════════════════════
   // THYROID
@@ -570,14 +614,16 @@ const CATALOG = [
     displayName:'促甲狀腺刺激素 (TSH)', shortLabel:'TSH',
     unit:'µIU/mL', category:'甲狀腺',
     ref:'0.35–4.94 µIU/mL',
-    refLo:0.35, refHi:4.94, hi:4.94, lo:0.35 },
+    refLo:0.35, refHi:4.94, hi:4.94, lo:0.35,
+    refHistory: [{ machine:'*', refLo:0.35, refHi:4.94, validFrom:'1900-01-01', source:'migration 起點 — universal ref 既有值' }] },
 
   { id:'FreeT4',
     pattern: /Free T4:\s*([<>]?\s*[\d.]+)/,
     displayName:'游離甲狀腺素 (Free T4)', shortLabel:'fT4',
     unit:'ng/dL', category:'甲狀腺',
     ref:'0.7–1.48 ng/dL',
-    refLo:0.7, refHi:1.48, hi:1.48, lo:0.7 },
+    refLo:0.7, refHi:1.48, hi:1.48, lo:0.7,
+    refHistory: [{ machine:'*', refLo:0.7, refHi:1.48, validFrom:'1900-01-01', source:'migration 起點 — universal ref 既有值' }] },
 
   // ═══════════════════════════════════════════════════════════════════════
   // HEPATITIS / INFECTION (qualitative — values are text, not numbers)
@@ -621,19 +667,22 @@ const CATALOG = [
     pattern: /HBsAg:\s*([<>]?\s*[\d.]+)/i,
     displayName:'HBsAg 滴度', shortLabel:'HBsAg titer',
     unit:'', category:'肝炎 / 感染',
-    notes:'Numeric titer for HBsAg. Consumed by HBsAgDisplay computed wrapper.' },
+    notes:'Numeric titer for HBsAg. Consumed by HBsAgDisplay computed wrapper.',
+    refHistory: [{ machine:'*', refLo:null, refHi:null, validFrom:'1900-01-01', source:'migration 起點 — universal ref 既有值' }] },
 
   { id:'AntiHBsTiter',
     pattern: /Anti-HBs:\s*([<>]?\s*[\d.]+)/i,
     displayName:'Anti-HBs 滴度', shortLabel:'Anti-HBs titer',
     unit:'', category:'肝炎 / 感染',
-    notes:'Numeric titer for Anti-HBs. Consumed by AntiHBsDisplay computed wrapper.' },
+    notes:'Numeric titer for Anti-HBs. Consumed by AntiHBsDisplay computed wrapper.',
+    refHistory: [{ machine:'*', refLo:null, refHi:null, validFrom:'1900-01-01', source:'migration 起點 — universal ref 既有值' }] },
 
   { id:'AntiHCVTiter',
     pattern: /(?:HCV Ab|Anti-HCV):\s*([<>]?\s*[\d.]+)/i,
     displayName:'Anti-HCV 滴度', shortLabel:'Anti-HCV titer',
     unit:'', category:'肝炎 / 感染',
-    notes:'Numeric titer for Anti-HCV. Consumed by HCV computed wrapper.' },
+    notes:'Numeric titer for Anti-HCV. Consumed by HCV computed wrapper.',
+    refHistory: [{ machine:'*', refLo:null, refHi:null, validFrom:'1900-01-01', source:'migration 起點 — universal ref 既有值' }] },
 
   // Computed display wrappers — viewer points its manifest at these ids
   // (HCV / HBsAgDisplay / AntiHBsDisplay) to render the patient-friendly
@@ -689,12 +738,14 @@ const CATALOG = [
     pattern: /HIV virus load:\s*([\d,.]+)/,
     displayName:'HIV 病毒量 (Viral Load)', shortLabel:'HIV VL',
     category:'HIV',
-    notes:'Capture allows commas (thousands separator).' },
+    notes:'Capture allows commas (thousands separator).',
+    refHistory: [{ machine:'*', refLo:null, refHi:null, validFrom:'1900-01-01', source:'migration 起點 — universal ref 既有值' }] },
 
   { id:'CD4',
     pattern: /LEU3AN:\s*([<>]?\s*[\d.]+)/,
     displayName:'CD4 淋巴球 (LEU3AN)', shortLabel:'CD4',
-    category:'HIV' },
+    category:'HIV',
+    refHistory: [{ machine:'*', refLo:null, refHi:null, validFrom:'1900-01-01', source:'migration 起點 — universal ref 既有值' }] },
 
   // ═══════════════════════════════════════════════════════════════════════
   // URINE — qualitative + quantitative (Phase 3 Early CKD, 2026-05-08)
