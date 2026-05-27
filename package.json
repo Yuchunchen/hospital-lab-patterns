@@ -5,9 +5,10 @@
   "private": true,
   "main": "patterns/index.js",
   "scripts": {
-    "validate":   "node scripts/validate.js",
-    "build-json": "node scripts/build-json.js",
-    "release":    "node scripts/validate.js && node scripts/build-json.js"
+    "validate":        "node scripts/validate.js",
+    "build-json":      "node scripts/build-json.js",
+    "test:refhistory": "node scripts/test-refhistory.js",
+    "release":         "node scripts/validate.js && node scripts/build-json.js"
   },
   "files": [
     "patterns/",

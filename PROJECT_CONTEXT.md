@@ -656,7 +656,8 @@ flow**，不要再問是 SOP A、B、F——自己選對。
 |---|---|---|
 | `<vhyl\|vhtt>/<chartno> <test_name>` | A（新增）| 用 searchItem 抓 label → 提議 regex → 等確認 |
 | `<vhyl\|vhtt>/<chartno> <test_name> 沒抓到/missing/沒出現` | F→B/D | F12 偵錯 + Chrome 看頁面 → 落到 SOP B 修 regex 或 SOP D 加進 manifest |
-| `<test_id> ref range 改成 lo/hi` | C | 直接改 catalog.js |
+| `<test_id> ref range 改成 lo/hi` | C | universal — 改 refHistory `*` 那筆 |
+| `<vhyl\|vhtt>/<test_id> ref range 改成 lo/hi` | C | machine-specific — refHistory 末加一筆 |
 | `把 <test_id> 從 viewer/reporter 拿掉` | E | 改 manifest，catalog 留著 |
 
 **前置條件**（不滿足就先讓使用者處理）：
@@ -756,14 +757,50 @@ push 到 GitHub 之後：
 5. `npm run release` → push patterns repo
 6. 兩個 sibling repo `node sync-patterns.js` → push
 
-### SOP C — 修 reference range（hi / lo）
+### SOP C — 修 reference range（machine × time × gender，refHistory）
 
-最簡單的 case，純資料變更。
+純資料變更，但自 2026-05-28（TASK_BRIEF_ref_range_machine_time_dim，Order 5.0）
+起 reference range 有 **機器 × 時間 × 性別** 三維。53 個試劑校正類 lab id 各帶
+`refHistory[]`（schema 見 `docs/pattern-spec.md`）。判定正常/異常時 viewer /
+reporter 經共享 `patterns/lib/resolveRef.js` 用「本機 chrome 設定（vhtt/vhyl）
+× 該筆報告日期 × 病人性別」解出正確 ref。
 
-1. 在 catalog.js 該 entry 修改 `hi` / `lo` / `refLo` / `refHi` /
-   `ref`（顯示字串）
-2. `npm run release` → push patterns
-3. sibling 重 sync 跟 SOP A 一樣
+**觸發語（§4.1）：**
+
+| 觸發語 | 動作 |
+|---|---|
+| `<test_id> ref range 改成 <lo>/<hi>` | universal — 改該 entry refHistory 中 `machine:'*'` 那筆的 refLo/refHi（順手把外層 `lo`/`hi` + `ref` 顯示字串對齊，避免漂移） |
+| `vhtt/<test_id> ref range 改成 <lo>/<hi>` | refHistory 末**加一筆** `{machine:'vhtt', refLo, refHi, validFrom:今天, source:'YC SOP C 觸發 '+日期}` |
+| `vhyl/<test_id> ref range 改成 <lo>/<hi>` | 同上，`machine:'vhyl'` |
+| `…改成 <lo>/<hi> 來源 <source>` | 同上，`source` 用指定字串 |
+
+性別 inline override（`refLoM/refHiM/refLoF/refHiF`）**不寫成 trigger 語**，
+由 YC 對話補述觸發。例：`vhyl/RBC ref range 改成 3.5/6.0` + 補述
+「男 4.0-6.0，女 3.5-5.5」→ Claude 在剛加的那筆 refHistory 內補
+`refLoM:4.0, refHiM:6.0, refLoF:3.5, refHiF:5.5`。
+
+**Trigger parser（§4.2，與 `docs/cowork-project-instructions.md` 同步）：**
+
+```
+訊息含「ref range 改成」keyword → SOP C 分支：
+  a. 第二 token 帶 vhyl/ 或 vhtt/ 前綴 → machine-specific 變體（末加一筆）
+  b. 沒前綴 → universal 變體（改 '*' 那筆）
+（其餘 keyword：沒抓到/missing → SOP F→B/D；從 viewer/reporter 拿掉 → SOP E；
+  第二 token 是 chartno 格式 → SOP A）
+```
+
+**動作步驟（§4.3）：**
+
+1. 在 patterns repo 找到 entry
+2. 若 entry 無 `refHistory`（理論上 53 in-scope 都有；BUN_pre/post 繼承 BUN，
+   排除清單不該走 SOP C）→ 先補 migration 起點筆
+3. 依 trigger 前綴決定 `machine`；依對話補述決定是否加 inline 性別 override
+4. `npm run release`（validate + build-json）；可順手 `npm run test:refhistory`
+5. 兩個 sibling repo `node sync-patterns.js` → push（維持規則 #3 先問）
+
+**Pattern-learning time-machine awareness（§4.4）：** YC 在 Cowork session 開頭明示
+「im in vhtt / im in vhyl」→ carry context 整個 session（SOP A 用該 machine 對應
+ernode URL 抓正式報告）。trigger 語含 `vhtt/`/`vhyl/` 前綴會覆蓋 session context。
 
 ### SOP D — 把已存在的 catalog test 加進某個 manifest
 

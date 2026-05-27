@@ -4,6 +4,27 @@ Chronological log of pattern catalog changes. Newest entries on top.
 
 ---
 
+## 2026-05-28 — catalog/schema/lib:refHistory 機器×時間×性別 ref(patterns 端基礎,Claude Code)
+
+- 作者:claude(與 YC 共同,workspace root 跨 repo session)
+- 範圍:catalog + schema + 新增 lib/resolveRef.js + scripts(migration/test)+ runtime-snapshot
+- 變更:新增 `refHistory` 欄位 + 共享 resolveRef helper + schema validation
+- 對應 brief:`docs/task-briefs/TASK_BRIEF_ref_range_machine_time_dim.md` §2/§9/§10(Order 5.0)
+- 影響檔:
+  - `patterns/catalog.js`:51 個 in-scope entry 加 `refHistory:[{machine:'*', refLo, refHi, validFrom:'1900-01-01', source}]` migration 起點筆(BUN_pre/BUN_post 不加,繼承 BUN;script-driven 插入)。**base seed 自 `lo`/`hi`(現行警示門檻)非 refLo/refHi** — YC 2026-05-28 拍板 zero-regression(9 個 entry GOT/GPT/RGT/TBIL/DBIL/HbA1c/BUN/CREAT/UA 兩者分歧,lo/hi 是刻意警示值);refLo/refHi 維持教科書值供 export
+  - `patterns/schema.js`:ALLOWED_FIELDS 加 `refHistory`;validateEntry 加 refHistory shape 驗證(machine∈{vhtt,vhyl,*}、validFrom ISO、base refLo/refHi、source 非空、inline 性別 override §2.3、hospitalScope×machine §2.4);export VALID_MACHINES
+  - `patterns/lib/resolveRef.js`:**新增** 共享 helper,簽名 `resolveRef(testId, machineSource, reportDate, patientGender, catalogList)`→`{refLo,refHi}`(§2.2 三維 lookup + fallback chain + 內建 ROC/西元/ISO 日期正規化 §11.3 guard);IIFE 包裝避免 concat scope 名稱衝突;吃 catalogList 參數不依賴 global(支援 viewer runtime dist swap + BUN_pre→BUN fallback)
+  - `scripts/migrate-refhistory.js`:**新增** 一次性 codemod(idempotent,留存)
+  - `scripts/test-refhistory.js` + package.json `test:refhistory`:**新增** T1–T13 node harness
+- 測試 ID:WBC/RBC/BUN/BUN_pre/eGFR + 合成 catalog
+- 驗證:`npm run release` 全綠(88 catalog validate pass、dist/patterns.json 含 51 條 refHistory 資料);`npm run test:refhistory` 14/14 pass(T1–T13)
+- docs:`docs/pattern-spec.md`(refHistory 欄位 + lookup 說明)、`PROJECT_CONTEXT.md` §9 SOP C 改寫(machine 變體 trigger + parser §4.2 + 步驟)、`docs/cowork-project-instructions.md`(machine trigger + parser)皆已更新
+- §9.1 寫 53,權威解讀(§1.1 特例/§6.11/§10 T5)為 51 加 refHistory(BUN_pre/post 繼承)— 已採 51,T10 驗證 fallback
+- 影響:sibling repo(viewer/reporter)**尚未** sync — 待 consumer wiring(dashboard/report/ui-lab-view 接 resolveRef)+ first-run wizard(viewer chrome.storage / reporter localStorage)+ sync-patterns 拉 lib/resolveRef.js 一起做
+- 模式聲明:實作在 Claude Code(workspace root);schema 變更屬破壞性改動,**commit/push 前先問**(規則 #3)
+
+---
+
 ## 2026-05-27 — docs/task-briefs:寫 TASK_BRIEF_ref_range_machine_time_dim.md
 
 - 作者:claude(與 YC 共同,在 vhtt Cowork 動手)
