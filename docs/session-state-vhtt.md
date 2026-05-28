@@ -8,8 +8,9 @@
 ---
 
 **Last wrap**: 2026-05-28 07:11(台北時間 / SOP J)
-**Last session type**: Cowork(SOP I 隱式 resume → A+B 評估推遲 → ref range brief 寫 + 11 議題 lock → Claude Code 一輪實作 land → 16 chartno hand-off → SOP J wrap)
-**Last action**: SOP J — 結束本對話 thread,要開新 thread 接續(走解讀 (a):Claude in Chrome 抓 vhtt 16 病人正式報告 ref 對齊 catalog 51 entry refHistory)
+**Last update**: 2026-05-28 後半(in-place,非 SOP J wrap)— 接續 07:11 SOP J 設定的主路徑,新 thread 跑了 cross-reference 12 chartno 並交付 brief 給 Claude Code
+**Last session type**: Cowork(SOP I 隱式 resume → A+B 評估推遲 → ref range brief 寫 + 11 議題 lock → Claude Code 一輪實作 land → 16 chartno hand-off → SOP J wrap → 接續 thread 跑 cross-reference 12 chartno → brief 交付 Claude Code)
+**Last action**: 接續 thread 完成 cross-reference 3 病人(76708I 完整 / 75420B page 1-6 / 125509A page 1-2)+ 8 病人 page 1 sweep,findings 寫入 `docs/cross-reference-vhtt-2026-05-28.md`,actionable brief 寫入 `docs/task-briefs/TASK_BRIEF_vhtt_refHistory_batch_13.md`,兩份檔案 untracked,待 YC commit/push 後 Claude Code 接手執行
 
 ## 1. 本 session 完成
 
@@ -89,43 +90,39 @@ vhyl/RBC ref range 改成 3.5/6.0 + 「男 4.0-6.0,女 3.5-5.5」 → inline 性
 
 ## 3. 下次該先做什麼
 
-### 主路徑 — vhtt 16 chartno × 51 entry cross-reference(新 thread 接)
+### 主路徑(已執行,進入 Claude Code 接手階段)
 
-YC 已給 16 個 vhtt chartno(**注意 `124879J` 和 `43524F` 各重複 1 次**,需 YC 確認 typo 還是刻意):
+**12 chartno cross-reference 已完成**(原 16 chartno 中拆出 12 的 subset,124879J + 43524F 留另批)→ 結論寫入 `docs/cross-reference-vhtt-2026-05-28.md`,actionable brief 寫入 `docs/task-briefs/TASK_BRIEF_vhtt_refHistory_batch_13.md`。
 
-```
-76708I, 75420B, 125509A, 122426G, 124879J(×2), 23355G,
-7247J, 43524F(×2), 80885F, 126888I, 17679E, 26353G, 25029D, 22601H
-```
+**下次 thread 應做**(優先序):
 
-**新 thread 開頭要做的事**(SOP I pre-flight + ramp up):
+1. **(YC PowerShell)** commit + push 本 thread 寫的 3 個檔案(brief + cross-ref doc + 本 session-state 更新)— 指令見本檔末尾
+2. **(YC 切 Claude Code,workspace root)** 給 kickoff prompt: "讀 `hospital-lab-patterns/docs/task-briefs/TASK_BRIEF_vhtt_refHistory_batch_13.md` 執行" → Claude Code 跑 brief 完整 cycle(13 條 SOP C refHistory 加 + npm release + sync 2 sibling + 三 repo commit + auto push + brief 改名 _done + WORKLOG 三 repo)
+3. **(brief land 後)** Notion Dashboard 同步:本 brief Open → Done + 起 follow-up rows(剩 8 entries / ALP drift / vhyl 對應)
 
-1. SOP I pre-flight § 1.0 paste check(vhtt 應仍 ✅;本 thread 未動 cowork-project-instructions.md)
-2. § 1.1 環境 sync — 三 repo `git pull`(預期 already up to date,本 thread 結束時對齊)
-3. **Chrome 連線確認**:Claude in Chrome 是否已連到 vhtt 本機 Chrome
-4. **ernode patient page URL pattern** — YC 給一個 chartno 對應樣本 URL(我目前不知道 URL pattern)
-5. 從第 1 個 chartno 開始:Chrome navigate → patient orders page → 對每個 lab order click 開正式報告 → 抓 ref range → 對齊 catalog `*` ref
-6. 16 病人 cover entry 不一,合起來盡量 cover 51 entry(部分罕用 entry 可能無人做)
+### 本 thread 抓到的關鍵 finding(規則 #11 暴露)
 
-### 規則 #11 暴露 — 工作流前提
+1. **vhtt 化驗報告 print ref 跨病人跨時間一致**(CBC HGB / PLT 跨 2 病人 + Fe 跨 2 病人跨時間全 confirm)→ YC 拍板「1 sample 即信」對其他 11 entry 也適用
+2. **vhtt 外送一樣算作 vhtt**(YC 政策)— 委外 9 筆逐筆 audit 後 8 筆 match catalog `*`(不動作),Fe 唯一委外仍進 vhtt override
+3. **vhtt 系統某些 entry 完全沒印 ref**:TSH, FreeT4, FolicAcid, PSA, FreePSA, Mg → 維持 catalog `*` 不動
+4. **12 chartno 沒涵蓋 8 entries**:RGT, VitB12, Aluminum, HBsAg/AntiHBs/AntiHCV titer, HIVLoad, CD4 → 需另選肝炎追蹤 / HIV / 透析 / 鋁中毒 病人補 cross-reference,本 thread 不處理
+5. **catalog ALP 內部 drift**:`ref:'40-130'` vs `refLo:34, refHi:130` — 獨立 cleanup,brief § 2 scope guard 排除
+6. **本 thread deviate brief § 6 #2**(原禁 auto fetch + 解析)— 經 YC 拍板 deviation,brief § 6 #2 應 follow-up 修文 reflect new SOP(cross-reference 工作流是正當 SOP variant)
 
-**「報告 print ref」vs「試劑校正 ref」識別**:
-- 病人正式報告 print 的 ref 通常是 **hospital-wide 通用 ref**(非試劑校正內部值)
-- 從 SOP C 速查範例(`vhyl/WBC ref range 改成 3.8/10.5 來源 2024批號校正單`)看,YC 預期 source 包含**校正單**;但本批 16 chartno 抓的是**病人報告** → 抓到的是 hospital-wide 通用 ref
-- **意涵**:vhtt 這批 update 多半是「universal `*` ref 對齊」(catalog seed 自 catalog 編寫者參考的舊 ref,可能跟 vhtt 報告現行 ref 略有 drift),不是 vhtt-specific machine override
-- 真正的 vhtt vs vhyl machine override 要等**雙院都跑同 entry 比對**才會 surface
+### Follow-up brief candidates(未起,需 YC 確認 Order)
 
-### 預估工作量(給新 thread 規劃用)
+- **剩 8 entries cross-reference**(需要不同 patient profile)
+- **catalog ALP 內部 drift cleanup**
+- **vhyl 對應 cross-reference**(對應本 13 vhtt override,看哪些是真的 machine 差異)
+- **brief `ref_range_machine_time_dim` § 6 #2 修文**(承認 cross-reference auto fetch 是合理 SOP variant)
 
-16 病人 × 51 entry cross-reference:
-- 每個病人 lab orders 數可能 10-30 條(不全是 in-scope)
-- 每條 in-scope order click 開正式報告 → 抓 ref → 對齊 catalog
-- 大量 Claude in Chrome navigate + 解 HTML tool call
-- **預估新 thread 也會分多輪**;單一 thread 可能跑 5-10 個病人就該 SOP J wrap 再開下一 thread
+### 新 thread 開場句範例(若繼續 vhtt cross-reference 工作流)
 
-### 新 thread 開場句範例(SOP J Step 2)
+> 接續 2026-05-28 vhtt cross-reference 第二輪。請讀 `patterns/docs/cross-reference-vhtt-2026-05-28.md` + `patterns/docs/session-state-vhtt.md`。要 cross-reference 剩 8 entries(RGT / VitB12 / Aluminum / 肝炎 titer / HIV)— 需新 chartno(肝炎追蹤 / HIV / 透析 / 鋁中毒病人各 1 個)。Chrome 連線 + 給我 chartno 後開始。
 
-> 接續 2026-05-28 vhtt ref range cross-reference。請讀 `patterns/docs/session-state-vhtt.md` + Notion 開機 SOP。準備從 16 個 vhtt chartno 走解讀 (a):Claude in Chrome 抓 ernode 正式報告 ref,對齊 catalog 51 entry `*` ref。Chrome 連線 + 給我一個 chartno 對應 patient page URL 樣本後開始。
+### 新 thread 開場句範例(若給 Claude Code 跑 brief)
+
+> 讀 `hospital-lab-patterns/docs/task-briefs/TASK_BRIEF_vhtt_refHistory_batch_13.md` 執行。Source 參考 `docs/cross-reference-vhtt-2026-05-28.md`。非破壞性改動,commit 後直接 push(Claude Code 端 auto-push 政策)。
 
 ## 4. Active TODOs(snapshot at wrap;以 Notion Dashboard 為準)
 
@@ -170,6 +167,8 @@ YC 已給 16 個 vhtt chartno(**注意 `124879J` 和 `43524F` 各重複 1 次**,
 
 ## SOP J 收尾步驟(給 YC 在 vhtt PowerShell 跑)
 
+(舊版,2026-05-28 07:11 SOP J wrap 已 committed 為 `e033e9f`,本步驟為歷史紀錄)
+
 ```powershell
 cd D:\self\hospital-lab\hospital-lab-patterns
 
@@ -189,4 +188,42 @@ git add WORKLOG.md
 git commit -m "docs(session): SOP J wrap vhtt 2026-05-28T0711(ref range brief + Claude Code 一輪實作 + 16 chartno hand-off)"
 
 # 4. push(規則 #3 — 跟我說 commit 好了，我確認再 push)
+```
+
+---
+
+## 接續 thread Cowork 交付步驟(給 YC 在 vhtt PowerShell 跑,2026-05-28 後半)
+
+```powershell
+cd D:\self\hospital-lab\hospital-lab-patterns
+
+# 1. confirm working tree(預期三個未 commit 檔)
+git status -s
+# 預期:
+#  M docs/session-state-vhtt.md
+# ?? docs/cross-reference-vhtt-2026-05-28.md
+# ?? docs/task-briefs/TASK_BRIEF_vhtt_refHistory_batch_13.md
+
+# 2. git add 三個
+git add docs/session-state-vhtt.md
+git add docs/cross-reference-vhtt-2026-05-28.md
+git add docs/task-briefs/TASK_BRIEF_vhtt_refHistory_batch_13.md
+
+# 3. (可選)更新 WORKLOG.md — 加一行
+#   ## 2026-05-28 後半(vhtt Cowork 接續 thread)
+#   - cross-reference 12 chartno × 51 entry,生 13 條 vhtt refHistory override 候選
+#   - 寫入 docs/cross-reference-vhtt-2026-05-28.md(audit trail)
+#   - 寫入 docs/task-briefs/TASK_BRIEF_vhtt_refHistory_batch_13.md(actionable,Claude Code 接手)
+#   - 規則 #11 暴露:本 thread deviate brief § 6 #2(原禁 auto fetch),YC 拍板 deviation
+#   - session-state-vhtt.md in-place 更新(非 SOP J wrap)
+
+git add WORKLOG.md  # 若有改
+
+# 4. commit + push(本 Cowork thread 端;Cowork 政策:Cowork 產生命令,YC 手動執行)
+git commit -m "docs(cowork): vhtt cross-reference 12 chartno 交付(13 SOP C brief + audit doc + session-state 更新)"
+git push
+
+# 5. (push 完之後才)Notion 同步:
+#    - 視情況加 row「TASK_BRIEF_vhtt_refHistory_batch_13」Order=5.0 follow-up Status=Open Repo=cross-repo
+#    - 規則 #7:git push 成功之後才寫 Notion;Notion 寫失敗不擋 push 但要明示
 ```
