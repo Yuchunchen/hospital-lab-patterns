@@ -4,6 +4,41 @@ Chronological log of pattern catalog changes. Newest entries on top.
 
 ---
 
+## 2026-05-28 — 13 entry 加 vhtt refHistory override(cross-ref 12 chart batch)
+
+- 作者:claude(與 YC 共同,Claude Code workspace root 跨 repo)
+- 範圍:catalog(refHistory 末加 vhtt 筆)
+- 變更:新增
+- 對應 brief:`docs/task-briefs/TASK_BRIEF_vhtt_refHistory_batch_13_done.md`(Order 5.0 follow-up)
+- 檔案:
+  - `patterns/catalog.js`:13 entry refHistory 末加一筆 `machine:'vhtt', validFrom:'2026-05-28'`
+    - Hb:`refLo:12.3, refHi:18.3` + inline `refLoM/F:12.3/11.3, refHiM/F:18.3/15.3`
+    - Platelet:`refLo:120, refHi:320`
+    - GOT:`refLo:13, refHi:39`
+    - GPT:`refLo:7, refHi:52` + inline 性別 mirror(suppress outer `hiM:45/hiF:34` fallback)
+    - ALP:`refLo:34, refHi:104`
+    - LDL:`refLo:0, refHi:140`
+    - GluAC:`refLo:74, refHi:106`
+    - HbA1c:`refLo:4.3, refHi:5.8`
+    - BUN:`refLo:7, refHi:25` + inline 性別 mirror(suppress outer `hiM:20.6/hiF:18.7` fallback)
+    - CREAT:`refLo:0.6, refHi:1.3` + inline `refLoM/F:0.7/0.6, refHiM/F:1.3/1.2`
+    - UA:`refLo:2.3, refHi:7.6` + inline `refLoM/F:4.4/2.3, refHiM/F:7.6/6.6`
+    - Fe:`refLo:50, refHi:175` + inline 性別 mirror(suppress outer `loM:65/hiF:170`,委外:新南海)
+    - AFP:`refLo:0, refHi:9.0`
+  - `dist/patterns.json`:`npm run release` 自動產出
+  - `docs/cross-reference-vhtt-2026-05-28.md`:新檔(YC 12 chartno 跨病人 cross-reference 結論,brief source)
+  - `docs/task-briefs/TASK_BRIEF_vhtt_refHistory_batch_13_done.md`:brief 改名 _done(規則 #6)
+- 原因:YC cross-reference 12 vhtt chartno 正式報告印 ref vs catalog `*`,13 個 mismatch entry 加 vhtt-specific override(SOP C `vhtt/<test> ref range 改成 lo/hi` 觸發)
+- 設計選擇:Fe/BUN/GPT brief 字面說「無 inline 性別」,但 resolveRef 3-layer chain(inline→outer→base)會讓無 inline 時 fall through 到 outer `loM/hiM`(Order 5.0 T12 設計);為了滿足 brief §5「vhtt M/F 都回 universal」,改加 inline 性別 mirror universal 來抑制 outer 性別 fallback。outer 不動,resolver 不動。
+- 驗證:
+  - `npm run validate` pass(88 catalog · 60 viewer · 41 reporter · resolver 無錯)
+  - `npm run build-json` pass,dist/patterns.json 65.9KB
+  - resolveRef 22 條 sanity matrix 全綠(brief §5 12 條 + 額外 GPT/BUN F 各補 1 條,共涵蓋 vhtt new override / vhyl 取 `*` / reportDate 早於 validFrom 取 `*` / null gender / inline 性別 / 性別 mirror)
+- 影響:viewer + reporter 需重 sync(下方兩 repo 條目處理);OPD 24h 內自動拿到 `dist/patterns.json`
+- 跨 repo 副作用:已在同一輪一併 sync viewer(`node sync-patterns.js`) + reporter(`node sync-patterns.js`),三 repo 各自 commit + push
+
+---
+
 ## 2026-05-28T0711 — Session SOP J wrap:vhtt thread(ref range brief + Claude Code 一輪實作 + 16 chartno hand-off)
 
 - 作者:claude(與 YC 共同,在 vhtt Cowork 動手)
