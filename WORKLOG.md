@@ -80,6 +80,17 @@ Chronological log of pattern catalog changes. Newest entries on top.
 
 ---
 
+## 2026-06-04 — SOP J wrap(全程回顧 meta-session)
+
+- 作者:claude(與 YC 共同,Cowork)
+- 範圍:process / docs(無 catalog 變動)
+- 變更:Modes 改 blast-radius 分工 + 規則 #7 Notion 單向投影條款 + workflow-changelog 2026-06-04 條目(含 ECC 出處補登)+ session-state-vhtt SOP J wrap
+- 教材分拆:原 hospital-lab root 的教材移出至獨立 `D:\self\teaching`(repo 待 init)
+- 細節:見 `docs/workflow-changelog.md` 2026-06-04 + `docs/session-state-vhtt.md`
+- 暴露(規則 #11):最大開發缺角 = 無 fixture corpus + 回歸測試(F8 Platelet 漏抓一個月即此因),值得起 brief
+
+---
+
 ## 2026-06-04 — Platelet regex 加 PLATE alternation(CBC 套餐漏抓修復)
 
 - 作者:claude(與 YC 共同,Claude Code workspace root 跨 repo)
