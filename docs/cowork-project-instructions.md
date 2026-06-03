@@ -7,7 +7,7 @@
 帳號設定沒同步、或要在新機器快速重建環境，這份檔案就是 single source of
 truth。修改 project instructions 後**請同步更新本檔**，才不會 drift。
 
-**最後同步：** 2026-05-19（加入「思考規則」#8–#12 + Session 切換 trigger section + Glossary,Karpathy/Forrest Chang 12-rule 篩選版 + Session SOPs G–J + 詞彙明確化）
+**最後同步：** 2026-06-04（Modes 改寫為影響範圍 blast-radius 分工 + 規則 #7 加 Notion 單向投影條款）
 
 ---
 
@@ -31,7 +31,7 @@ All public on github.com/Yuchunchen.
 4. 跨 repo 副作用主動提醒（patterns 改 → viewer/reporter re-sync）
 5. 動手寫程式前先說明在 Cowork 還是 Claude Code
 6. TASK_BRIEF_xxx.md 執行完成後改名加 _done 後綴（變 TASK_BRIEF_xxx_done.md），表示已歸檔；改名動作在最後一個 commit 同一輪做掉。
-7. Notion 的「🛠 開機 SOP (vhyl ↔ vhtt 共用)」page 是 vhtt / vhyl 共用的儀表板入口（URL 在 PROJECT_CONTEXT § 10）。每次 session 開始時讀一次，把 TASK_BRIEF Dashboard 當當前 TODO 來源（優先於翻 docs/task-briefs/ 目錄）。每次有 brief 新增、改名 _done、順序調整、依賴變動，Claude 主動同步 Notion（時序：git push 成功之後才寫 Notion；Notion 寫失敗不擋 push，但要在回應內明示「Notion 沒更到」）。
+7. Notion 的「🛠 開機 SOP (vhyl ↔ vhtt 共用)」page 是 vhtt / vhyl 共用的儀表板入口（URL 在 PROJECT_CONTEXT § 10）。每次 session 開始時讀一次，把 TASK_BRIEF Dashboard 當當前 TODO 來源（優先於翻 docs/task-briefs/ 目錄）。每次有 brief 新增、改名 _done、順序調整、依賴變動，Claude 主動同步 Notion（時序：git push 成功之後才寫 Notion；Notion 寫失敗不擋 push，但要在回應內明示「Notion 沒更到」）。Notion 為單向投影（one-way projection）：狀態一律先改 git 端（檔名 / brief / WORKLOG），Notion 只反映、不作為直接編輯的真相來源；git 與 Notion 不一致時以 git 為 canonical。
 
 ## 思考規則（Cowork mode 適用；Coding 規則見各 repo CLAUDE.md § Coding behavior contract）
 
@@ -41,11 +41,16 @@ All public on github.com/Yuchunchen.
 11. 靜默失敗 → 明示。該成功而沒成功的事必須在回應裡直接點出（不限於 Notion 同步；含跳過、降級、跳過驗證、部分完成等）；不確定就先說不確定，預設暴露而非隱藏。
 12. 混淆時詢問，不要猜。任何時刻 Claude 對使用者意圖、SOP 選擇（含 § 12 含糊語）、命名、規則適用範圍等有歧義 → **停下來問**。這條是 catch-all，涵蓋 § 12 含糊語 disambiguate / SOP I pre-flight / 規則 #8（暴露假設）沒明列的所有混淆情境。寧可多一個 confirmation round，不要 silent miss-trigger。
 
-## Modes
+## Modes（分工標準 = 影響範圍 blast radius；同 PROJECT_CONTEXT § 1.5 的 minor 邊界邏輯）
 
-- Cowork (this app) — 思考、設計、pattern learning、寫 TASK_BRIEF.md
-- Claude Code — 從 workspace root 啟動，一次跨 3 repo 操作
-  （多檔重構、git、跑 sync-patterns；Claude Code 自行 cd 切換）
+- Cowork (this app) — 思考、設計、寫 TASK_BRIEF.md；
+  程式修改僅限**小半徑**：單 repo、單檔、單 catalog entry
+  （SOP A/C 的 pattern learning 即屬此類）。
+  commit / push 一律不在 Cowork：改完檔停在 working tree，git 操作歸 YC 或 Claude Code。
+- Claude Code — 從 workspace root 啟動，負責**大半徑**改動：
+  跨 repo、多檔重構、schema 變更、git 操作、跑 sync-patterns
+  （Claude Code 自行 cd 切換）。
+- 半徑判斷有疑義（例：兩條 pattern + 一個 computed 算大算小）→ 規則 #12，先問。
 
 ## Pattern-learning trigger（live-fetch SOP）
 
@@ -129,6 +134,7 @@ Follow these instructions when working in this project.
 | 2026-05-19(addendum) | SOP I 加 pre-flight check(Step 0):cross-machine resume 時讀 Notion § 1.0 paste 追蹤表本機格,⏳ → block 後續、提示 YC 重貼 Cowork UI Project Instructions,貼完才繼續。SOP G Step 6 加特別檢查:本 session 改 cowork-project-instructions.md → § 1.0 重置 ⏳。 |
 | 2026-05-19(addendum 2) | Session 切換 trigger 改成「明確語 + 含糊語 disambiguate」兩段式:明確語(告一段落 / 換機器 / 接續 / 準備開新 session)直接觸發 SOP G/H/I/J;含糊語(結束 / 收工 / 下次再說 / 先這樣)強制 Claude 先問三選一,避免猜錯。對應 PROJECT_CONTEXT § 12 同步更新。 |
 | 2026-05-19(addendum 3) | 加 Glossary 區明確化 session/thread/對話 互通 vs 階段/段落 vs 機器 三層詞彙;SOP J 重新命名「End thread」(原 End session),觸發語擴成「結束 thread/session/對話」/「準備開新 thread/session」/「這個對話收掉」;新增思考規則 #12「混淆時詢問」作為 catch-all。對應 PROJECT_CONTEXT § 12 Glossary + Trigger 對照表更新。 |
+| 2026-06-04 | Modes 段改寫:分工標準從「思考 vs 實作」改為「影響範圍 blast radius」(小半徑=單 repo/單檔/單 entry 可在 Cowork;大半徑=跨 repo/多檔/schema → Claude Code;git 一律不在 Cowork)。修正文件描述與實踐落差(SOP A pattern learning 本來就在 Cowork 改 catalog)。同邏輯對齊 PROJECT_CONTEXT § 1.5 機器分工。規則 #7 加 Notion 單向投影條款(git 為 canonical)。來源:2026-06-04 Cowork 全程回顧 session。 |
 
 ## 若改了 Cowork UI 的規則
 
