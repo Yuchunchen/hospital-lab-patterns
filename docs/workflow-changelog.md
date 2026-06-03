@@ -8,6 +8,22 @@
 
 ---
 
+## 2026-06-04 — Modes 改為 blast-radius 分工 + Notion 單向投影條款 + ECC 出處補登
+
+**範圍**: process(Modes 分工標準 + Notion 定位)+ provenance(方法論出處回溯補登)
+
+**動機**: 2026-06-04 Cowork 全程回顧 session 發現兩件事。(1) Modes 段寫「Cowork=思考、Claude Code=實作」,但實踐上 SOP A/C pattern learning 一直在 Cowork 改 catalog — 文件與實踐落差,邊界 case 會產生歧義。實際遵守的分工標準是**影響範圍(blast radius)**,與 PROJECT_CONTEXT § 1.5 機器分工(minor 邊界表)同邏輯。(2) 規則 #7 只定了 Notion 同步時序,沒定方向性 — 補「單向投影」條款防止未來在 Notion 端直接改狀態造成雙真相源。
+
+**變動**(cowork-project-instructions.md,canonical 已改,**兩台 UI 待重貼,§ 1.0 paste 追蹤待重置 ⏳**):
+- Modes 段改寫:Cowork 限小半徑(單 repo / 單檔 / 單 entry;SOP A/C 屬此類),commit/push 一律不在 Cowork;Claude Code 負責大半徑(跨 repo / 多檔重構 / schema / git / sync-patterns);半徑有疑義 → 規則 #12 先問
+- 規則 #7 尾加:Notion 為單向投影,狀態一律先改 git 端,不一致時以 git 為 canonical
+
+**Provenance 補登(回溯)**: YC 確認 — 2026-05 月初架構**初版 project instruction** 時,曾要 Claude 參考 **affaan-m/ECC(Everything Claude Code)**(agent harness 體系:rules / skills / memory / hooks / continuous learning)。該對話未留書面紀錄,致三 repo md 檔皆無 ECC 字樣;05-19 思考規則的紀錄來源(Karpathy + Forrest Chang 12-rule)是另一波獨立輸入。**具體從 ECC 借了哪些機制(規則檔結構?觸發語?SOP 形式?)待 YC 回憶補述。** 教案引用時,本專案方法論譜系應寫為:ECC 模板種子 → 在地化 → 踩坑演化(incident-driven)→ 蒸餾自有種子。
+
+**Process implication**: 分工從「按性質(思考 vs 實作)」改為「按影響範圍」,與機器分工(§ 1.5)統一成同一條軸線:半徑越大 → 越靠近 vhtt + Claude Code + 人工把關。Notion 確立為 read-model,git 為唯一 write-model。
+
+---
+
 ## 2026-05-19(addendum 3)— Glossary 區 + SOP J 重新命名「End thread」+ 思考規則 #12「混淆時詢問」
 
 **範圍**: process(詞彙 + 觸發語 + 思考規則)
