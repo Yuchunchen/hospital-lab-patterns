@@ -4,6 +4,27 @@ Chronological log of pattern catalog changes. Newest entries on top.
 
 ---
 
+## 2026-06-04 — Platelet regex 加 PLATE alternation(CBC 套餐漏抓修復)
+
+- 作者:claude(與 YC 共同,Claude Code workspace root 跨 repo)
+- 範圍:catalog(單條 pattern regex tweak)
+- 變更:修改
+- 對應 brief:`docs/task-briefs/TASK_BRIEF_platelet_PLATE_alternation_done.md`
+- 測試 ID:Platelet
+- 檔案:
+  - `patterns/catalog.js` 第 81 行:`/Platelet:\s*([<>]?\s*[\d.]+)/` → `/(?:Platelet|PLATE):\s*([<>]?\s*[\d.]+)/`
+  - `dist/patterns.json`:`npm run release` 自動產出
+  - `docs/task-briefs/TASK_BRIEF_platelet_PLATE_alternation_done.md`:brief 改名 _done(規則 #6)
+- 原因:Cowork 2026-06-03 偵錯 vhtt `000030794I` 發現 ernode CBC 套餐(`CBC(RBC,WBC,HB,HCT,PLT,...)`)reportText 印的是 `PLATE: 89`,單獨 Platelet/D.C. 訂單才印 `Platelet: 158`。舊 regex 只罩後者,所有走 CBC 套餐的病人 Platelet 都漏抓(只剩有 D.C. 才暴露)。屬全院長期狀態,SOP B 修現有 pattern。
+- 設計選擇:不用 `/i` 因為 catalog 全部 case-sensitive,改一條等於 catalog-wide 政策變動超範圍;不用 `\b` 因為 `PLATE` 後接 `:` 已等同 word boundary。`PLATELET:` 全大寫變體先不收(brief §「未來變體」備註)。
+- 驗證:
+  - T1–T4 node regex 跑過:`PLATE: 89` match cap=89、`Platelet: 158` match cap=158、`PLATELET: 200` no match、`WBC...HGB` no match ✓
+  - `npm run release`(validate + build-json)pass
+- 影響:viewer + reporter 需重 sync(viewer/reporter sub-repo 各自 WORKLOG);OPD 24h 內自動拿到 `dist/patterns.json`
+- 跨 repo 副作用:同一輪 sync viewer + reporter(各 `node sync-patterns.js`),三 repo 各自 commit + push
+
+---
+
 ## 2026-05-28 — 13 entry 加 vhtt refHistory override(cross-ref 12 chart batch)
 
 - 作者:claude(與 YC 共同,Claude Code workspace root 跨 repo)

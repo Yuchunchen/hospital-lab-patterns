@@ -1,6 +1,6 @@
 {
   "version": "0.4.0",
-  "synced_at": "2026-05-28T11:59:07.150Z",
+  "synced_at": "2026-06-03T15:29:37.145Z",
   "catalog": [
     {
       "id": "WBC",
@@ -168,7 +168,7 @@
       "id": "Platelet",
       "pattern": {
         "__regex": [
-          "Platelet:\\s*([<>]?\\s*[\\d.]+)",
+          "(?:Platelet|PLATE):\\s*([<>]?\\s*[\\d.]+)",
           ""
         ]
       },

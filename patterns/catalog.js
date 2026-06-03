@@ -78,7 +78,7 @@ const CATALOG = [
     refHistory: [{ machine:'*', refLo:79, refHi:99, validFrom:'1900-01-01', source:'migration 起點 — universal ref 既有值' }] },
 
   { id:'Platelet',
-    pattern: /Platelet:\s*([<>]?\s*[\d.]+)/,
+    pattern: /(?:Platelet|PLATE):\s*([<>]?\s*[\d.]+)/,
     displayName:'血小板 (Platelet)', shortLabel:'PLT',
     unit:'×10³/µL', category:'血液',
     ref:'150–400 ×10³/µL',
