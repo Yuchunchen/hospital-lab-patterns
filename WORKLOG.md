@@ -4,6 +4,33 @@ Chronological log of pattern catalog changes. Newest entries on top.
 
 ---
 
+## 2026-06-17 — Page 2 layout 收斂:col 1 文字報告 lump、col 2 DC + HIV stacked
+
+- 作者:claude(與 YC 共同,Claude Code workspace root 跨 repo)
+- 範圍:viewer-manifest
+- 變更:修改
+- 對應 brief:`docs/task-briefs/TASK_BRIEF_viewer_wbc_dc_section_done.md`(brief Open #3 延伸,YC 真機驗收期間調整 page 2 layout)
+- 測試 ID:Neut / Lymph / Mono / Eos / Baso / HIVLoad / CD4 / RPR / TPHA / BoneDensity / Endoscopy / AbdSono
+- 檔案:
+  - `patterns/viewer.js`:
+    - BoneDensity / Endoscopy / AbdSono 三條 manifest entry col 全部統一 `page:2 col:1`(原本是 col:1 / col:2 / col:3,但 report.js 的 buildPage2Column 一直把它們 lump 在同欄,manifest 名實對齊)
+    - DC 5 條 manifest entry `page:2 col:4` → `page:2 col:2`
+    - HIV 4 條 manifest entry `page:2 col:3` → `page:2 col:2`
+  - `dist/patterns.json`:`npm run release` 自動產出
+- 原因:YC 真機驗收期間決定 page 2 收斂到只用 2 個 grid col(左:三個文字報告,右:DC + HIV stacked),并拿掉 reminder box。manifest col 對齊新 layout 讓 report.js render path 直接吃。
+- 設計選擇:
+  - 不動 catalog(5 條 DC pattern 不變);WBC 仍 page 1 col 3「血液」hi:10/lo:5
+  - 不動 A5 manifest(A5 本來就沒 DC / HIV / 文字報告)
+  - reminder box(其他三個月內檢查)在 report.js 端拿掉(viewer code change,patterns 不負責)
+- 驗證:
+  - `npm run validate` pass(93 catalog · 65 viewer · 41 reporter,數量不變)
+  - `npm run build-json` pass
+  - manifest 重檢:page 1 col 3 血液 ids 仍 `[RBC,WBC,Hb,Platelet]`,WBC override hi=10 lo=5 不變,page 2 col 2 含 DC 5 + HIV 4 = 9 entry
+- 影響:viewer 必 re-sync;reporter 跑保持 catalog snapshot;OPD 24h 內透過 `dist/patterns.json` 自動拿到
+- 跨 repo 副作用:三 repo 同輪 sync;reporter manifest 不收 DC / HIV,disease group 行為不變
+
+---
+
 ## 2026-06-17 — DC section 從 page 1 col 3 移到 page 2 col 4(brief Open #3 觸發)
 
 - 作者:claude(與 YC 共同,Claude Code workspace root 跨 repo)
