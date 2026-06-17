@@ -4,6 +4,34 @@ Chronological log of pattern catalog changes. Newest entries on top.
 
 ---
 
+## 2026-06-16 — 新增 DC 五分類 catalog entries + viewer「白血球分類 (DC)」section
+
+- 作者:claude(與 YC 共同,Claude Code workspace root 跨 repo)
+- 範圍:catalog + viewer-manifest
+- 變更:新增
+- 對應 brief:`docs/task-briefs/TASK_BRIEF_viewer_wbc_dc_section.md`
+- 測試 ID:Neut / Lymph / Mono / Eos / Baso
+- 檔案:
+  - `patterns/catalog.js`:HEMATOLOGY 區段 Platelet 後新增 5 條 DC% entry(`Neut` `Lymph` `Mono` `Eos` `Baso`),`category:'血液'`,**刻意不放 hi/lo/ref**(YC 指定 display-only)。
+  - `patterns/viewer.js`:Col 3「血液」section 後新增「白血球分類 (DC)」section 5 條 manifest entry;**WBC 維持在「血液」section 不動**。
+  - `dist/patterns.json`:`npm run release` 自動產出。
+- 原因:vhyl Cowork 2026-06-16 抓 chartno `000037249G` 兩份 DC(YL) 樣本(115/03/17 + 114/09/22),確認 label 格式 `<MNEMONIC>: <number>` 且 value line 不帶 (YL) suffix。OPD handout 加 DC 五分類%(嗜中性/淋巴/單核/嗜酸/嗜鹼)讓臨床端讀分類結果,WBC 留血液 section 維持既有顯示與 alarm 門檻(hi10/lo5)。Total IgE 樣本未取得,本輪延後。
+- 設計選擇:
+  - DC% 不放 hi/lo/refHistory — display-only,viewer alarm 上色全部走 catalog refLo/refHi resolveRef,沒值就中性色;不在本輪加 lo/hi 是因為 vhyl 官方區間還沒抓,亂填會誤上色。日後要加 alarm 再於 catalog 補(Open #2)。
+  - regex 用 `\b` word boundary 避免 `MONO:` 撞到其他 label 子字串;value capture 沿用 catalog `([<>]?\s*[\d.]+)` 慣例,即使本輪不顯示也保留 `<>` 寬容(以後接 reporter 不用改)。
+  - 新 section 放 Col 3 緊接「血液」之後 — 同樣是血液報告語意上的延伸;A5 版面溢出風險先目視確認(Open #3),溢出再搬 Col 4 / page 2。
+  - vhtt DC label 本 session 抓不到,先不加 alternation(Open #1);vhtt OPD 端目前 DC 不顯示,brief 已記。
+- 驗證:
+  - 5 條 regex 單行 capture node 跑過:NEUT 51.5 / LYM 39.0 / MONO 5.8 / EOSINO 2.8 / BASO 0.9 全部 cap 對 ✓
+  - 5 條對整段樣本 reportText 跑,各只命中自己那行,沒誤抓 WBC/RBC/HGB/MCV 等 ✓
+  - `npm run validate` pass(93 catalog · 65 viewer · 41 reporter)
+  - `npm run build-json` pass,`dist/patterns.json` 含 5 條新 pattern
+- 影響:viewer 必 re-sync(WBC + 5 DC 在 viewer manifest);reporter 沒有 DC manifest 但仍跑 sync 保持紀律;OPD 24h 內自動拿到 `dist/patterns.json`,不需重灌 zip。
+- 跨 repo 副作用:同一輪 sync viewer(`node sync-patterns.js`)+ reporter(`node sync-patterns.js`),三 repo 各自 commit;push 前停下等 YC 確認(rule #3)。
+- Open(本輪不擋):vhtt DC mnemonic / DC% 參考值 / A5 版面溢出 / Total IgE 延後。
+
+---
+
 ## 2026-06-04 — Platelet regex 加 PLATE alternation(CBC 套餐漏抓修復)
 
 - 作者:claude(與 YC 共同,Claude Code workspace root 跨 repo)
