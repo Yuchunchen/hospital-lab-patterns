@@ -1,6 +1,6 @@
 {
   "version": "0.4.0",
-  "synced_at": "2026-06-17T04:23:58.512Z",
+  "synced_at": "2026-06-17T04:49:37.924Z",
   "catalog": [
     {
       "id": "WBC",
@@ -2595,63 +2595,63 @@
     {
       "id": "Endoscopy",
       "page": 2,
-      "col": 2,
+      "col": 1,
       "section": "胃鏡 (Endoscopy)"
     },
     {
       "id": "AbdSono",
       "page": 2,
-      "col": 3,
+      "col": 1,
       "section": "超音波 (Ultrasound)"
     },
     {
       "id": "Neut",
       "page": 2,
-      "col": 4,
+      "col": 2,
       "section": "白血球分類 (DC)"
     },
     {
       "id": "Lymph",
       "page": 2,
-      "col": 4,
+      "col": 2,
       "section": "白血球分類 (DC)"
     },
     {
       "id": "Mono",
       "page": 2,
-      "col": 4,
+      "col": 2,
       "section": "白血球分類 (DC)"
     },
     {
       "id": "Eos",
       "page": 2,
-      "col": 4,
+      "col": 2,
       "section": "白血球分類 (DC)"
     },
     {
       "id": "Baso",
       "page": 2,
-      "col": 4,
+      "col": 2,
       "section": "白血球分類 (DC)"
     },
     {
       "id": "HIVLoad",
       "page": 2,
-      "col": 3,
+      "col": 2,
       "section": "HIV",
       "hivOnly": true
     },
     {
       "id": "CD4",
       "page": 2,
-      "col": 3,
+      "col": 2,
       "section": "HIV",
       "hivOnly": true
     },
     {
       "id": "RPR",
       "page": 2,
-      "col": 3,
+      "col": 2,
       "section": "HIV",
       "hivOnly": true,
       "computed": "RPR",
@@ -2661,7 +2661,7 @@
     {
       "id": "TPHA",
       "page": 2,
-      "col": 3,
+      "col": 2,
       "section": "HIV",
       "hivOnly": true,
       "computed": "TPHA",
