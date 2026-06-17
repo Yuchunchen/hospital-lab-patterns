@@ -68,14 +68,6 @@ const VIEWER_MANIFEST = [
   { id:'Hb',       page:1, col:3, section:'血液' },
   { id:'Platelet', page:1, col:3, section:'血液' },
 
-  // ── Col 3 │ 白血球分類 (DC) ───────────────────────────────────────────
-  // DC 五分類% display-only(catalog 無 hi/lo)。WBC 仍在上方「血液」section。
-  { id:'Neut',  page:1, col:3, section:'白血球分類 (DC)' },
-  { id:'Lymph', page:1, col:3, section:'白血球分類 (DC)' },
-  { id:'Mono',  page:1, col:3, section:'白血球分類 (DC)' },
-  { id:'Eos',   page:1, col:3, section:'白血球分類 (DC)' },
-  { id:'Baso',  page:1, col:3, section:'白血球分類 (DC)' },
-
   // ── Col 3 │ 營養／電解質 ─────────────────────────────────────────────
   // Trimmed nutrition column per user request (2026-05-03).
   // Removed: TP, Cl, Ca, P, TIBC, TSAT, Ferritin, iPTH, Mg.
@@ -133,6 +125,15 @@ const VIEWER_MANIFEST = [
   { id:'BoneDensity', page:2, col:1, section:'骨質疏鬆 (Bone Density)' },
   { id:'Endoscopy',   page:2, col:2, section:'胃鏡 (Endoscopy)' },
   { id:'AbdSono',     page:2, col:3, section:'超音波 (Ultrasound)' },
+
+  // ── Page 2 │ Col 4 │ 白血球分類 (DC) ─────────────────────────────────
+  // DC 五分類% display-only(catalog 無 hi/lo)。2026-06-17 從 page 1 col 3
+  // 移到 page 2 col 4(brief Open #3,col 3 加 5 行擠破版)。
+  { id:'Neut',  page:2, col:4, section:'白血球分類 (DC)' },
+  { id:'Lymph', page:2, col:4, section:'白血球分類 (DC)' },
+  { id:'Mono',  page:2, col:4, section:'白血球分類 (DC)' },
+  { id:'Eos',   page:2, col:4, section:'白血球分類 (DC)' },
+  { id:'Baso',  page:2, col:4, section:'白血球分類 (DC)' },
 
   // ── Page 2 │ HIV section (only rendered when HIV checkbox is on) ─────
   { id:'HIVLoad', page:2, col:3, section:'HIV', hivOnly:true },
