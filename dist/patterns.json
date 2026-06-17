@@ -1,6 +1,6 @@
 {
   "version": "0.4.0",
-  "synced_at": "2026-06-03T15:29:37.145Z",
+  "synced_at": "2026-06-17T01:50:28.426Z",
   "catalog": [
     {
       "id": "WBC",
@@ -199,6 +199,71 @@
           "source": "YC SOP C 觸發 2026-05-28 cross-reference 12 chart batch — see docs/cross-reference-vhtt-2026-05-28.md"
         }
       ]
+    },
+    {
+      "id": "Neut",
+      "pattern": {
+        "__regex": [
+          "\\bNEUT:\\s*([<>]?\\s*[\\d.]+)",
+          ""
+        ]
+      },
+      "displayName": "嗜中性球 (Neutrophil %)",
+      "shortLabel": "Neut%",
+      "unit": "%",
+      "category": "血液"
+    },
+    {
+      "id": "Lymph",
+      "pattern": {
+        "__regex": [
+          "\\bLYM:\\s*([<>]?\\s*[\\d.]+)",
+          ""
+        ]
+      },
+      "displayName": "淋巴球 (Lymphocyte %)",
+      "shortLabel": "Lym%",
+      "unit": "%",
+      "category": "血液"
+    },
+    {
+      "id": "Mono",
+      "pattern": {
+        "__regex": [
+          "\\bMONO:\\s*([<>]?\\s*[\\d.]+)",
+          ""
+        ]
+      },
+      "displayName": "單核球 (Monocyte %)",
+      "shortLabel": "Mono%",
+      "unit": "%",
+      "category": "血液"
+    },
+    {
+      "id": "Eos",
+      "pattern": {
+        "__regex": [
+          "\\bEOSINO:\\s*([<>]?\\s*[\\d.]+)",
+          ""
+        ]
+      },
+      "displayName": "嗜酸性球 (Eosinophil %)",
+      "shortLabel": "Eos%",
+      "unit": "%",
+      "category": "血液"
+    },
+    {
+      "id": "Baso",
+      "pattern": {
+        "__regex": [
+          "\\bBASO:\\s*([<>]?\\s*[\\d.]+)",
+          ""
+        ]
+      },
+      "displayName": "嗜鹼性球 (Basophil %)",
+      "shortLabel": "Baso%",
+      "unit": "%",
+      "category": "血液"
     },
     {
       "id": "TP",
@@ -2376,6 +2441,36 @@
       "page": 1,
       "col": 3,
       "section": "血液"
+    },
+    {
+      "id": "Neut",
+      "page": 1,
+      "col": 3,
+      "section": "白血球分類 (DC)"
+    },
+    {
+      "id": "Lymph",
+      "page": 1,
+      "col": 3,
+      "section": "白血球分類 (DC)"
+    },
+    {
+      "id": "Mono",
+      "page": 1,
+      "col": 3,
+      "section": "白血球分類 (DC)"
+    },
+    {
+      "id": "Eos",
+      "page": 1,
+      "col": 3,
+      "section": "白血球分類 (DC)"
+    },
+    {
+      "id": "Baso",
+      "page": 1,
+      "col": 3,
+      "section": "白血球分類 (DC)"
     },
     {
       "id": "Albumin",

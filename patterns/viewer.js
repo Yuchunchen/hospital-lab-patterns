@@ -68,6 +68,14 @@ const VIEWER_MANIFEST = [
   { id:'Hb',       page:1, col:3, section:'血液' },
   { id:'Platelet', page:1, col:3, section:'血液' },
 
+  // ── Col 3 │ 白血球分類 (DC) ───────────────────────────────────────────
+  // DC 五分類% display-only(catalog 無 hi/lo)。WBC 仍在上方「血液」section。
+  { id:'Neut',  page:1, col:3, section:'白血球分類 (DC)' },
+  { id:'Lymph', page:1, col:3, section:'白血球分類 (DC)' },
+  { id:'Mono',  page:1, col:3, section:'白血球分類 (DC)' },
+  { id:'Eos',   page:1, col:3, section:'白血球分類 (DC)' },
+  { id:'Baso',  page:1, col:3, section:'白血球分類 (DC)' },
+
   // ── Col 3 │ 營養／電解質 ─────────────────────────────────────────────
   // Trimmed nutrition column per user request (2026-05-03).
   // Removed: TP, Cl, Ca, P, TIBC, TSAT, Ferritin, iPTH, Mg.
