@@ -4,6 +4,27 @@ Chronological log of pattern catalog changes. Newest entries on top.
 
 ---
 
+## 2026-06-17 — DC section 從 page 1 col 3 移到 page 2 col 4(brief Open #3 觸發)
+
+- 作者:claude(與 YC 共同,Claude Code workspace root 跨 repo)
+- 範圍:viewer-manifest
+- 變更:修改
+- 對應 brief:`docs/task-briefs/TASK_BRIEF_viewer_wbc_dc_section_done.md`(brief Open #3 收尾)
+- 測試 ID:Neut / Lymph / Mono / Eos / Baso
+- 檔案:
+  - `patterns/viewer.js`:5 條 DC entry 的 `page:1, col:3` 改 `page:2, col:4`;原 col 3「血液」section 後的 DC section block 整段搬到 page 2 BoneDensity/Endoscopy/AbdSono 後,獨立 col 4
+  - `dist/patterns.json`:`npm run release` 自動產出
+- 原因:6/16 第一輪 land 後 YC 真機測,page 1 col 3 原本就有「血液」(4) + 「營養／電解質」(7),再插 5 條 DC% 共 16 個 test block,直版面顯著擠到。Brief Open #3 預警過,本輪修。Page 2 col 4 原本完全空(BoneDensity col 1 / Endoscopy col 2 / AbdSono col 3 + HIV 可選),搬過去整列 5 條就一個 section。
+- 設計選擇:不動 WBC(仍 page 1 col 3「血液」hi:10/lo:5);不動 catalog(5 條 pattern 不變);只動 viewer manifest 的 layout 欄。reporter 不受影響(manifest 未收 DC)。
+- 驗證:
+  - `npm run validate` pass(93 catalog · 65 viewer · 41 reporter,數量不變)
+  - `npm run build-json` pass
+  - viewer manifest 重檢:5 DC 全部 `page=2 col=4`,WBC 仍 page=1 col=3 section=血液 hi=10 lo=5,page 2 col 4 ids 唯一 = ["Neut","Lymph","Mono","Eos","Baso"]
+- 影響:viewer 必 re-sync;OPD 24h 內透過 `dist/patterns.json` 自動拿到(本地 reload extension + 點 popup freshness 強刷可立即生效);A5 manifest 不含 DC,不受影響
+- 跨 repo 副作用:同一輪 sync viewer + reporter(reporter `dist/patterns.json` 含 viewer manifest snapshot,patterns 區塊需重出);三 repo commit + push
+
+---
+
 ## 2026-06-16 — 新增 DC 五分類 catalog entries + viewer「白血球分類 (DC)」section
 
 - 作者:claude(與 YC 共同,Claude Code workspace root 跨 repo)
