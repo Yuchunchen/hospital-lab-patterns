@@ -4,6 +4,34 @@ Chronological log of pattern catalog changes. Newest entries on top.
 
 ---
 
+## 2026-06-18 — DC 五分類加 vhtt mnemonic alternation(DC brief Open #1 收尾)
+
+- 作者:claude(與 YC 共同,Cowork — catalog 單檔小半徑)
+- 範圍:catalog(5 條 DC pattern regex tweak)
+- 變更:修改
+- 對應 brief:`docs/task-briefs/TASK_BRIEF_viewer_wbc_dc_section_done.md`(Open #1 follow-up:vhtt DC mnemonic)
+- 測試 ID:Neut / Lymph / Mono / Eos / Baso
+- 檔案 `patterns/catalog.js` 5 條 DC pattern,加 vhtt alternation + 移除 `\b`:
+  - Neut:`/\bNEUT:…/` → `/(?:NEUT|Neutrophil):…/`
+  - Lymph:`/\bLYM:…/` → `/(?:LYM|Lymophocyte):…/`(vhtt EHR 拼字 `Lymophocyte`,非 Lymphocyte,照官方字面)
+  - Mono:`/\bMONO:…/` → `/(?:MONO|Monocyte):…/`
+  - Eos:`/\bEOSINO:…/` → `/(?:EOSINO|Eosinophil):…/`
+  - Baso:`/\bBASO:…/` → `/(?:BASO|Basophil):…/`(移除 `\b`;vhtt 另見 `Basophil` 變體,真機驗證時抓到)
+- 原因:vhtt Cowork 2026-06-18 取 chartno `000032118G` DC 樣本(order `Differential Count(D.C)`,報告 114/01/22)。vhtt label 與 vhyl 完全不同(全字 vs 縮寫),且 reportText **run-on 無分隔**(`…Monocyte: 4.4Neutrophil: 73.9…`)。原 vhyl-only regex 的 `\b` 在「數字接字母」處無 word boundary → vhtt 一律抓不到。
+- 設計選擇:移除 `\b` 與現有 CBC 慣例對齊(HCT/MCV/Platelet 皆無 `\b`,靠「Label:」當分隔);維持 case-sensitive(不加 /i,catalog 全域慣例),vhtt 大小寫照官方 label 寫死。DC 仍 display-only,不放 hi/lo(Open #2 待官方區間)。
+- 驗證(node 對真機樣本跑 5 條 regex,**35/35 綠**):
+  - vhtt 真機 4 病人(Chrome 抓 ernode,2026-06-18):000032118G / 000019606F(正式+更正報告)/ 000105589G / 000115014H,各自值單獨 capture、無互咬。
+  - **Basophil 變體**:000105589G 印 `Basophil: 0.2`(非 BASO)→ 原 `/BASO:…/` 會漏,故 Baso 改 `(?:BASO|Basophil)`;重驗通過。
+  - vhyl line-sep 回溯:NEUT 51.5 / LYM 39.0 / MONO 5.8 / EOSINO 2.8 / BASO 0.9 仍命中。
+  - 負向:vhtt WBC-only 與 CBC(不含DC) order → 5 條全 no-match(無誤抓)。
+  - 兩個 chartno(0000112124J / 00004567A)API 回 400(格式非 `[0-9]{9}[A-Z]`);000043563C 無 DC 紀錄 — 皆非 regex 問題。
+  - `npm run validate` / `npm run release`:**未於 Cowork 跑** — sandbox 掛載點讀此 CRLF+多位元組檔會截斷亂碼、node require 失敗(real-machine Read 確認檔完整)。留 Claude Code release 階段跑為 canonical。
+- 影響:catalog 改 → viewer + reporter 需重 sync;dist/patterns.json 重出;OPD 24h 內自動拿到。
+- 跨 repo 副作用(規則 #4):需 `npm run release` + viewer/reporter 各 `node sync-patterns.js` → 三 repo commit + push(大半徑,Claude Code / YC)。本輪 Cowork 只停在 patterns working tree,未 git。
+- Open 更新:DC brief Open #1(vhtt DC mnemonic)本輪解決;Open #2(DC% 參考值)仍 parked。
+
+---
+
 ## 2026-06-17 — Page 2 layout 收斂:col 1 文字報告 lump、col 2 DC + HIV stacked
 
 - 作者:claude(與 YC 共同,Claude Code workspace root 跨 repo)
