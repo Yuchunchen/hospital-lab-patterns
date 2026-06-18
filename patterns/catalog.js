@@ -97,7 +97,7 @@ const CATALOG = [
   //       (值後直接接下個 label,如 ...Monocyte: 4.4Neutrophil: 73.9...)。
   // 故移除 `\b`:run-on 下「數字接字母」中間無 word boundary,留 `\b` 會抓不到。
   // 改走 CBC 同慣例(HCT/MCV/Platelet 皆無 `\b`,靠「Label:」當分隔)。
-  // display-only,無參考值(Open #2 待 vhyl/vhtt 官方區間)。
+  // display-only,永久不放參考值(YC 2026-06-18 取消 Open #2;DC 不做 alarm 上色)。
   // 真機驗證 vhtt(2026-06-18):000032118G / 000019606F(含更正報告)/ 000115014H 皆 BASO;
   //   000105589G 為 Basophil 變體 → Baso pattern 用 (?:BASO|Basophil)。其餘四項跨病人一致。
   { id:'Neut',

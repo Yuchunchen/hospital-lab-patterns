@@ -157,15 +157,13 @@ cd ../hospital-lab-reporter ; node sync-patterns.js   # DC 不在 reporter manif
 
 ## Open / 待確認(不擋本輪,但要追)
 
-1. **vhtt DC mnemonic**:取一個 vhtt 有做 DC 的 chartno 驗證 label。若不同名
-   (如 `SEG`/`NE%`),於 5 條 pattern 加 alternation,例 `/\b(?:NEUT|NE%|SEG):.../`。
-   在那之前,vhtt OPD 端 DC 不會顯示。
-2. **DC% 參考值**:本輪 YC 指定不放。日後若要 alarm 上色,於 catalog 加
-   `lo/hi`(成人約 Neut 40–75 / Lym 20–45 / Mono 2–10 / Eos 0–6 / Baso 0–1,
-   須以 vhyl 官方區間為準)。
+1. ✅ **vhtt DC mnemonic** — 已解(2026-06-18 vhtt session)。真機 4 病人驗證:
+   vhtt label = Neutrophil / Lymophocyte(EHR 拼字)/ Monocyte / Eosinophil /
+   BASO|Basophil(兩變體);5 條 pattern 移除 `\b` + 加 vhtt alternation,三 repo 已 push。
+2. ❌ **DC% 參考值** — 取消(YC 2026-06-18)。DC 定案永久 display-only,不加 lo/hi、不做 alarm 上色。
 3. **A5 版面溢出**:col 3 原有「血液 + 營養/電解質」,再插 5 行;sync 後請目視
    確認沒擠到下一頁或破版,必要時把新 section 移到 col 4 或 page 2。
-4. **Total IgE**:延後,等樣本 chartno。
+4. ❌ **Total IgE** — 取消(YC 2026-06-18,不做)。
 
 ---
 
