@@ -9,7 +9,7 @@
 
 **Last wrap**: 2026-06-18 22:31(台北時間 / SOP G — 段落收尾,thread 不關)
 **Last session type**: Cowork(開機 sync + SOP A:DC vhtt pattern learning)
-**Last action**: DC 五分類加 vhtt mnemonic alternation,真機 4 病人驗證,三 repo push,Notion 同步;DC follow-up 收束
+**Last action**: DC vhtt pattern land(已 push)→ 接 ref_range Order 5 跑 8-entry vhtt cross-reference(in-page fetch sweep ~65 病人 + opdweb 子報告讀 NORMAL RANGE);僅 RGT 取得 vhtt ref 9-64,已 append catalog working tree(未 release/push),其餘 7 項無數值 ref
 
 ## 1. 本 session 完成
 
@@ -31,6 +31,11 @@
 
 (d) memory 新增 `sandbox-mount-unreliable-for-repo`(bash sandbox 讀此 CRLF+中文 repo 會截斷/亂碼/留 lock;以 Read tool 為真,validate 在真機跑)
 
+(e) **ref_range Order 5 — 8-entry vhtt cross-reference**(brief 主體 5/28–6/04 已 land,本輪補剩項):
+- 方法:YC ~65 chartno → in-page fetch sweep `get_lab_orders`(searchItem)找已出報告 order → ordapno → opdweb `OpdOrderReport.aspx`(port 80)讀 NORMAL RANGE
+- **僅 RGT 取得 vhtt 數值 ref = 9-64 IU/L**(chartno 000015165F),已 append catalog refHistory(**working tree,未 release/push**)
+- 其餘 7 無數值 ref:VitB12(NORMAL RANGE 空白)、Aluminum(委外無值)、HBsAg/AntiHCV/AntiHBs(該院做定性 §1.2 排除)、HIVLoad(只見定性 Anti-HIV)、CD4(未見)
+
 ## 2. 本 session 未完
 
 - **無未 commit**:本機改動已全 push(rule #11 確認:三 repo origin/main 皆前進)
@@ -50,7 +55,7 @@
 
 | Title | Status | Order | 備註 |
 |---|---|---|---|
-| ref_range refHistory schema | Open | 5 | cross-repo 大半徑(Claude Code);剩顯示欄印最新 ref + 真機整合驗證 |
+| ref_range refHistory schema | Open | 5 | 主體 land;本輪補 RGT vhtt override(working tree 未 push)。剩:vhyl 側 cross-reference(0 筆,Order 5.2)+ T18-21 真機整合驗證。8-entry 中 7 項無數值 ref(見 §1e) |
 | fixture corpus + 回歸測試 | 未起(候選) | — | 最大缺角;DC Basophil 變體再次佐證 |
 | 剩 8 entries cross-reference | parked | 5.2 | vhyl 對應;需不同 patient profile |
 | catalog ALP 內部 drift cleanup | parked | — | 獨立 cleanup |

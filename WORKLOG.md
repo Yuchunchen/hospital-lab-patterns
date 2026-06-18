@@ -4,6 +4,28 @@ Chronological log of pattern catalog changes. Newest entries on top.
 
 ---
 
+## 2026-06-18 — RGT 加 vhtt refHistory override(ref_range Order 5 — 8-entry cross-reference 收尾)
+
+- 作者:claude(與 YC 共同,Cowork — catalog 單 entry;release/sync 交 Claude Code)
+- 範圍:catalog(RGT refHistory 末加 vhtt 筆)
+- 變更:新增
+- 對應 brief:`docs/task-briefs/TASK_BRIEF_ref_range_machine_time_dim.md`(Order 5,§1.1 剩 8 entry vhtt cross-reference)
+- 檔案:`patterns/catalog.js` RGT entry refHistory 加 `{machine:'vhtt', refLo:9, refHi:64, validFrom:'2026-06-18', source:...}`
+- 來源:vhtt ernode 正式報告 cross-reference(chartno 000015165F,`r-GT(TT)` 印 `9-64 IU/L`,無性別分項)。universal `*` 為 refLo:null/refHi:55 + 性別 M<55/F<38 → vhtt 不同,故加 machine 筆
+- 方法:YC 提供 ~65 chartno;in-page `fetch` sweep `get_lab_orders`(searchItem,跨 history)找各 test 第一筆已出報告 → 隱藏 `input[name=ORDAPNO]` 取 ordapno → 開 opdweb `OpdOrderReport.aspx`(**port 80**,host ernode→opdweb)讀「NORMAL RANGE / 參考值」
+- 8 entry 結果(只有 RGT 取得數值 vhtt ref):
+  - RGT → 9-64 IU/L ✓(本筆)
+  - VitB12 → 正式報告 `NORMAL RANGE` 空白(000115014H + 000125509A 兩病人證實)→ 無 ref,維持 universal
+  - Aluminum → 委外送驗(洗腎室 000023355G),報告無 result/range → 無法 cross-reference
+  - HBsAgTiter / AntiHCVTiter → 該院做的是**定性**(S/CO,Non-Reactive,§1.2 排除清單),in-scope 定量 titer 本批病人未做
+  - AntiHBsTiter → 定性 Anti-HBs(Non-Reactive,參考值空白)
+  - HIVLoad → 只見定性 Anti-HIV EIA(S/CO,Non-Reactive);病毒量未見
+  - CD4 → 整批 ~65 病人未見
+- 跨 repo 副作用(規則 #4):需 `npm run release` + viewer/reporter `node sync-patterns.js` + 三 repo commit/push(大半徑,Claude Code)。Cowork 只改 catalog working tree,未 git
+- 結論:ref_range 的「剩 8 entry vhtt cross-reference」實質收尾 — 僅 RGT 有 machine-specific 數值;其餘因「報告未印 ref / 委外 / 該院做定性 / 未做」無 override,維持 universal(建議 brief §1.1 對應註記)
+
+---
+
 ## 2026-06-18 — DC 五分類加 vhtt mnemonic alternation(DC brief Open #1 收尾)
 
 - 作者:claude(與 YC 共同,Cowork — catalog 單檔小半徑)

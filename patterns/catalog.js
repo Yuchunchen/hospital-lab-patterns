@@ -184,7 +184,10 @@ const CATALOG = [
     hiM:55, hiF:38,
     hi:55, lo:null,
     notes:'Pattern matches r-GT, R-GT, γ-GT, GGT, RGT — hospitals use various labels.',
-    refHistory: [{ machine:'*', refLo:null, refHi:55, validFrom:'1900-01-01', source:'migration 起點 — universal ref 既有值' }] },
+    refHistory: [
+      { machine:'*', refLo:null, refHi:55, validFrom:'1900-01-01', source:'migration 起點 — universal ref 既有值' },
+      { machine:'vhtt', refLo:9, refHi:64, validFrom:'2026-06-18', source:'YC cross-reference 2026-06-18 — chartno 000015165F r-GT(TT) 正式報告印 9-64 IU/L(無性別分項)' },
+    ] },
 
   { id:'ALP',
     pattern: /(?:Alk[\s.\-]*P|ALP|Alkaline\s*Phosphatase):\s*([<>]?\s*[\d.]+)/i,
