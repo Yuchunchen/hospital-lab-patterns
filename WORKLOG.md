@@ -28,7 +28,7 @@ Chronological log of pattern catalog changes. Newest entries on top.
   - `npm run validate` / `npm run release`:**未於 Cowork 跑** — sandbox 掛載點讀此 CRLF+多位元組檔會截斷亂碼、node require 失敗(real-machine Read 確認檔完整)。留 Claude Code release 階段跑為 canonical。
 - 影響:catalog 改 → viewer + reporter 需重 sync;dist/patterns.json 重出;OPD 24h 內自動拿到。
 - 跨 repo 副作用(規則 #4):需 `npm run release` + viewer/reporter 各 `node sync-patterns.js` → 三 repo commit + push(大半徑,Claude Code / YC)。本輪 Cowork 只停在 patterns working tree,未 git。
-- Open 更新:DC brief Open #1(vhtt DC mnemonic)本輪解決;Open #2(DC% 參考值)仍 parked。
+- Open 更新:DC brief Open #1(vhtt DC mnemonic)本輪解決;Open #2(DC% 參考值)+ Open #4(Total IgE)YC 2026-06-18 取消(DC 定案永久 display-only)。
 
 ---
 
