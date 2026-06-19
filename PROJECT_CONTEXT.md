@@ -214,6 +214,39 @@ Click to force refresh.
 After every code change → repackage as `hospital-lab-viewer.zip` in the
 parent folder. Side-load to OPD Chrome instances.
 
+### 健檢報告視窗（`cxr.html` / `cxr.js`）
+
+OPD handout（popup → A4 報表）之外，viewer 另有一個**獨立視窗**處理健檢影像
+批次翻譯，與門診 lab 報表流程完全分開（由 popup / dashboard 開啟）。
+
+- **涵蓋四類**：CXR / BMD（骨密）/ CAC（冠脈鈣化）/ LDCT（低劑量肺 CT），各對應
+  catalog 的 **track-only pattern**（match orderName，不抓數值）。
+- **輸入**：病歷號清單從 popup 經 `chrome.storage.session['cxr_chartlist']` 帶入
+  （`uniq = [...new Set(valid)]` **保留貼上順序**）。
+- **第一階段 — batch fetch（concurrency 3）**：每人 reuse `lab-core` 的 `loadData`
+  → 四類 pattern 各取最近一筆 order（每種一列、最多 4 列，沒有就不出該列）→ 子頁面
+  `OpdOrderReport.aspx` 取「報告內容：」之後 free text（去表頭）。不自己 fetch / 開 DB，
+  全走 lab-core 共用工具。
+- **第二階段 — batch translate（concurrency 5）**：每列 reportText 經 `llm-translate`
+  （provider：`mock` / `gemini` / `claude` / `openai`）翻成中文摘要 + 標異常 →
+  IndexedDB `cxrTranslations` 快取（鍵 = `ordapno`，切 provider/model 以 overwrite
+  自然 cap 在 1 筆/ordapno）。Mode A（provider≠mock 且有 API Key）自動翻譯；否則摘要
+  留空並提示點右上 ⚙️ 設定 provider + API Key 後重跑。
+- **Render**：6 欄表格（病歷號 / 檢查類型 / 開單日期 / 檢查日期 / 原始內容 / 摘要），
+  檢查類型 badge、異常紅字（🔴）。篩選：檢查類型 radio（全部 / CXR / BMD / CAC /
+  LDCT）+「只看異常」/「只看無報告」checkbox。Status：`abnormal` / `normal` /
+  `pending` / `noReport` / `error`。
+- **預設排序 `inputOrder`**（病人貼上順序，2026-06-19 起 — 見 §0 milestone）:每個病人的
+  各檢查列相鄰連續、依貼上順序呈現，異常不再浮頂拆開該病人（🔴 紅標保留為視覺，不驅動
+  排序）。點欄位 header 可臨時改排序（opt-in，重跑回到輸入順序）；`abnormal`（異常浮頂）
+  分支保留為非預設選項。
+- **列印**：A4 portrait，列印時隱藏 header / 輸入列 / 統計列，原文 + 摘要 full width、
+  異常紅字。
+- **LLM 設定 modal**：provider / model / apiKey 存 `chrome.storage.local`（本機，不同步雲端）。
+- **classic-script 共用 global scope**：所有 top-level 宣告一律 `CXR_` / `cxr` 前綴，
+  避開 `mapping.js` 的 `CATALOG`、`patterns-computed.js` 的 `HELPERS` 等既有 const
+  （新檔不能 top-level `const` 撞名，否則整檔 SyntaxError；參見 viewer CLAUDE.md）。
+
 ---
 
 ## 4. hospital-lab-reporter
