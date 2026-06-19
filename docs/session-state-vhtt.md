@@ -72,7 +72,6 @@
 - vhyl ABI/PVR/BMD/CAC/LDCT order name 未實測
 - reporter `file://` origin sub-page fetch CORS
 - B&W 老印表機 dither A5 風險
-- viewer CLAUDE.md zip include-list 過時
 
 ## SOP G 收尾步驟(給 YC 在 vhtt PowerShell 跑)
 
