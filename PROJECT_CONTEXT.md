@@ -39,7 +39,7 @@ clinical handouts and case-management exports.
 | Repo | Role | Distribution |
 |---|---|---|
 | `hospital-lab-patterns` | Master catalog of test patterns + thin per-app manifests + named normalizers + computed-value helpers | npm-style (pure JS modules), runtime JSON snapshot at `dist/patterns.json` |
-| `hospital-lab-viewer` | Chrome MV3 extension → outpatient handout printout | Side-loaded `.zip` distributed to OPD machines |
+| `hospital-lab-viewer` | Chrome MV3 extension → outpatient handout printout | Pulled from GitHub, loaded as **unpacked** extension on each machine (no zip) |
 | `hospital-lab-reporter` | Disease-room case management (dialysis today, CKD/DM/ESRD next). `core/` modules + `groups/<disease>.js` + `export-formats/*.js` → `build.js` → standalone `hospital-lab-<disease>.html` | Open the built HTML directly in a browser |
 
 **Workspace root:** unified across machines. Syncs via git, **not** Dropbox.
@@ -211,8 +211,9 @@ Click to force refresh.
 
 ### Distribution
 
-After every code change → repackage as `hospital-lab-viewer.zip` in the
-parent folder. Side-load to OPD Chrome instances.
+No zip packaging. Each machine pulls the latest from GitHub and loads/reloads
+the **unpacked** extension at `chrome://extensions`. Pattern-only changes need
+no reload — OPD picks up `dist/patterns.json` within 24h via runtime fetch.
 
 ### 健檢報告視窗（`cxr.html` / `cxr.js`）
 
