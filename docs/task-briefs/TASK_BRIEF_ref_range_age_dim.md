@@ -3,7 +3,8 @@
 > **Status:** ACTIVE — 等 Claude Code 接手實作
 > **Last updated:** 2026-06-23
 > **Author:** YC (規格) / Cowork (草擬)
-> **Mode:** Claude Code（跨 patterns → viewer → reporter，含 build / sync-patterns）
+> **Mode:** **程式** = Claude Code（跨 patterns → viewer → reporter，含 build / sync-patterns）；
+>   **ref 資料**（refHistory entries，含年齡帶）= **Cowork** 從 harvest 落 `catalog.js`（見 §9.4 / PROJECT_CONTEXT §9 歸屬）
 > **前置:** 接續 `TASK_BRIEF_ref_range_machine_time_dim_done`（機器 × 時間 × 性別三維已上線）
 > **Scope:** 在 `refHistory` 既有「機器 × 時間 × 性別」三維上**加第四維：年齡**；
 >   並把年齡 thread 進 viewer 報告上色路徑，讓 viewer 判讀正確。
@@ -124,6 +125,21 @@ gender 傳 `null`、無 age。改成傳入 `patientInfo.gender`（'男'/'女'→
 與 `ageAtReport`。確認 dashboard 用到的 test 是否含性別/年齡相依項；即使目前多為 eGFR/staging，
 仍應傳正確值以免日後加項出錯。
 
+### 4.3 ref 顯示規則（YC 2026-06-23 拍板）
+
+**挑哪一筆 ref：**
+- 顯示某 test 參考值時，取 catalog 中**對應該病人「最新一筆檢驗值」報告日期**當時有效的 entry
+  （point-in-time = resolveRef 既有行為；caller 傳該 latest value 的日期當 reportDate）。
+- **該病人無任何檢驗值** → 取 **validFrom 最大（最新）** 的 entry。
+
+**最精簡顯示** —— 只顯示該 entry **實際有分的維度**：
+- entry 不分年齡 → **不顯示年齡**；不分性別 → **不顯示性別**；兩者皆不分 → 只顯示一段範圍。
+- 例 1：60 歲男性、BUN（age + sex 帶）→ 顯示「**男，>50 years** 9.8–20.1 mg/dL」（兩維都顯示）。
+- 例 2：70 歲男性、CK（只分性別）→ 顯示「**男** 30–200 U/L」（**不**顯示年齡）。
+
+**註解行：** ref 下保留一行**手動註解**（預設空、不自動產生）。沿用既有行為，本輪只確保新顯示
+路徑保留它，不改其機制。
+
 ---
 
 ## 5. reporter 變更（`hospital-lab-reporter/`）
@@ -201,5 +217,15 @@ cd ..\hospital-lab-reporter ; node sync-patterns.js ; git add -A ; git commit ..
    `出生日期` 列為後續增強，本輪不做。
 3. **reporter 年齡來源：本輪傳 `undefined`**（= age-agnostic、zero-regression），
    並在 WORKLOG 標明「reporter 年齡維度待補資料來源」。
+4. **分工修訂：** ref 字串解析 + 寫 refHistory 進 `catalog.js` = **Cowork**（爬完整理，見
+   PROJECT_CONTEXT §9 SOP C-crawl「歸屬」）；Claude Code **不寫 ref-range parser**，只做
+   `resolveRef`/viewer 程式 + release + 三 repo sync + push。本 brief 範圍 = **程式**；
+   ref **資料**（含年齡帶 entry）由 Cowork 另外從 harvest 落 catalog。
+5. **顯示規則（§4.3）：** 挑「最新檢驗值報告日」當時有效的 entry（無值 → 最新 entry）；
+   **最精簡顯示**（不分的維度不顯示）；保留 ref 下手動註解行（預設空）。
 
-→ 三項已無 open decision，Claude Code 可直接實作。
+6. **排程 + 機器維（YC 2026-06-23）：** 先 **Claude Code 落 schema + resolveRef + viewer 程式 + release**，
+   **再** Cowork 把 harvest 寫進 catalog（年齡帶 entry 依賴 schema，故程式先行）。本批 vhyl 爬到的 ref
+   一律寫成 **machine-specific `vhyl`** entry（只驗證了 vhyl；日後比對 vhtt 相同再考慮升 `*`）。
+
+→ 決策已無 open item。Claude Code 直接實作**程式**（記住分工：ref **資料**由 Cowork 落 catalog，不是 Claude Code）。
