@@ -4,6 +4,24 @@ Chronological log of pattern catalog changes. Newest entries on top.
 
 ---
 
+## 2026-06-23 — reference range 加年齡維度 brief + SOP C-crawl(docs only,無 code 變更)
+
+- 作者:claude(與 YC 共同,Cowork — 純 docs/SOP;code 實作交 Claude Code)
+- 範圍:docs(brief + PROJECT_CONTEXT § 9 + cowork-project-instructions),無 catalog/code 變更
+- 變更:新增 + 修改 + 刪除
+- 起因:YC 要(a) reference range 加「年齡」第四維(預設不分年齡);(b) 把 auto-crawl ref 流程正式化為 SOP
+- 檔案:
+  - 新增 `docs/task-briefs/TASK_BRIEF_ref_range_age_dim.md` — 年齡維度 brief(schema ageMin/ageMax → resolveRef +patientAge → viewer thread;含成功標準 + 9 條測試清單;決策已鎖:machine>age、近似 birthYear、reporter 本輪傳 undefined)
+  - 改 `PROJECT_CONTEXT.md` § 9 — 新增 SOP C-crawl 本體(模式 A 自動爬 / 模式 B 手動)+ trigger 表加兩列(`… ref`、`ref-scan`)
+  - 改 `docs/cowork-project-instructions.md` — Pattern-learning trigger 段加兩條
+  - 刪 `docs/SOP_ref_range_autocrawl.md` — 孤兒檔,內容已併入 § 9
+- 待驗(明示):ernode 報告是否印 ref 字串、印在哪層**未驗證**;auto-crawl 全自動化前需 YC 給首個 id 做一次探勘爬取(見 § 9 SOP C-crawl ⚠️)
+- 兩台同步(規則 §1.0):動到 canonical trigger → push 後 vhyl + vhtt **兩台 Cowork UI 都需重貼** Project Instructions,否則跑舊規則
+- 跨 repo 副作用:本輪僅 patterns docs;年齡維度 code 實作才會觸發 release + viewer/reporter sync(見 brief §8)
+- git:Cowork 未 git(規則 #3 push 前先問);Notion 待 push 後同步(規則 #7)
+
+---
+
 ## 2026-06-18 — RGT 加 vhtt refHistory override(ref_range Order 5 — 8-entry cross-reference 收尾)
 
 - 作者:claude(與 YC 共同,Cowork — catalog 單 entry;release/sync 交 Claude Code)
