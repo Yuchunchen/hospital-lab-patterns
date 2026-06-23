@@ -131,6 +131,116 @@ eq(resolveRef('RBC', 'vhyl', TODAY, 'M', CAT_OUTER), { refLo:4.2, refHi:6.2 }, '
     'T13: missing reportDate → today + warn once', 'result=' + JSON.stringify(r1) + ' warns=' + warns);
 }
 
+// ── age dimension: schema layer (TASK_BRIEF_ref_range_age_dim §7 A1–A4) ──────
+console.log('\n── age_dim §7 schema layer ' + '─'.repeat(34));
+
+// A1: ageMin:18 (no ageMax) validates clean.
+{
+  const e = { id:'X', refHistory:[{ machine:'*', refLo:40, refHi:130, ageMin:18, validFrom:'1900-01-01', source:'t' }] };
+  const errs = schema.validateEntry(e, {});
+  assert(errs.length === 0, 'A1: ageMin:18 (no ageMax) validates clean', errs.join('; '));
+}
+
+// A2: same (machine,validFrom) overlapping age bands (0-17 & 10-20) → error.
+{
+  const e = { id:'X', refHistory:[
+    { machine:'*', refLo:1, refHi:2, ageMin:0,  ageMax:17, validFrom:'1900-01-01', source:'t' },
+    { machine:'*', refLo:3, refHi:4, ageMin:10, ageMax:20, validFrom:'1900-01-01', source:'t' } ] };
+  const errs = schema.validateEntry(e, {});
+  assert(errs.some(m => /overlap/i.test(m)), 'A2: overlapping age bands (0-17 & 10-20) rejected', errs.join('; '));
+}
+
+// A3: negative / non-integer ageMin → error.
+{
+  const neg  = schema.validateEntry({ id:'X', refHistory:[{ machine:'*', refLo:1, refHi:2, ageMin:-5,  validFrom:'1900-01-01', source:'t' }] }, {});
+  const frac = schema.validateEntry({ id:'X', refHistory:[{ machine:'*', refLo:1, refHi:2, ageMin:1.5, validFrom:'1900-01-01', source:'t' }] }, {});
+  assert(neg.some(m => /ageMin/.test(m)) && frac.some(m => /ageMin/.test(m)),
+    'A3: negative / non-integer ageMin rejected', neg.concat(frac).join('; '));
+}
+
+// A4: age-agnostic + age-specific in the same group is NOT an overlap error.
+{
+  const e = { id:'X', refHistory:[
+    { machine:'*', refLo:5, refHi:6, validFrom:'1900-01-01', source:'agn' },
+    { machine:'*', refLo:1, refHi:2, ageMin:0, ageMax:17, validFrom:'1900-01-01', source:'peds' } ] };
+  const errs = schema.validateEntry(e, {});
+  assert(errs.length === 0, 'A4: age-agnostic + age-specific same group → not an overlap', errs.join('; '));
+}
+
+// ── age dimension: resolveRef layer (§7 B1–B5, C1) ───────────────────────────
+console.log('\n── age_dim §7 resolveRef layer ' + '─'.repeat(30));
+
+// Two age-specific bands, no age-agnostic: peds 0-17 vs adult 18+.
+const ALP = { id:'ALP', refLo:40, refHi:130, lo:40, hi:130,
+  refHistory:[
+    { machine:'*', refLo:100, refHi:300, ageMin:0,  ageMax:17, validFrom:'1900-01-01', source:'peds' },
+    { machine:'*', refLo:40,  refHi:130, ageMin:18,            validFrom:'1900-01-01', source:'adult' },
+  ] };
+// Age-agnostic coexisting with an age-specific band.
+const AGN = { id:'AGN', refLo:1, refHi:2, lo:1, hi:2,
+  refHistory:[
+    { machine:'*', refLo:5,   refHi:6,   validFrom:'1900-01-01', source:'agn' },
+    { machine:'*', refLo:100, refHi:300, ageMin:0, ageMax:17, validFrom:'1900-01-01', source:'peds' },
+  ] };
+// Machine-specific (age-agnostic) vs '*' (age-specific) — precedence machine>age.
+const MA = { id:'MA', refLo:1, refHi:2, lo:1, hi:2,
+  refHistory:[
+    { machine:'*',    refLo:100, refHi:300, ageMin:0, ageMax:17, validFrom:'1900-01-01', source:'star-peds' },
+    { machine:'vhyl', refLo:50,  refHi:60,                       validFrom:'1900-01-01', source:'yl-agnostic' },
+  ] };
+// Age band base + inline gender override (mirrors harvested BUN <50 / >50years).
+const GA = { id:'GA', refLo:1, refHi:2, lo:1, hi:2,
+  refHistory:[
+    { machine:'*', refLo:7.0, refHi:18.7, refLoM:8.9, refHiM:20.6, refLoF:7.0, refHiF:18.7, ageMin:0,  ageMax:49, validFrom:'1900-01-01', source:'young' },
+    { machine:'*', refLo:9.8, refHi:25.7, refLoM:8.4, refHiM:25.7, refLoF:9.8, refHiF:20.1, ageMin:50,            validFrom:'1900-01-01', source:'old' },
+  ] };
+const ACAT = [ALP, AGN, MA, GA];
+
+// B1: age picks the right band.
+eq(resolveRef('ALP', 'vhyl', TODAY, null, ACAT, 10), { refLo:100, refHi:300 }, 'B1a: age 10 → peds band');
+eq(resolveRef('ALP', 'vhyl', TODAY, null, ACAT, 40), { refLo:40,  refHi:130 }, 'B1b: age 40 → adult band');
+
+// B2: unknown age → age-agnostic; no agnostic → outer fallback (no random band).
+eq(resolveRef('AGN', 'vhyl', TODAY, null, ACAT, null), { refLo:5,  refHi:6   }, 'B2a: age null → age-agnostic entry');
+eq(resolveRef('ALP', 'vhyl', TODAY, null, ACAT, null), { refLo:40, refHi:130 }, 'B2b: age null + no agnostic → outer fallback (not a band)');
+
+// B3: machine > age precedence (vhyl agnostic beats '*' peds even at age 10).
+eq(resolveRef('MA', 'vhyl', TODAY, null, ACAT, 10), { refLo:50,  refHi:60  }, 'B3a: vhyl agnostic beats * age-band (machine>age)');
+eq(resolveRef('MA', 'vhtt', TODAY, null, ACAT, 10), { refLo:100, refHi:300 }, 'B3b: vhtt (no vhtt entry) → * peds band');
+// age-specific beats age-agnostic within same machine.
+eq(resolveRef('AGN', 'vhyl', TODAY, null, ACAT, 10), { refLo:100, refHi:300 }, 'B3c: age-specific beats age-agnostic (same machine)');
+
+// B4: entry with no age bands → age arg ignored, identical to legacy result.
+eq(resolveRef('WBC', 'vhyl', TODAY, null, CAT, 40), { refLo:3.8, refHi:10.5 }, 'B4: no age bands → age arg ignored (== legacy T6)');
+
+// B5: age band base then gender override.
+eq(resolveRef('GA', 'vhyl', TODAY, 'M', ACAT, 60), { refLo:8.4, refHi:25.7 }, 'B5a: age>=50 band + gender M override');
+eq(resolveRef('GA', 'vhyl', TODAY, 'F', ACAT, 60), { refLo:9.8, refHi:20.1 }, 'B5b: age>=50 band + gender F override');
+eq(resolveRef('GA', 'vhyl', TODAY, 'M', ACAT, 30), { refLo:8.9, refHi:20.6 }, 'B5c: age<50 band + gender M override');
+
+// C1: caller-computed ageAtReport (birth-year approx) picks the band that was
+// valid AT THE REPORT, not the band for the patient's current age.
+{
+  const todayYear       = new Date().getFullYear();
+  const currentAge      = 19;
+  const birthYearApprox = todayYear - currentAge;
+  const reportYearWhen17 = birthYearApprox + 17;       // patient was 17 then
+  const ageAtReport      = reportYearWhen17 - birthYearApprox; // = 17
+  const reportDateThen   = reportYearWhen17 + '-03-01';
+  eq(resolveRef('ALP', 'vhyl', reportDateThen, null, ACAT, ageAtReport), { refLo:100, refHi:300 },
+    'C1a: ageAtReport=17 → peds band (old report, boundary)');
+  eq(resolveRef('ALP', 'vhyl', TODAY, null, ACAT, currentAge), { refLo:40, refHi:130 },
+    'C1b: current age 19 → adult band (today)');
+}
+
+// pickEntry: viewer ref-display companion returns the chosen base item.
+{
+  const picked = resolveRef.pickEntry('ALP', 'vhyl', TODAY, null, ACAT, 10);
+  assert(picked && picked.source === 'peds', 'D1: pickEntry returns the chosen age-band item', JSON.stringify(picked));
+  const none = resolveRef.pickEntry('eGFR', 'vhyl', TODAY, null, CAT, 10);
+  assert(none === null, 'D2: pickEntry → null when no refHistory (outer fallback path)', JSON.stringify(none));
+}
+
 // ── Summary ─────────────────────────────────────────────────────────────────
 console.log('');
 if (fail === 0) { console.log('✅  refHistory harness: all ' + pass + ' tests passed'); process.exit(0); }
