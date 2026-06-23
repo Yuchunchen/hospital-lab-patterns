@@ -914,6 +914,44 @@ ernode lab_orders 列只印 `analyte: value`（無 ref）；完整 ref 在 **opd
 refHistory 提議；要落 ref 再用 `<chartno> <test> ref` / `ref-scan`。chartno/order 取對話
 context，不明確 → 規則 #12 先問。
 
+**模式 C — 時間維重掃（time-dim rescan，established 2026-06-24）**
+
+單筆 / 整張 auto-crawl 只看「最新報告」→ validFrom 會誤標成「抓取日」，且比抓取日早的
+ref 變體被當外送雜訊丟掉 → 早期檢驗值配不到該機器筆、掉回 `*` universal 顯示錯 ref。
+時間維重掃修正這個系統性瑕疵：**讓每筆 refHistory 的 validFrom 反映該 ref 版本真正生效日**。
+
+觸發語：`<vhyl|vhtt> refHistory 時間維重做`，或 YC 指示「依（掃到的）報告更新 valid date」。
+
+步驟：
+
+1. 對每個 in-scope test，掃 **cohort 所有 id × 所有歷史報告**：ernode `get_lab_orders`
+   翻頁（`&offset=N`，N 為**列**基準、每頁 20；濾 執行單位=`檢驗` + 狀態含「報告」取
+   resulted lab ORDAPNO）→ opdweb `OpdOrderReport.aspx` 取每筆「**報告時間**（西元，免 ROC 轉換）」
+   + analyte ref 字串（ref-anchored parser：抓 ref 行往回跳 value/unit 找 analyte）。
+2. 聚合 `analyte → ref字串（正規化空白/大小寫）→ [報告日]`，取每個 ref 版本的**最早報告日**。
+3. 建時間版本 refHistory：**最舊版 `validFrom='1900-01-01'`**（migration base，真正起始未知）；
+   後續版本 `validFrom = 該版本最早觀測日`（保守；掃越多病人越早收斂到真改版日）。性別/年齡 inline 照舊。
+4. **時間版本 vs 真外送他院**：時間版本 = 某日後全院換新 ref（乾淨日期邊界、跨病人一致）→ 落該機器；
+   外送 = 散落單筆、ref 格式異（如新南海）→ **不落**。
+
+關鍵事實（為何不必窮舉全 cohort 也能定版本邊界）：**玉里 ref 是 lab 全店改**（版本邊界全域，
+非逐病人）→ 少數長歷史病人即可定出版本邊界；多掃病人主要是**收斂「新版最早日」**+ 補單一病人
+未測到的 analyte。實證（2026-06-24，012885I+166569G+114403C）：全店改版 **舊末見 2025-04-21 /
+新首見 2025-06-24**；GOT 另在 2026-03-13 再改一次。
+
+parser 雜訊（落地前過濾 / 正規化）：off-by-one（如 MCV `80-96` 串到 Hct）、header 假 analyte
+（`NORMAL RANGE` / `Patient`=PT / `Non-Reactive`）、單位大小寫（`mg/dL` vs `mg/dl` 非真改版）。
+**inline 性別 mirror**：舊版若實際無性別、但該 entry 外層帶 `hiM/hiF`（如 BUN）→ 該筆要補
+`refLoM/refHiM/refLoF/refHiF` 鏡像值 suppress 外層 fallback（同 vhtt BUN/GPT 既有作法）。
+
+Chrome 技法（已驗 2026-06-24）：opdweb 報告同源 `fetch` 一定包 `AbortController` timeout
+（無 timeout 的 hung fetch 會凍 renderer / 撞 45s CDP）；ernode worklist 跨子網域用**親域 cookie**
+（`domain=.vghb12.<machine>.gov.tw`）橋接到 opdweb tab；聚合存 opdweb `localStorage['REFAGG']`
+可跨病人累積 + resumable（`cur_<chartno>` cursor）；序列 + 節流，一次 JS 約 15 份報告（時間預算 ~25-30s）。
+
+歸屬：ref **資料**（refHistory 進 catalog.js）= **Cowork**（單檔；blast radius 小，即使動到 30+ 筆
+仍是資料維護，不寫 parser code）。`npm run release` + 三 repo sync-patterns + push = **Claude Code**。
+
 ### SOP D — 把已存在的 catalog test 加進某個 manifest
 
 Test 在 catalog 但 viewer / reporter 沒顯示。

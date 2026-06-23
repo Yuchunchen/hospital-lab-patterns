@@ -1,46 +1,65 @@
 # Session state — vhyl
 
-> 每次「告一段落」/「離開 vhyl」/「結束 thread / session / 對話」/ 透過含糊語 disambiguate 進 SOP G+J 時 overwrite 本檔。
-> 在 vhyl 開新 thread 接續 vhyl(「接續上次」)或在 vhtt 接續 vhyl(「接續 vhyl」)時讀本檔。
-> 歷史版本在 `session-state-archive/`。
+> 每次「告一段落」/「離開 vhyl」/「結束 thread」/含糊語進 SOP G+J 時 overwrite 本檔。
+> 在 vhyl 開新 thread 接續(「接續上次」)時讀本檔。歷史版本在 `session-state-archive/`。
 
-**Last wrap**: 2026-06-24 00:xx
-**Last session type**: Claude Code（workspace root，跨 repo）
-**Last action**: 跑完 `TASK_BRIEF_ref_range_age_dim` 程式（年齡第四維 schema+resolveRef+viewer+reporter）+ docs commit，三 repo push 完成
+**Last wrap**: 2026-06-24（深夜，Cowork）
+**Last session type**: Cowork
+**Last action**: 抓出 ref **時間維(validFrom)系統性錯誤**;修好 ALK-P 當正確範本;其餘待重做。
 
-## 1. 本 session 完成
+## 0. ⚠️ 最重要 — 下個 thread 第一件事:vhyl refHistory「時間維」重做
 
-- **Step 0 — 設計 docs commit**（patterns `8b7d863`，docs only）：auto-crawl 可行性**已驗**落地（opdweb `OpdOrderReport.aspx`，ORDAPNO 來自 ernode hidden input；ref 在 opdweb 不在 ernode 列）寫進 PROJECT_CONTEXT §9；加「完整報告／原始報告」opdweb 取閱 trigger；age-dim brief 補分工（ref **資料**= Cowork 落 catalog、**程式**= Claude Code）+ §4.3 顯示規則。
-- **Step 1 — 程式落地（cross-repo），三 commit：**
-  - **patterns `a564542`**：`schema.js` 加 `ageMin/ageMax`（非負整數、min≤max）+ 同 `(machine,validFrom)` 年齡帶重疊報錯；`lib/resolveRef.js` 簽名末加 `patientAge`、`ageOK` 篩選、precedence **machine>age>time**、新增 `resolveRef.pickEntry`；`docs/pattern-spec.md` 補年齡維；`test-refhistory.js` 14→**33 全綠**（新增 A1–A4/B1–B5/C1/D1–D2）；`npm run release` 綠。
-  - **viewer `dac72ff`**：`report.js` `valueStyle` 加 `patientAge`→ 算 `ageAtReport`（birthYear 回推）傳 resolveRef 第 6 參；age thread 過 buildColumn/Page2Column/SectionBox/TestBlock + A5；**§4.3 動態 ref = full-scope（YC 拍板：所有帶 refHistory 的 entry 都動態化）**，新增 `buildRefDisplay`/`ageBandLabel`/`fmtRange`；`dashboard.js` `renderLabCell` 補傳真實 gender+ageAtReport（修原 gender=null 不一致）。
-  - **reporter `4186c04`**：`core/ui-lab-view.js` resolveRef 本輪傳 `undefined`（age-agnostic，zero-regression）；`sync-patterns.js` 重 build dialysis/ckd。
-- **§4.3 那 9 條「上色門檻刻意只留高界」entry**（GOT/GPT/RGT/TBIL/DBIL/HbA1c/BUN/CREAT/UA）動態顯示變單邊 `<高界`、丟教科書低界 → **YC 驗收選「維持現狀（顯示=上色基準）」**，不改。決策記 memory `ref-display-matches-coloring-basis`。
-- **三 repo push 完成**（patterns `…a564542`、viewer `…dac72ff`、reporter `…4186c04`）。
-- **Notion**：§1.0 vhyl ✅→**⏳ 待重貼**（canonical 2026-06-23 加「完整報告」trigger，vhyl 也 drift；vhtt 本就 ⏳）；Dashboard `ref_range_age_dim` Open→**In-progress** + Notes 記程式已 push / 待辦。
-- 三 repo WORKLOG 各補一條（繁中）。
+**錯在哪(本 thread 犯的)：**
+- 今天把 harvest（000012885I）+ 30-patient ref-scan 的 vhyl ref 落進 catalog 時：
+  1. **把「舊日期的 ref 變體」當成外送他院雜訊丟掉** → 其實是**同一台 vhyl、不同時間**的 ref（玉里 lab 會改參考值）。
+  2. **validFrom 一律標成「抓取日」**（多數 2026-03-31）→ 比抓取日早的檢驗值配不到 vhyl 筆、掉回 `*` universal，顯示錯誤 ref。
+- 實證（ALK-P @ 012885I 跨日期實掃）：
+  - 2024-08 ~ 2025-04-15：舊 ref `M40-129,F35-104`
+  - 2025-09-22 ~ 2026-06：新 ref `M:50-116,F:46-122`（ref 在 2025/04~09 間改版）
+  - 病人最新「有值」的 ALK-P 在 111/11/29(2022) → 該用**舊** ref（F35-104），但 catalog 只有 2026-03-31 那筆 → 掉 `*` 34-130（= YC 看到的 bug）。
 
-## 2. 本 session 未完（刻意，非 bug）
+**已修(範本)：** ALK-P 的 vhyl 改成**兩筆時間版本**：
+- `{vhyl, refLoM:40,refHiM:129,refLoF:35,refHiF:104, refLo:35,refHi:129, validFrom:'1900-01-01'}`（舊；真正起始未知→1900 migration base）
+- `{vhyl, refLoM:50,refHiM:116,refLoF:46,refHiF:122, refLo:46,refHi:122, validFrom:'2025-09-22'}`（新；earliest observed 2025-09-22，原誤標 2026-03-31）
+- 在 working tree（未 release/sync/push）。
 
-- **年齡帶「資料」尚未落 catalog**：本輪 catalog **無任何** `ageMin/ageMax` entry，程式都是 age-agnostic 在跑（zero-regression）。年齡帶 entry 由 **Cowork** 從 harvest 落 `catalog.js`（machine-specific `vhyl`）— 見 `vhyl_ref_harvest_000012885I_2026-06-23.csv`（workspace root）。
-- **YC 真機驗收未做**：成功標準 #4（含年齡帶 fixture 的上色依年齡正確切換、邊界年齡）需 Cowork 落資料後在真機驗；驗收通過才把 brief 改名 `_done` + Notion 退 Done。
-- **`ORDAPNO → opdweb` 全自動串接未做**（auto-crawl 過渡期手貼 URL 可行）。
-- **兩台 Cowork UI Project Instructions 待重貼**（§1.0 vhyl + vhtt 都 ⏳）→ 下次 boot 前必貼，否則跑舊規則（無「完整報告」trigger）。
+**正確方法(下個 thread 照做)：**
+1. 對每個 in-scope test，掃**所有 30 id × 所有歷史報告（ernode offset 翻頁）**，每筆抓 opdweb `報告時間`(西元)＋ analyte 的 ref 字串。
+2. 聚合：analyte → ref字串 → [報告日清單]，取每個 ref 版本的**最早日**。
+3. 建時間版本 refHistory：最舊版 validFrom='1900-01-01'，後續版本 validFrom=該版本最早出現日。性別 inline 照舊。
+4. **區分「時間版本」vs「真外送他院」**：時間版本 = 某日期之後全換新 ref（乾淨邊界）；外送 = 散落單筆、ref 格式異（如新南海）。後者不落 vhyl。
+5. 修掉今天所有 vhyl 筆被誤標的 validFrom（多數 2026-03-31 / 2026-06）。
+6. release + viewer/reporter sync + push（rule #3 先問）。
 
-## 3. 下次該先做什麼（YC 指定順序）
+技法備忘（本 thread 已驗，可重用）：
+- Claude in Chrome 同源 fetch：tab 在 **opdweb** origin 時，`fetch` ernode + opdweb **都通**（opdweb→ernode 不擋；ernode→opdweb 擋）。
+- opdweb 報告解析：先抓 ref 行（`M:..-..` / `..-..` / `<N` / `<50years`），往回跳 value/unit 行找 analyte；單項免疫報告（FreeT4/TSH/PSA…）**常不印 ref**，跳過。
+- 併發會炸 → 序列 + ~120ms 節流;一次 JS 跑 ≤6 病人(>6 易撞 45s CDP timeout)。
 
-1. **Cowork**：把 `vhyl_ref_harvest_…csv` 的 ref（含有印年齡帶者抓 `ageMin/ageMax`）落 `catalog.js` refHistory（machine-specific `vhyl`，schema 已就緒）→ `npm run release` → 三 repo sync。
-2. **YC 真機驗收**：viewer 對含年齡帶 entry 的病人，上色依年齡切換正確 + §4.3 顯示符合預期（特別看那 9 條單邊 `<高界`）。
-3. 驗收通過 → brief 改名 `_done` + Notion `ref_range_age_dim` → Done。
+## 1. 本 thread 完成（已 push）
+- SOP I 接續(pre-flight vhyl ✅)。
+- 000012885I harvest:29 test vhyl refHistory + BUN 年齡帶 → push。**(validFrom 有上述時間維瑕疵,待重做)**
+- age-dim brief：step #2 真機驗收過 → `_done` + Notion Done。
+- 30-patient ref-scan：修 P(off-by-one 誤植 Mg→2.5-4.5)+ 新增 TSAT/TIBC/AFP/CEA → push。**(validFrom 同瑕疵)**
+- viewer machine 設定釐清:`chrome.storage.local.currentMachine` 要設 vhyl(YC 本機已是 vhyl)。
 
-## 4. Active TODOs（snapshot at wrap；以 Notion Dashboard 為準）
+## 2. 本 thread 未完
+- **vhyl refHistory 時間維重做**（見 §0,下個 thread 主任務）。
+- ALK-P 時間版本修正在 working tree,**待 release/sync/push**(或併進 §0 重做一起 push)。
+- warn brief `TASK_BRIEF_viewer_ref_display_valueless_quiet.md`（已寫,working tree,待 commit/push + 交 Claude Code;與此 bug 無關的 console 噪音）。
 
-- `ref_range_age_dim` — **In-progress**（程式已 push；待 Cowork 落年齡帶資料 + YC 真機驗收 → 改名 _done）
-- 其餘見 Notion Dashboard
+## 3. 下次該先做什麼
+1. （主）§0 的 vhyl refHistory 時間維重做。
+2. ALK-P 修正 + 重做結果一起 release/sync/push。
+3. commit/push warn brief，排進 Notion，交 Claude Code。
+
+## 4. Active TODOs（以 Notion Dashboard 為準）
+- vhyl ref 時間維重做（新，未建 brief — 可考慮建一條 TASK_BRIEF）。
+- `viewer_ref_display_valueless_quiet`（warn 噪音,Claude Code）。
+- ref 抓不到的 test（報告不印 ref）：FreeT4/TSH/Folate/FreePSA/VitB12/Ferritin → 需手動查手冊。
+- cohort 未出現:iPTH/Aluminum/CA19-9/CA125/PSA。
 
 ## 5. Parked questions
-
-- 精確年齡（抓 ernode `出生日期`，DM Education 子頁面有）是否值得做 — 本輪用近似 birthYear（±1 歲邊界），日後再評估。
-- reporter 年齡維資料來源（patient.age 是目前年齡，per-row ageAtReport 串接）延後 — 本輪傳 undefined。
-- legacy `hospital-lab-data.html` 退役時程（不接 resolveRef）。
-- `ORDAPNO → opdweb` 全自動串接（免手貼 URL）何時做。
+- 時間版本 vs 外送他院的自動判別準則（目前靠日期邊界 vs 散落）。
+- validFrom 要用「該版本最早觀測日」還是回推真正改版日（目前用最早觀測日,保守）。
+- `ORDAPNO → opdweb` 全自動串接仍待 Claude Code。

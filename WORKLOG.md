@@ -4,6 +4,36 @@ Chronological log of pattern catalog changes. Newest entries on top.
 
 ---
 
+## 2026-06-24（深夜）— vhyl refHistory 時間維重做（validFrom 系統性修正）
+
+- 作者:claude(與 YC,Cowork — Claude in Chrome 跨 ernode+opdweb 重掃帶報告日)
+- 範圍:catalog.js(單檔資料);**無 code 變更**。停在 working tree,git 交 Claude Code。
+- 問題:今日 harvest/30-scan 落的 vhyl 筆 validFrom 一律誤標「抓取日」(多 `2026-03-31`),
+  且把「舊日期 ref 變體」當外送雜訊丟掉 → 比抓取日早的檢驗值配不到 vhyl 筆、掉回 `*`
+  universal,顯示錯 ref(YC 看到的 ALK-P 34-130 bug)。
+- 方法(時間維):ernode 翻頁取所有 resulted lab ORDAPNO → opdweb OpdOrderReport.aspx
+  同源 fetch → ref-anchored parser(報告時間取西元)→ 聚合 analyte→ref→最早報告日。
+- **核心發現:玉里 lab 全店 ref 改版** — 舊 ref 末見 **2025-04-21**、新 ref 首見 **2025-06-24**
+  (012885I / 166569G / 114403C 三病人一致)。→ 新版 `validFrom='2025-06-24'`,舊版 `'1900-01-01'`。
+- 落地(catalog.js vhyl refHistory):
+  - 穩定 analyte(CBC 全部 + CHOL/LDL/TG/HbA1c/Na/K/Cl/P/FreeCa)→ validFrom 改 `1900-01-01`。
+  - 改版 analyte(Albumin/TP/TBIL/DBIL/Ca/CREAT/GluAC/GPT/HDLC/UA/BUN)→ 舊版@1900 + 新版@2025-06-24 兩筆。
+  - GOT 三版:舊 M0-40,F0-32@1900 → 11-34@2025-06-24 → 5-34@2026-03-13。
+  - BUN:舊 6-23(無年齡/性別,inline mirror suppress 外層)@1900 + 新 age/sex 兩筆移到 2025-06-24。
+  - ALP(前一輪範本):新版 validFrom 2025-09-22 → **2025-06-24**(加病人後收斂)。
+- 掃描進度:**3/30 病人**(012885I 232 + 166569G 63 + 114403C 200 reports,errors=0)。
+  其餘 27 病人 exhaustive 待續(resumable;harvest 聚合在 opdweb localStorage['REFAGG'])。
+- **未動(flag,本 3 人未測到 / 證據不足)**:TIBC / TSAT / AFP / CEA / Fe / Ferritin / iPTH /
+  RGT 新版 / FreeCa 舊版 — validFrom 維持現狀,待續掃確認。
+- 驗證(resolveRef spot-check,全過):ALP@2022 F→{35,104}(原 bug 修正,不再掉 universal);
+  GOT 三版依日期解析;BUN 2023→{6,23}、2026 依 age/sex;Albumin/CREAT/UA 舊↔新;WBC stable→{5,10}。
+- ⚠️ **附帶修復**:發現 working tree `catalog.js` 先前已被截斷(尾端 BMD/CAC/LDCT 三筆健檢影像
+  + `];` + Exports 區塊不見,node 無法 parse)→ 從 `git HEAD` 還原尾端(committed 內容,本 session 未改)。
+  Claude Code release 前請 `git diff --stat` 複查,確認無其他檔被截斷。
+- 產物:`ref-timedim-2026-06-24/harvest-results.md`(版本表 + 邊界 + 續掃方法)。
+
+---
+
 ## 2026-06-24 — vhyl 30-patient ref-scan:去重增量(P 修正 + TSAT/TIBC/AFP/CEA)
 
 - 作者:claude(與 YC 共同,Cowork — Claude in Chrome 跨 ernode+opdweb 自動掃)
