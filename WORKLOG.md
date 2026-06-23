@@ -4,6 +4,27 @@ Chronological log of pattern catalog changes. Newest entries on top.
 
 ---
 
+## 2026-06-24 — vhyl 30-patient ref-scan:去重增量(P 修正 + TSAT/TIBC/AFP/CEA)
+
+- 作者:claude(與 YC 共同,Cowork — Claude in Chrome 跨 ernode+opdweb 自動掃)
+- 範圍:catalog.js(單檔資料),無 code 變更
+- 變更:修改 1 筆 + 新增 4 筆 vhyl refHistory
+- 方法:YC 給 30 個 vhyl chartno → 同源 fetch ernode(取 resulted ORDAPNO)+ opdweb OpdOrderReport.aspx(解析 analyte/ref,只取 ref 不存病人值)→ 去重比對現有 catalog → 只落增量。
+- 落地:
+  - **P 修正**:今日 012885I harvest 落的 vhyl P `1.6-2.6` 是 off-by-one 誤植 Mg 範圍;30 人主流 P=`2.5-4.5` → 改正(validFrom 維持 2025-12-30)。**安全相關**(磷高/低警示)。
+  - **TSAT** 新增 vhyl:M15-50,F12-45(envelope 12-50)。
+  - **TIBC** 新增 vhyl:M135-485,F119-410(與 catalog 預設 M134-415/F120-480 不同)。
+  - **AFP** 新增 vhyl:0.89-8.78 ng/mL。
+  - **CEA** 新增 vhyl:<1.73(單邊高界)。
+- 交叉驗證(無需動):已落的 23 條 ref(CBC/肝/血脂/血糖/腎/電解質 + BUN 年齡帶)被 30 人主流值複驗一致;Fe 主流 M65-175/F50-170 = catalog 預設(不需加)。
+- 抓不到 ref(報告只印 RESULT、不印參考值):FreeT4 / TSH / Folic acid / Free PSA / Vit B12 / Ferritin(EIA/LIA)→ 需查檢驗手冊手動填,opdweb 爬不到。
+- cohort 未出現:iPTH / Aluminum / CA19-9 / CA125 / PSA(總)。
+- 外送/他院變體(各約 2 人,如 ALB 3.97-4.94、CREAT M0.7-1.2、BUN 6-23 無年齡帶…)= send-out 實驗室範圍,非玉里院內主流,**不採納**(僅記錄於本條)。
+- 驗證:5 筆增量結構與已驗 29 筆同型(base 鍵齊 / 性別 inline 有 base / validFrom ISO / machine vhyl / 無年齡帶重疊);**`npm run release` 待真實 disk(PowerShell)跑**(沙箱 mount schema.js 為舊截斷鏡像,沙箱 validate 不可靠)。
+- 後續(Claude Code / PowerShell):release + viewer/reporter sync + 驗收後 commit/push(rule #3);本輪可與 age-dim brief `_done` 改名同一次 push。validFrom 對 TIBC/CEA 為近似(specialty 報告日未逐筆記錄)。
+
+---
+
 ## 2026-06-24 — vhyl ref harvest 落 catalog refHistory(machine-specific + BUN 年齡帶)
 
 - 作者:claude(與 YC 共同,Cowork)

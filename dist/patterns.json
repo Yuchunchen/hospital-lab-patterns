@@ -1,6 +1,6 @@
 {
   "version": "0.4.0",
-  "synced_at": "2026-06-23T16:39:54.443Z",
+  "synced_at": "2026-06-23T17:22:46.291Z",
   "catalog": [
     {
       "id": "WBC",
@@ -1404,10 +1404,10 @@
         },
         {
           "machine": "vhyl",
-          "refLo": 1.6,
-          "refHi": 2.6,
+          "refLo": 2.5,
+          "refHi": 4.5,
           "validFrom": "2025-12-30",
-          "source": "auto-crawl 000012885I 2026-06-23"
+          "source": "auto-crawl ref-scan 30pt 2026-06-24 (修正:原 012885I off-by-one 誤植 Mg 範圍 1.6-2.6;30 人主流 P=2.5-4.5)"
         }
       ]
     },
@@ -1508,6 +1508,17 @@
           "refHi": 480,
           "validFrom": "1900-01-01",
           "source": "migration 起點 — universal ref 既有值"
+        },
+        {
+          "machine": "vhyl",
+          "refLo": 119,
+          "refHi": 485,
+          "refLoM": 135,
+          "refHiM": 485,
+          "refLoF": 119,
+          "refHiF": 410,
+          "validFrom": "2026-06-01",
+          "source": "auto-crawl ref-scan 30pt 2026-06-24 (iron panel;validFrom 近似)"
         }
       ]
     },
@@ -1535,6 +1546,17 @@
           "refHi": 45,
           "validFrom": "1900-01-01",
           "source": "migration 起點 — universal ref 既有值"
+        },
+        {
+          "machine": "vhyl",
+          "refLo": 12,
+          "refHi": 50,
+          "refLoM": 15,
+          "refHiM": 50,
+          "refLoF": 12,
+          "refHiF": 45,
+          "validFrom": "2026-03-31",
+          "source": "auto-crawl ref-scan 30pt 2026-06-24"
         }
       ]
     },
@@ -1743,6 +1765,13 @@
           "refHi": 9,
           "validFrom": "2026-05-28",
           "source": "YC SOP C 觸發 2026-05-28 cross-reference 12 chart batch — see docs/cross-reference-vhtt-2026-05-28.md"
+        },
+        {
+          "machine": "vhyl",
+          "refLo": 0.89,
+          "refHi": 8.78,
+          "validFrom": "2026-06-10",
+          "source": "auto-crawl ref-scan 30pt 2026-06-24 (000023800G AFP 報告)"
         }
       ]
     },
@@ -1770,6 +1799,13 @@
           "refHi": 5,
           "validFrom": "1900-01-01",
           "source": "migration 起點 — universal ref 既有值"
+        },
+        {
+          "machine": "vhyl",
+          "refLo": null,
+          "refHi": 1.73,
+          "validFrom": "2026-06-01",
+          "source": "auto-crawl ref-scan 30pt 2026-06-24 (000117706G CEA 報告 <1.73;validFrom 近似)"
         }
       ]
     },
