@@ -7,7 +7,7 @@
 帳號設定沒同步、或要在新機器快速重建環境，這份檔案就是 single source of
 truth。修改 project instructions 後**請同步更新本檔**，才不會 drift。
 
-**最後同步：** 2026-06-04（Modes 改寫為影響範圍 blast-radius 分工 + 規則 #7 加 Notion 單向投影條款）
+**最後同步：** 2026-06-23（加「完整報告／原始報告」opdweb 取閱 trigger；§1.0 paste 追蹤兩台重置 ⏳，下次 boot 重貼）
 
 ---
 
@@ -62,6 +62,7 @@ All public on github.com/Yuchunchen.
 - <vhyl|vhtt>/<test_id> ref range 改成 lo/hi   → SOP C（machine-specific，refHistory 末加一筆）
 - <vhyl|vhtt>/<chartno> <test> ref             → SOP C-crawl（Chrome 爬報告解讀 ref → 提議 refHistory entry → 等確認）
 - <vhyl|vhtt>/<chartno> ref-scan               → SOP C-crawl（整張報告掃所有可抓 ref → 逐筆提議）
+- <chartno> <test> 完整報告 ／ 原始報告        → 開 opdweb 完整報告（ernode 列取 hidden ORDAPNO → OpdOrderReport.aspx）回原文（檢查值＋ref）；**純取閱、不自動提議 ref**（要落 ref 再用上面 `… ref` / `ref-scan`）。order 不明 → 先問
 - 把 <test_id> 從 viewer/reporter 拿掉         → SOP E
 
 **SOP C parser（ref range 三維 refHistory，2026-05-28 Order 5.0）：** 含「ref range

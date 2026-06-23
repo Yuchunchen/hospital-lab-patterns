@@ -4,6 +4,28 @@ Chronological log of pattern catalog changes. Newest entries on top.
 
 ---
 
+## 2026-06-23 — auto-crawl 可行性驗證(opdweb)+「完整報告」trigger(docs only,無 code 變更)
+
+- 作者:claude(與 YC 共同,Cowork — 純 docs/SOP)
+- 範圍:docs(PROJECT_CONTEXT § 9 + cowork-project-instructions),無 catalog/code 變更
+- 起因:接續上段,驗證 SOP C-crawl ⚠️「ernode 是否印 ref / 印在哪層」
+- 驗證結果(vhyl / 000012885I 羅清子 F84):
+  - ernode `get_lab_orders` 列**只印 `analyte: value`,無 ref**(先前 PSA 000023800G「只見數值」即此層)
+  - 完整 ref 在**另一站台 opdweb**:`http://opdweb.vghb12.<machine>.gov.tw/QueryReport/OpdOrderReport.aspx?OrdApNo=<ORDAPNO>&hisnum=<chartno>&opid=A123456789`
+  - `ORDAPNO` 來自 ernode 每列 hidden input(OPSID/PFCODE/ORDTYPE 同列);**未執行列也有 → 須先用狀態濾 resulted**
+  - ref 格式**不統一**:性別分 `M..-..,F..-..unit`(生化常括號、血液多無)/ 通用 `..-..unit` / 單邊 `<15%`;單位黏數字且含 `X10^n`
+  - **年齡帶:多數項目不印,但部分項目印**(全患者 harvest 發現 BUN 印 `<50years…;>50years…` 且帶內分性別)→ 有印就抓 ageMin/ageMax、沒印才預設不分年齡(YC 拍板)。先前「CBC+生化都沒印 → 一律不分年齡」的推論過廣,已更正
+  - **全患者 harvest**(000012885I 55 panel→70 analyte,序列爬 opdweb):產 `vhyl_ref_harvest_000012885I_2026-06-23.csv`(workspace root,僅 ref);發現 opdweb 併發會炸(log 鎖→IOException,須序列節流)、ref 格式變體多(`;`/`:`/單邊/年齡帶)、parser 偶有 label off-by-one(舊報告)
+- 檔案:
+  - 改 `PROJECT_CONTEXT.md` § 9 — 步驟 3/4 + ⚠️ 區塊改寫成「已驗」(opdweb + ORDAPNO + 格式);trigger 表加一列「完整報告／原始報告」;SOP C-crawl 段加取閱捷徑說明
+  - 改 `docs/cowork-project-instructions.md` — Pattern-learning trigger 加「完整報告／原始報告」(純取閱、不自動提議 ref);bump 最後同步 2026-06-23
+  - 改 `docs/task-briefs/TASK_BRIEF_ref_range_age_dim.md` + PROJECT_CONTEXT §9 歸屬 — YC 2026-06-23 分工修訂:**ref 解析 + 寫 refHistory 進 catalog = Cowork**(不寫死 parser code);Claude Code 不寫 ref parser,只做 resolveRef/viewer 程式 + release + sync + push。brief 加 §4.3 顯示規則(挑最新檢驗值報告日當時 ref、無值取最新;最精簡顯示 — 不分維度不顯示;保留手動註解行)
+- 兩台同步(規則 §1.0):動到 canonical trigger + 最後同步日 → push 後 vhyl + vhtt **兩台都需重貼**;§1.0 vhyl 由 ✅ 退 ⏳
+- 殘留:`ORDAPNO → opdweb` 全自動串接(免手貼 URL)待 Claude Code 落地;過渡期手貼可行
+- git:Cowork 未 git(規則 #3);Notion 待 push 後同步(規則 #7)
+
+---
+
 ## 2026-06-23 — reference range 加年齡維度 brief + SOP C-crawl(docs only,無 code 變更)
 
 - 作者:claude(與 YC 共同,Cowork — 純 docs/SOP;code 實作交 Claude Code)

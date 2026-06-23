@@ -695,6 +695,7 @@ flow**，不要再問是 SOP A、B、F——自己選對。
 | `<vhyl\|vhtt>/<test_id> ref range 改成 lo/hi` | C | machine-specific — refHistory 末加一筆 |
 | `<vhyl\|vhtt>/<chartno> <test> ref` | C-crawl | Chrome 爬該病人報告 → 解讀 ref → 提議 refHistory entry → 等確認 |
 | `<vhyl\|vhtt>/<chartno> ref-scan` | C-crawl | 整張報告掃所有可抓 ref → 逐筆提議 |
+| `<chartno> <test> 完整報告` ／ `原始報告` | C-crawl（取閱）| ernode 列取 hidden `ORDAPNO`（濾 resulted）→ 開 opdweb `OpdOrderReport.aspx` → 回報告原文（檢查值＋ref）；**不**自動產 refHistory 提議（要落 ref 再用上面 `… ref` / `ref-scan`）。哪筆 order 不明 → 先問 |
 | `把 <test_id> 從 viewer/reporter 拿掉` | E | 改 manifest，catalog 留著 |
 
 **前置條件**（不滿足就先讓使用者處理）：
@@ -842,8 +843,10 @@ ernode URL 抓正式報告）。trigger 語含 `vhtt/`/`vhyl/` 前綴會覆蓋 s
 ### SOP C-crawl — reference range 自動爬取 / 手動指定（established 2026-06-23）
 
 SOP C 的「來源」擴充：lo/hi 從「YC 口述」擴成「Claude 爬 ernode 報告解讀」。
-**歸屬:** Cowork 執行爬取 + 解析 + 提議 entry；落地（catalog.js → release → 三 repo
-sync → push）仍走 Claude Code（規則 #5）。
+**歸屬（YC 2026-06-23 修訂）:** ref 字串**解析 + 寫成 refHistory entry 進 `catalog.js` = Cowork**
+（格式雜、需語意判斷，**不寫死 regex parser code**；視為 catalog 單檔資料維護，blast radius = 單檔，
+屬 Cowork 小半徑）。**Claude Code 不寫 ref-range parser**，只負責 release + 三 repo sync + push +
+`resolveRef`/viewer 的**程式**（含年齡維）。一句話：ref **資料**由 Cowork 落 catalog、**程式**由 Claude Code 落。
 
 **模式 A — 自動爬取（auto-crawl）**
 
@@ -857,12 +860,24 @@ sync → push）仍走 Claude Code（規則 #5）。
    機器維度取觸發語前綴或 session context（im in vhyl/vhtt）。
 2. 開 ernode：
    `http://ernode.vghb12.<machine>.gov.tw:8000/order/get_lab_orders?chartno=<chartno>&opsid=A123456789&searchItem=<test>`
-3. **找 ref 字串**（⚠️ 可行性未驗，見下）：先看 lab order 列 inline reportText 有無
-   印參考值（如 `參考值 3.5-5.1`、`(M) 13-18`）；沒有→點「正式報告」子連結看完整版。
-   子連結**有時是空殼**（只 letterhead/header）→ 空殼則回報 YC「該 test 報告未印 ref，請手動指定」。
-4. 對映四維：machine（前綴/session）；時間=報告日期當 `validFrom`（ROC→ISO）；
-   性別=報告分性別印→ inline `refLoM/refHiM/refLoF/refHiF`；年齡=報告分年齡帶印→
-   `ageMin/ageMax`（需年齡維度上線，見 `TASK_BRIEF_ref_range_age_dim`；否則先擱置標待補）。
+3. **找 ref 字串（已驗 2026-06-23 @ vhyl／000012885I）**：ref **不在** ernode lab_orders
+   列（該層只有 `analyte: value`），而在 **opdweb 完整報告**。取得路徑：
+   - ernode 每筆列帶 hidden `<input name="ORDAPNO">`（+ OPSID/PFCODE/ORDTYPE=LAB/COM_KEY）。
+     ⚠️ 未執行列也有 ORDAPNO → 先用狀態（`正式報告`／`更正報告`，≠`未執行`）過濾再取；
+     抽法 `document.querySelectorAll('input[name=ORDAPNO]')` 依列序對應。
+   - 開報告：`http://opdweb.vghb12.<machine>.gov.tw/QueryReport/OpdOrderReport.aspx?OrdApNo=<ORDAPNO>&hisnum=<chartno>&opid=A123456789`
+     （參數名是 `opid` 不是 opsid；PFCODE 是 hidden 欄但 URL 不需帶）。
+   - 報告每列 `<analyte>: <value> <ref>`，ref 形態**不統一**，parser 不可假設單一格式：
+     - 性別分：`M<lo>-<hi>,F<lo>-<hi><unit>`（生化常加括號 `(M0-40,F0-32U/L)`，血液常無 `M14-18,F12-16g/dl`）→ `refLoM/refHiM/refLoF/refHiF`
+     - 通用：`<lo>-<hi><unit>`（如 `80-96fl`、`(0-200mg/dl)`）→ `refLo/refHi`
+     - 單邊：`<15%`、`>x`
+     - 單位黏數字且可含 `X10^3`/`X10^6`/`^` → 別把單位裡的數字當界值
+   - 空殼報告（未執行／無值）→ 無 ref，跳過。
+4. 對映四維：machine（前綴/session）；時間=opdweb 報告時間**已西元** → `validFrom` 直接 ISO（免 ROC 轉換）；
+   性別=報告分性別印→ `refLoM/refHiM/refLoF/refHiF`；年齡=**多數項目不印，但部分項目會印年齡帶**
+   （已驗:BUN `<50years F:7.0-18.7,M:8.9-20.6;>50years F:9.8-20.1,M:8.4-25.7 mg/dL`，且年齡帶內再分性別）
+   → **有印年齡帶就抓 `ageMin/ageMax`，沒印才預設不分年齡**（YC 2026-06-23 拍板：報告無年齡說明即
+   age-agnostic；對齊 `TASK_BRIEF_ref_range_age_dim` zero-regression）。（opdweb 另印 `出生日期`，需精確年齡時可回推。）
 5. **輸出提議（不直接寫）**，附報告原文行，等 YC 確認：
 
    ```
@@ -877,13 +892,27 @@ sync → push）仍走 Claude Code（規則 #5）。
 **模式 B — 手動指定**：即既有 SOP C 觸發語（`<test_id> ref range 改成 <lo>/<hi>` 等），
 性別/年齡 override 由 YC 對話補述。
 
-**⚠️ 待確認（阻擋全自動化的關鍵未知）：** ernode 報告**是否印出參考值字串、印在哪層**
-目前未驗證（2026-06-23 抓 000023800G PSA 只見數值 `PSA: 0.691`，未見 inline ref，
-且子連結有空殼前例）。行動：YC 給第一個「已知有年齡/性別帶 ref」的 chartno+test 時，
-Claude 先**只做一次探勘爬取**確認格式與層級，再定 parser 規則補進本節步驟 3。驗證前
-auto-crawl 一律「提議 + YC 確認」，不做無人值守寫入。
+**✅ 已驗（2026-06-23 @ vhyl／000012885I，原 ⚠️「印出與否／印在哪層」已解）：**
+ernode lab_orders 列只印 `analyte: value`（無 ref）；完整 ref 在 **opdweb `OpdOrderReport.aspx`**
+（見步驟 3 串接）。PSA(000023800G) 先前「只見數值 0.691」是因只看 ernode 列、沒進 opdweb，
+非真的無 ref。格式不統一（性別分／通用／單邊；生化有括號、血液多無；單位含 `X10^n`）。
+殘留待辦：`ORDAPNO → opdweb` 的**全自動串接**（免 YC 手貼 URL）待 Claude Code 落地時收尾。
+過渡期 auto-crawl 一律「提議 + YC 確認」，不做無人值守寫入。
+
+**全患者 harvest 實測補強（2026-06-23，000012885I 跑完 55 panel／70 analyte）：**
+- **格式變體比想像多**，parser 要全收：性別分隔符 `,` 或 `;`（`M:30-200;F:29-168`）、`M`/`F` 後可有
+  `:`、單邊可帶性別（`M:<45,F:<34`）、年齡帶（`<50years…;>50years…` 且帶內再分性別）。
+- **opdweb 併發會炸**：一次 10 個 request → log 檔鎖住，~1/3 回 `IOException` 錯誤頁。**必須序列 + 節流 + 失敗重試**（序列跑 55 張 = 0 error）。
+- **label off-by-one**：少數舊報告版面少一行 → ref 會掛到前一個 label（如 Hct/Hgb 互染）。最新報告(current)準，歷史 variant 需人工複核；header 行（`NORMAL RANGE`/`Non-Reactive`/`Patient`=PT）會被誤抓成 analyte，落地前過濾。
+- 一次 harvest 產物範例：`vhyl_ref_harvest_000012885I_2026-06-23.csv`（workspace root，僅 ref 不含病人值）。
 
 **source 命名：** auto-crawl=`'auto-crawl <chartno> <抓取日 YYYY-MM-DD>'`；手動沿用 SOP C。
+
+**「完整報告」/「原始報告」取閱捷徑（established 2026-06-23）：** YC 明講「完整報告」或
+「原始報告」→ Claude 走步驟 3 的 `ORDAPNO → opdweb OpdOrderReport.aspx` 機制，回報告原文
+（含檢查值與 ref 字串）。**純取閱**：YC 有時為看檢查值、有時為解讀 ref，故**不**自動產
+refHistory 提議；要落 ref 再用 `<chartno> <test> ref` / `ref-scan`。chartno/order 取對話
+context，不明確 → 規則 #12 先問。
 
 ### SOP D — 把已存在的 catalog test 加進某個 manifest
 
