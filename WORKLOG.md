@@ -4,6 +4,30 @@ Chronological log of pattern catalog changes. Newest entries on top.
 
 ---
 
+## 2026-06-23 — refHistory 加第四維「年齡」(schema + resolveRef + tests)
+
+- 作者:claude(與 YC 共同,Claude Code)
+- 範圍:schema / resolveRef(lib)/ runtime-snapshot / docs(pattern-spec)/ tests
+- 變更:新增(年齡維,向後相容)
+- 測試 ID:resolveRef 全體;新增 schema A1–A4、resolve B1–B5 / C1、pickEntry D1–D2
+- 變更內容:
+  - `schema.js`:refHistory item 加可選 `ageMin`/`ageMax`(非負整數;兩者皆在場
+    `ageMin<=ageMax`);同 `(machine, validFrom)` 年齡帶不得重疊(age-agnostic 那筆例外)。
+    新增 `isNonNegIntOrNullish` helper。
+  - `patterns/lib/resolveRef.js`:簽名末加 `patientAge`(undefined/null/NaN → 年齡未知 →
+    只取 age-agnostic);候選篩選加 `ageOK`;precedence **machine > age > time**(YC 拍板);
+    抽出 `selectBase`;新增 `resolveRef.pickEntry(...)` 回傳選中 refHistory item(viewer §4.3 用)。
+  - `docs/pattern-spec.md`:§refHistory 標題加「× age」+ 年齡維語意 / lookup / validate 說明。
+- 預設行為:**age-agnostic**。現有 51 個 refHistory entry 無年齡帶 → 行為完全不變(zero-regression)。
+- 分工:年齡帶 **資料**(refHistory entry)由 Cowork 從 harvest 落 `catalog.js`(machine-specific
+  vhyl),本輪只落**程式**。本輪 catalog **無**年齡帶資料,故 dist 無新增 entry。
+- 驗證:`npm run test:refhistory` 33 條全綠(既有 14 + 新增 19);`npm run release` validate +
+  build-json 綠(93 catalog / 65 viewer / 41 reporter)。
+- 影響:catalog/lib 改動 → viewer + reporter 都已重 sync;OPD 端 24h 內自動拿到新 dist/patterns.json。
+  reporter 本輪傳 `undefined`(年齡維待補資料來源)。
+
+---
+
 ## 2026-06-23 — auto-crawl 可行性驗證(opdweb)+「完整報告」trigger(docs only,無 code 變更)
 
 - 作者:claude(與 YC 共同,Cowork — 純 docs/SOP)

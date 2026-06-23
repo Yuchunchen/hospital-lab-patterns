@@ -38,6 +38,11 @@ function isNumberOrNullish(v) {
   return v === null || v === undefined || typeof v === 'number';
 }
 
+function isNonNegIntOrNullish(v) {
+  return v === null || v === undefined ||
+    (typeof v === 'number' && Number.isInteger(v) && v >= 0);
+}
+
 const REQUIRED_FIELDS = ['id'];
 const VALID_HOSPITAL_SCOPES = new Set([undefined, 'tt', 'yl']);
 const VALID_GENDERS         = new Set([undefined, 'M', 'F']);
@@ -142,6 +147,45 @@ function validateEntry(entry, ctx) {
         });
         if (hasInlineGender && (!('refLo' in h) || !('refHi' in h))) {
           errs.push(`${tag}: inline gender override (refLoM/refHiM/refLoF/refHiF) requires refLo/refHi as unknown-gender fallback`);
+        }
+
+        // age band (TASK_BRIEF_ref_range_age_dim §2): ageMin/ageMax optional,
+        // each a non-negative integer when present; if both present min <= max.
+        // Both absent = age-agnostic (applies to all ages, the default).
+        ['ageMin', 'ageMax'].forEach(f => {
+          if (f in h && !isNonNegIntOrNullish(h[f])) {
+            errs.push(`${tag}: ${f} must be a non-negative integer or null`);
+          }
+        });
+        if (h.ageMin != null && h.ageMax != null && h.ageMin > h.ageMax) {
+          errs.push(`${tag}: ageMin (${h.ageMin}) must be <= ageMax (${h.ageMax})`);
+        }
+      });
+
+      // Age-band overlap (§2): within the same (machine, validFrom), two
+      // age-SPECIFIC bands must not overlap — overlapping bands would make
+      // resolution ambiguous. Age-agnostic items (both bounds absent) are the
+      // catch-all default and are exempt (precedence: age-specific beats it).
+      const ageGroups = {};
+      rh.forEach((h, idx) => {
+        if (!h || typeof h !== 'object') return;
+        if (h.ageMin == null && h.ageMax == null) return;     // age-agnostic
+        const key = h.machine + '|' + h.validFrom;
+        (ageGroups[key] = ageGroups[key] || []).push({
+          idx,
+          lo: h.ageMin == null ? 0 : h.ageMin,
+          hi: h.ageMax == null ? Infinity : h.ageMax,
+        });
+      });
+      Object.keys(ageGroups).forEach(key => {
+        const bands = ageGroups[key];
+        for (let i = 0; i < bands.length; i++) {
+          for (let j = i + 1; j < bands.length; j++) {
+            if (bands[i].lo <= bands[j].hi && bands[j].lo <= bands[i].hi) {
+              errs.push(`${id}: refHistory age bands overlap for (machine,validFrom)=${key} ` +
+                `— items [${bands[i].idx}] and [${bands[j].idx}]`);
+            }
+          }
         }
       });
     }
