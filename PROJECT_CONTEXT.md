@@ -693,6 +693,8 @@ flow**，不要再問是 SOP A、B、F——自己選對。
 | `<vhyl\|vhtt>/<chartno> <test_name> 沒抓到/missing/沒出現` | F→B/D | F12 偵錯 + Chrome 看頁面 → 落到 SOP B 修 regex 或 SOP D 加進 manifest |
 | `<test_id> ref range 改成 lo/hi` | C | universal — 改 refHistory `*` 那筆 |
 | `<vhyl\|vhtt>/<test_id> ref range 改成 lo/hi` | C | machine-specific — refHistory 末加一筆 |
+| `<vhyl\|vhtt>/<chartno> <test> ref` | C-crawl | Chrome 爬該病人報告 → 解讀 ref → 提議 refHistory entry → 等確認 |
+| `<vhyl\|vhtt>/<chartno> ref-scan` | C-crawl | 整張報告掃所有可抓 ref → 逐筆提議 |
 | `把 <test_id> 從 viewer/reporter 拿掉` | E | 改 manifest，catalog 留著 |
 
 **前置條件**（不滿足就先讓使用者處理）：
@@ -836,6 +838,52 @@ reporter 經共享 `patterns/lib/resolveRef.js` 用「本機 chrome 設定（vht
 **Pattern-learning time-machine awareness（§4.4）：** YC 在 Cowork session 開頭明示
 「im in vhtt / im in vhyl」→ carry context 整個 session（SOP A 用該 machine 對應
 ernode URL 抓正式報告）。trigger 語含 `vhtt/`/`vhyl/` 前綴會覆蓋 session context。
+
+### SOP C-crawl — reference range 自動爬取 / 手動指定（established 2026-06-23）
+
+SOP C 的「來源」擴充：lo/hi 從「YC 口述」擴成「Claude 爬 ernode 報告解讀」。
+**歸屬:** Cowork 執行爬取 + 解析 + 提議 entry；落地（catalog.js → release → 三 repo
+sync → push）仍走 Claude Code（規則 #5）。
+
+**模式 A — 自動爬取（auto-crawl）**
+
+觸發語：
+- `<vhyl|vhtt>/<chartno> <test_id|test_name> ref` — 單一 test
+- `<vhyl|vhtt>/<chartno> ref-scan` — 整張掃所有可抓 ref（可一次多 chartno / 多行）
+
+步驟：
+
+1. 前置：Claude in Chrome 已連線（`tabs_context_mcp`）；opsid 預設 `A123456789`；
+   機器維度取觸發語前綴或 session context（im in vhyl/vhtt）。
+2. 開 ernode：
+   `http://ernode.vghb12.<machine>.gov.tw:8000/order/get_lab_orders?chartno=<chartno>&opsid=A123456789&searchItem=<test>`
+3. **找 ref 字串**（⚠️ 可行性未驗，見下）：先看 lab order 列 inline reportText 有無
+   印參考值（如 `參考值 3.5-5.1`、`(M) 13-18`）；沒有→點「正式報告」子連結看完整版。
+   子連結**有時是空殼**（只 letterhead/header）→ 空殼則回報 YC「該 test 報告未印 ref，請手動指定」。
+4. 對映四維：machine（前綴/session）；時間=報告日期當 `validFrom`（ROC→ISO）；
+   性別=報告分性別印→ inline `refLoM/refHiM/refLoF/refHiF`；年齡=報告分年齡帶印→
+   `ageMin/ageMax`（需年齡維度上線，見 `TASK_BRIEF_ref_range_age_dim`；否則先擱置標待補）。
+5. **輸出提議（不直接寫）**，附報告原文行，等 YC 確認：
+
+   ```
+   ✅ <test_id> @ <machine> 報告日 <ROC>／西元 <ISO>
+   報告原文：「<抓到的 ref 字串>」
+   建議寫入 refHistory：
+     { machine:'<m>', refLo:<lo>, refHi:<hi>, validFrom:'<ISO>',
+       [ageMin/ageMax / refLoM…], source:'auto-crawl <chartno> <date>' }
+   ```
+6. YC 確認 → 交 Claude Code 落地。
+
+**模式 B — 手動指定**：即既有 SOP C 觸發語（`<test_id> ref range 改成 <lo>/<hi>` 等），
+性別/年齡 override 由 YC 對話補述。
+
+**⚠️ 待確認（阻擋全自動化的關鍵未知）：** ernode 報告**是否印出參考值字串、印在哪層**
+目前未驗證（2026-06-23 抓 000023800G PSA 只見數值 `PSA: 0.691`，未見 inline ref，
+且子連結有空殼前例）。行動：YC 給第一個「已知有年齡/性別帶 ref」的 chartno+test 時，
+Claude 先**只做一次探勘爬取**確認格式與層級，再定 parser 規則補進本節步驟 3。驗證前
+auto-crawl 一律「提議 + YC 確認」，不做無人值守寫入。
+
+**source 命名：** auto-crawl=`'auto-crawl <chartno> <抓取日 YYYY-MM-DD>'`；手動沿用 SOP C。
 
 ### SOP D — 把已存在的 catalog test 加進某個 manifest
 

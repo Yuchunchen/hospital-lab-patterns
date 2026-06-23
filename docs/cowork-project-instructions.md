@@ -60,6 +60,8 @@ All public on github.com/Yuchunchen.
 - <vhyl|vhtt>/<chartno> <test_name> 沒抓到/missing → SOP F→B/D（偵錯）
 - <test_id> ref range 改成 lo/hi               → SOP C（universal，改 refHistory `*` 筆）
 - <vhyl|vhtt>/<test_id> ref range 改成 lo/hi   → SOP C（machine-specific，refHistory 末加一筆）
+- <vhyl|vhtt>/<chartno> <test> ref             → SOP C-crawl（Chrome 爬報告解讀 ref → 提議 refHistory entry → 等確認）
+- <vhyl|vhtt>/<chartno> ref-scan               → SOP C-crawl（整張報告掃所有可抓 ref → 逐筆提議）
 - 把 <test_id> 從 viewer/reporter 拿掉         → SOP E
 
 **SOP C parser（ref range 三維 refHistory，2026-05-28 Order 5.0）：** 含「ref range
