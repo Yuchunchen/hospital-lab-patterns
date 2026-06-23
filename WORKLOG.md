@@ -4,6 +4,25 @@ Chronological log of pattern catalog changes. Newest entries on top.
 
 ---
 
+## 2026-06-24 — vhyl ref harvest 落 catalog refHistory(machine-specific + BUN 年齡帶)
+
+- 作者:claude(與 YC 共同,Cowork)
+- 範圍:catalog.js(單檔資料維護),無 code 邏輯變更
+- 變更:新增(29 個 in-scope entry 各加一筆 machine:'vhyl' refHistory;BUN 加兩筆年齡帶,共 30 筆)
+- 來源:`vhyl_ref_harvest_000012885I_2026-06-23.csv`(opdweb OpdOrderReport.aspx auto-crawl,病人 F/84)
+- 內容:
+  - 29 entry 末加 vhyl 筆,性別分者帶 inline `refLoM/refHiM/refLoF/refHiF`:
+    ALB/ALP/DBIL/TBIL/BUN/CA/CHOL/CL/CREAT/GluAC/GOT/GPT/HDLC/HbA1c/HCT/Hb/K/LDL/MCV/NA/P/Platelet/FreeCa/RBC/TP/TG/UA/WBC/RGT。
+  - **BUN 兩筆年齡帶**(全 harvest 唯一印年齡帶者):<50y(`ageMax:49`)F7.0-18.7、M8.9-20.6;≥50y(`ageMin:50`)F9.8-20.1、M8.4-25.7。報告寫 `<50`/`>50`,正好 50 歲歸 ≥50 帶(YC 2026-06-24 拍板)。
+  - `validFrom` = 各 harvest 最新報告日轉 ISO(多數 2026-03-31;P=2025-12-30;RGT=2022-11-29);`source='auto-crawl 000012885I 2026-06-23'`。
+  - **35 列 skip**:無對應 in-scope entry(血氣 PCO2/PO2/SO2/HCO3、尿液電解質、CK/CKMB/LDH/LACTATE/D-Dimer/AMMONIA/Troponin/MICROALBUMIN/UACR…),或 review_flag=Y(header 誤抓 / off-by-one:NORMAL RANGE、Non-Reactive、Patient、CRP、EpithCell、T.PROT.)。
+- 判斷點(YC 已認):GLUCOSE→GluAC(假設空腹);單邊 `0-X` 下界寫字面 0(=不觸低警示);GPT 只高界、HDLC 只低界。
+- 驗證:catalog `require` parse 綠;自含 schema refHistory 規則檢查 30 筆全過(base 鍵齊 / 年齡帶非負且不重疊 / validFrom ISO / machine 合法 / hospitalScope 不衝突)。**`npm run release` 待在真實 disk(PowerShell)跑** — 本輪沙箱 mount 的 schema.js 是過時截斷鏡像,沙箱 validate 不可靠;真實 D:\ schema.js 完整(250 行,file 工具確認)。
+- 後續(Claude Code / PowerShell,real disk):`npm run release` → viewer + reporter `node sync-patterns.js` → 驗收後 commit/push(rule #3 先問)→ push 後同步 Notion;YC 真機驗收年齡切換(step #2)通過才把 `TASK_BRIEF_ref_range_age_dim` 改名 `_done`。
+- 殘留待刪:`patterns/catalog.js.bak`、`.cowork_write_test.tmp`(沙箱無法 unlink)。
+
+---
+
 ## 2026-06-23 — refHistory 加第四維「年齡」(schema + resolveRef + tests)
 
 - 作者:claude(與 YC 共同,Claude Code)

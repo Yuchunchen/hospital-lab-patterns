@@ -1,6 +1,6 @@
 {
   "version": "0.4.0",
-  "synced_at": "2026-06-23T15:33:19.035Z",
+  "synced_at": "2026-06-23T16:39:54.443Z",
   "catalog": [
     {
       "id": "WBC",
@@ -28,6 +28,13 @@
           "refHi": 11,
           "validFrom": "1900-01-01",
           "source": "migration 起點 — universal ref 既有值"
+        },
+        {
+          "machine": "vhyl",
+          "refLo": 5,
+          "refHi": 10,
+          "validFrom": "2026-03-31",
+          "source": "auto-crawl 000012885I 2026-06-23"
         }
       ]
     },
@@ -60,6 +67,17 @@
           "refHi": 6.2,
           "validFrom": "1900-01-01",
           "source": "migration 起點 — universal ref 既有值"
+        },
+        {
+          "machine": "vhyl",
+          "refLo": 4.2,
+          "refHi": 6,
+          "refLoM": 4.5,
+          "refHiM": 6,
+          "refLoF": 4.2,
+          "refHiF": 5.5,
+          "validFrom": "2026-03-31",
+          "source": "auto-crawl 000012885I 2026-06-23"
         }
       ]
     },
@@ -103,6 +121,17 @@
           "refHiF": 15.3,
           "validFrom": "2026-05-28",
           "source": "YC SOP C 觸發 2026-05-28 cross-reference 12 chart batch — see docs/cross-reference-vhtt-2026-05-28.md"
+        },
+        {
+          "machine": "vhyl",
+          "refLo": 12,
+          "refHi": 18,
+          "refLoM": 14,
+          "refHiM": 18,
+          "refLoF": 12,
+          "refHiF": 16,
+          "validFrom": "2026-03-31",
+          "source": "auto-crawl 000012885I 2026-06-23"
         }
       ]
     },
@@ -134,6 +163,17 @@
           "refHi": 53,
           "validFrom": "1900-01-01",
           "source": "migration 起點 — universal ref 既有值"
+        },
+        {
+          "machine": "vhyl",
+          "refLo": 38,
+          "refHi": 54,
+          "refLoM": 40,
+          "refHiM": 54,
+          "refLoF": 38,
+          "refHiF": 47,
+          "validFrom": "2026-03-31",
+          "source": "auto-crawl 000012885I 2026-06-23"
         }
       ]
     },
@@ -161,6 +201,13 @@
           "refHi": 99,
           "validFrom": "1900-01-01",
           "source": "migration 起點 — universal ref 既有值"
+        },
+        {
+          "machine": "vhyl",
+          "refLo": 80,
+          "refHi": 96,
+          "validFrom": "2026-03-31",
+          "source": "auto-crawl 000012885I 2026-06-23"
         }
       ]
     },
@@ -197,6 +244,13 @@
           "refHi": 320,
           "validFrom": "2026-05-28",
           "source": "YC SOP C 觸發 2026-05-28 cross-reference 12 chart batch — see docs/cross-reference-vhtt-2026-05-28.md"
+        },
+        {
+          "machine": "vhyl",
+          "refLo": 150,
+          "refHi": 400,
+          "validFrom": "2026-03-31",
+          "source": "auto-crawl 000012885I 2026-06-23"
         }
       ]
     },
@@ -289,6 +343,13 @@
           "refHi": 8.3,
           "validFrom": "1900-01-01",
           "source": "migration 起點 — universal ref 既有值"
+        },
+        {
+          "machine": "vhyl",
+          "refLo": 6.4,
+          "refHi": 8.3,
+          "validFrom": "2026-03-31",
+          "source": "auto-crawl 000012885I 2026-06-23"
         }
       ]
     },
@@ -318,6 +379,13 @@
           "refHi": 5,
           "validFrom": "1900-01-01",
           "source": "migration 起點 — universal ref 既有值"
+        },
+        {
+          "machine": "vhyl",
+          "refLo": 3.5,
+          "refHi": 5.2,
+          "validFrom": "2026-03-31",
+          "source": "auto-crawl 000012885I 2026-06-23"
         }
       ]
     },
@@ -352,6 +420,13 @@
           "refHi": 39,
           "validFrom": "2026-05-28",
           "source": "YC SOP C 觸發 2026-05-28 cross-reference 12 chart batch — see docs/cross-reference-vhtt-2026-05-28.md"
+        },
+        {
+          "machine": "vhyl",
+          "refLo": 5,
+          "refHi": 34,
+          "validFrom": "2026-03-31",
+          "source": "auto-crawl 000012885I 2026-06-23"
         }
       ]
     },
@@ -392,6 +467,15 @@
           "refHiF": 52,
           "validFrom": "2026-05-28",
           "source": "YC SOP C 觸發 2026-05-28 cross-reference 12 chart batch — see docs/cross-reference-vhtt-2026-05-28.md (vhtt 印 universal 7-52,inline 性別 mirror 是為了 suppress outer hiM:45/hiF:34 fallback)"
+        },
+        {
+          "machine": "vhyl",
+          "refLo": null,
+          "refHi": 45,
+          "refHiM": 45,
+          "refHiF": 34,
+          "validFrom": "2026-03-31",
+          "source": "auto-crawl 000012885I 2026-06-23"
         }
       ]
     },
@@ -429,6 +513,17 @@
           "refHi": 64,
           "validFrom": "2026-06-18",
           "source": "YC cross-reference 2026-06-18 — chartno 000015165F r-GT(TT) 正式報告印 9-64 IU/L(無性別分項)"
+        },
+        {
+          "machine": "vhyl",
+          "refLo": 5,
+          "refHi": 61,
+          "refLoM": 8,
+          "refHiM": 61,
+          "refLoF": 5,
+          "refHiF": 36,
+          "validFrom": "2022-11-29",
+          "source": "auto-crawl 000012885I 2026-06-23"
         }
       ]
     },
@@ -463,6 +558,17 @@
           "refHi": 104,
           "validFrom": "2026-05-28",
           "source": "YC SOP C 觸發 2026-05-28 cross-reference 12 chart batch — see docs/cross-reference-vhtt-2026-05-28.md"
+        },
+        {
+          "machine": "vhyl",
+          "refLo": 46,
+          "refHi": 122,
+          "refLoM": 50,
+          "refHiM": 116,
+          "refLoF": 46,
+          "refHiF": 122,
+          "validFrom": "2026-03-31",
+          "source": "auto-crawl 000012885I 2026-06-23"
         }
       ]
     },
@@ -490,6 +596,13 @@
           "refHi": 1,
           "validFrom": "1900-01-01",
           "source": "migration 起點 — universal ref 既有值"
+        },
+        {
+          "machine": "vhyl",
+          "refLo": 0.2,
+          "refHi": 1.2,
+          "validFrom": "2026-03-31",
+          "source": "auto-crawl 000012885I 2026-06-23"
         }
       ]
     },
@@ -517,6 +630,13 @@
           "refHi": 0.18,
           "validFrom": "1900-01-01",
           "source": "migration 起點 — universal ref 既有值"
+        },
+        {
+          "machine": "vhyl",
+          "refLo": 0,
+          "refHi": 0.5,
+          "validFrom": "2026-03-31",
+          "source": "auto-crawl 000012885I 2026-06-23"
         }
       ]
     },
@@ -544,6 +664,13 @@
           "refHi": 200,
           "validFrom": "1900-01-01",
           "source": "migration 起點 — universal ref 既有值"
+        },
+        {
+          "machine": "vhyl",
+          "refLo": 0,
+          "refHi": 200,
+          "validFrom": "2026-03-31",
+          "source": "auto-crawl 000012885I 2026-06-23"
         }
       ]
     },
@@ -572,6 +699,15 @@
           "refHi": null,
           "validFrom": "1900-01-01",
           "source": "migration 起點 — universal ref 既有值"
+        },
+        {
+          "machine": "vhyl",
+          "refLo": 40,
+          "refHi": null,
+          "refLoM": 40,
+          "refLoF": 50,
+          "validFrom": "2026-03-31",
+          "source": "auto-crawl 000012885I 2026-06-23"
         }
       ]
     },
@@ -607,6 +743,13 @@
           "refHi": 140,
           "validFrom": "2026-05-28",
           "source": "YC SOP C 觸發 2026-05-28 cross-reference 12 chart batch — see docs/cross-reference-vhtt-2026-05-28.md"
+        },
+        {
+          "machine": "vhyl",
+          "refLo": 0,
+          "refHi": 100,
+          "validFrom": "2026-03-31",
+          "source": "auto-crawl 000012885I 2026-06-23"
         }
       ]
     },
@@ -634,6 +777,13 @@
           "refHi": 150,
           "validFrom": "1900-01-01",
           "source": "migration 起點 — universal ref 既有值"
+        },
+        {
+          "machine": "vhyl",
+          "refLo": 0,
+          "refHi": 150,
+          "validFrom": "2026-03-31",
+          "source": "auto-crawl 000012885I 2026-06-23"
         }
       ]
     },
@@ -669,6 +819,13 @@
           "refHi": 106,
           "validFrom": "2026-05-28",
           "source": "YC SOP C 觸發 2026-05-28 cross-reference 12 chart batch — see docs/cross-reference-vhtt-2026-05-28.md"
+        },
+        {
+          "machine": "vhyl",
+          "refLo": 74,
+          "refHi": 100,
+          "validFrom": "2026-03-31",
+          "source": "auto-crawl 000012885I 2026-06-23"
         }
       ]
     },
@@ -704,6 +861,13 @@
           "refHi": 5.8,
           "validFrom": "2026-05-28",
           "source": "YC SOP C 觸發 2026-05-28 cross-reference 12 chart batch — see docs/cross-reference-vhtt-2026-05-28.md"
+        },
+        {
+          "machine": "vhyl",
+          "refLo": 4,
+          "refHi": 6,
+          "validFrom": "2026-03-31",
+          "source": "auto-crawl 000012885I 2026-06-23"
         }
       ]
     },
@@ -745,6 +909,30 @@
           "refHiF": 25,
           "validFrom": "2026-05-28",
           "source": "YC SOP C 觸發 2026-05-28 cross-reference 12 chart batch — see docs/cross-reference-vhtt-2026-05-28.md (vhtt 印 universal 7-25,inline 性別 mirror 是為了 suppress outer hiM:20.6/hiF:18.7 fallback)"
+        },
+        {
+          "machine": "vhyl",
+          "refLo": 7,
+          "refHi": 20.6,
+          "refLoM": 8.9,
+          "refHiM": 20.6,
+          "refLoF": 7,
+          "refHiF": 18.7,
+          "ageMax": 49,
+          "validFrom": "2026-03-31",
+          "source": "auto-crawl 000012885I 2026-06-23 (<50y)"
+        },
+        {
+          "machine": "vhyl",
+          "refLo": 8.4,
+          "refHi": 25.7,
+          "refLoM": 8.4,
+          "refHiM": 25.7,
+          "refLoF": 9.8,
+          "refHiF": 20.1,
+          "ageMin": 50,
+          "validFrom": "2026-03-31",
+          "source": "auto-crawl 000012885I 2026-06-23 (>=50y)"
         }
       ]
     },
@@ -838,6 +1026,17 @@
           "refHiF": 1.2,
           "validFrom": "2026-05-28",
           "source": "YC SOP C 觸發 2026-05-28 cross-reference 12 chart batch — see docs/cross-reference-vhtt-2026-05-28.md"
+        },
+        {
+          "machine": "vhyl",
+          "refLo": 0.5,
+          "refHi": 1.2,
+          "refLoM": 0.6,
+          "refHiM": 1.2,
+          "refLoF": 0.5,
+          "refHiF": 1,
+          "validFrom": "2026-03-31",
+          "source": "auto-crawl 000012885I 2026-06-23"
         }
       ]
     },
@@ -878,6 +1077,17 @@
           "refHiF": 6.6,
           "validFrom": "2026-05-28",
           "source": "YC SOP C 觸發 2026-05-28 cross-reference 12 chart batch — see docs/cross-reference-vhtt-2026-05-28.md"
+        },
+        {
+          "machine": "vhyl",
+          "refLo": 2.5,
+          "refHi": 7.7,
+          "refLoM": 3.3,
+          "refHiM": 7.7,
+          "refLoF": 2.5,
+          "refHiF": 6.2,
+          "validFrom": "2026-03-31",
+          "source": "auto-crawl 000012885I 2026-06-23"
         }
       ]
     },
@@ -1021,6 +1231,13 @@
           "refHi": 145,
           "validFrom": "1900-01-01",
           "source": "migration 起點 — universal ref 既有值"
+        },
+        {
+          "machine": "vhyl",
+          "refLo": 136,
+          "refHi": 145,
+          "validFrom": "2026-03-31",
+          "source": "auto-crawl 000012885I 2026-06-23"
         }
       ]
     },
@@ -1048,6 +1265,13 @@
           "refHi": 5.1,
           "validFrom": "1900-01-01",
           "source": "migration 起點 — universal ref 既有值"
+        },
+        {
+          "machine": "vhyl",
+          "refLo": 3.5,
+          "refHi": 5.1,
+          "validFrom": "2026-03-31",
+          "source": "auto-crawl 000012885I 2026-06-23"
         }
       ]
     },
@@ -1075,6 +1299,13 @@
           "refHi": 107,
           "validFrom": "1900-01-01",
           "source": "migration 起點 — universal ref 既有值"
+        },
+        {
+          "machine": "vhyl",
+          "refLo": 98,
+          "refHi": 107,
+          "validFrom": "2026-03-31",
+          "source": "auto-crawl 000012885I 2026-06-23"
         }
       ]
     },
@@ -1102,6 +1333,13 @@
           "refHi": 10.3,
           "validFrom": "1900-01-01",
           "source": "migration 起點 — universal ref 既有值"
+        },
+        {
+          "machine": "vhyl",
+          "refLo": 8.4,
+          "refHi": 10.2,
+          "validFrom": "2026-03-31",
+          "source": "auto-crawl 000012885I 2026-06-23"
         }
       ]
     },
@@ -1129,6 +1367,13 @@
           "refHi": 1.32,
           "validFrom": "1900-01-01",
           "source": "migration 起點 — universal ref 既有值"
+        },
+        {
+          "machine": "vhyl",
+          "refLo": 1.15,
+          "refHi": 1.32,
+          "validFrom": "2026-03-31",
+          "source": "auto-crawl 000012885I 2026-06-23"
         }
       ]
     },
@@ -1156,6 +1401,13 @@
           "refHi": 5,
           "validFrom": "1900-01-01",
           "source": "migration 起點 — universal ref 既有值"
+        },
+        {
+          "machine": "vhyl",
+          "refLo": 1.6,
+          "refHi": 2.6,
+          "validFrom": "2025-12-30",
+          "source": "auto-crawl 000012885I 2026-06-23"
         }
       ]
     },
