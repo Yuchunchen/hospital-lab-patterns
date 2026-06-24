@@ -4,6 +4,25 @@ Chronological log of pattern catalog changes. Newest entries on top.
 
 ---
 
+## 2026-06-24（深夜 round-2）— 時間維 exhaustive 30/30 完成 + 邊界收斂修正
+
+- 作者:claude（Cowork，接續同日時間維重做）。範圍:catalog.js（資料）。停 working tree，git 交 Claude Code。
+- 把首輪只掃 3 病人的時間維結果用 **exhaustive 全 30 病人** 收斂（errors=0，103 analytes）。
+- **改版邊界收斂**:新 ref 首見 2025-06-24（3pt）→ **2025-06-04（30pt）**；舊末見 2025-05-02。
+  → 全部新版 validFrom `2025-06-24` → `2025-06-04`（chem 11 項 + GOT v2 + BUN×2 + ALP）。
+- **GOT v3**(5-34) 首見 2026-03-13 → **2026-02-02**。
+- **r-GT**:30pt 確認兩版本 → 新增 玉里舊 M8-61,F5-36 @1900 + 玉里新 **M<55,F<38** @2025-06-04
+  （原本只有單筆 @2022-11-29）。
+- **TSAT**:30pt 確認穩定 M15-50,F12-45（2021→2026）→ validFrom 2026-03-31 → **1900**。
+- **未動（30 人全無資料）**:TIBC/Fe/Ferritin/AFP/CEA/iPTH；FreeCa 維持 1900。
+- 驗證(resolveRef，全過):ALP 2025-05-15→{35,104} / 2025-06-10→{46,122}；GOT v2 2026-01→{11,34}、
+  v3 2026-02→{5,34}；r-GT 2024→{8,61}、2026→男{,55}女{,38}；TSAT 2022→{12,45}。
+- 待 Claude Code:release + 三 repo sync + push（brief: `TASK_BRIEF_vhyl_refhistory_timedim_release_round2.md`）。
+  ⚠️ 本機 sandbox 對 catalog.js 跑 node 受 mount stale 影響無法 `node --check`；real file 已用 Read 複查
+  尾端 Exports + 各筆完整，brace 平衡；Claude Code `npm run release` validate 為準。
+
+---
+
 ## 2026-06-24（深夜）— vhyl refHistory 時間維重做（validFrom 系統性修正）
 
 - 作者:claude(與 YC,Cowork — Claude in Chrome 跨 ernode+opdweb 重掃帶報告日)
