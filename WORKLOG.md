@@ -4,6 +4,19 @@ Chronological log of pattern catalog changes. Newest entries on top.
 
 ---
 
+## 2026-06-24（round-5）— ref gap-fill 調查（WBC/K/P/UA/Ferritin/TBIL/DBIL）+ parser 修正
+
+- 作者:claude（Cowork）。範圍:catalog.js（資料）。延續本日 working-tree delta。
+- **起因**:round-4 cohort harvest 這 7 項「全無」，YC 指認應該都有 → 確認是 **parser 漏抓**（非病人沒驗）。
+- **parser 4 bug（opdweb 絕對定位 div 版面）**:(1) panel 前綴 `CBC: WBC` 的 name regex 不收;(2) 單字母名 K/P 被 `name.length<2` 濾掉;(3) 名與 ref off-by-row;(4) `磷` 子字串誤中 `磷酸酶`(ALP)。
+- **解法**:targeted parser — 錨定中文名（白血球/鉀/磷/尿酸/鐵蛋白/總膽紅素/直接膽紅素）→ 同列或相鄰列（Δy≤40px）最近 range-ref;短中文名精確比對避碰撞。詳 `vhtt_ref_gapfill_findings_2026-06-24.md`（workspace root）。
+- **驗證 5/7**（單報告 000070213G @2026-06-12，obs 1）:WBC 4.0-11.0 / K 3.5-5.1 / UA 男4.4-7.6女2.3-6.6（已在 catalog）/ TBIL 0.3-1.0 / DBIL 0.03-0.18。**四者 vhtt 值 = universal**（只與 vhyl 不同）。
+- **落地 machine:'vhtt' 4 筆 @1900**:WBC / K / TBIL / DBIL，source 註單報告 obs1 = universal。vhtt 筆數 25→29。
+- **未落**:P（磷）、Ferritin（鐵蛋白）— 健檢/一般病人沒驗到，需腎臟/透析病人;Ferritin 免疫法版面 parser 尚待驗。resume 指引見 findings 檔 + session-state-vhtt。
+- **待 Claude Code**:與本日 round-2/3/4 delta 一起 release（`npm run release`）+ viewer/reporter sync + push（push 前問 YC）。
+
+---
+
 ## 2026-06-24（round-4）— vhtt cohort ref harvest（19 病人 × 全歷史 1,761 報告）
 
 - 作者:claude（Cowork）。範圍:catalog.js（資料）。延續本日未 ship 的 working-tree delta。
