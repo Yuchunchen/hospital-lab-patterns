@@ -14,13 +14,17 @@
 - round-2（exhaustive 30/30 收斂）catalog.js delta → **在 working tree，待 Claude Code release**。
   brief: `docs/task-briefs/TASK_BRIEF_vhyl_refhistory_timedim_release_round2.md`。
 
-**round-2 delta（已落 working tree + resolveRef 驗過）：**
-- 改版邊界收斂 新版 validFrom `2025-06-24` → `2025-06-04`（30pt；舊末見 2025-05-02）。
-- GOT v3 `2026-03-13` → `2026-02-02`。
-- r-GT 拆兩版：舊 M8-61,F5-36 @1900 + 新 M<55,F<38 @2025-06-04。
-- TSAT validFrom `2026-03-31` → `1900`（穩定 M15-50,F12-45）。
+**round-2 + round-3 delta（都在 working tree + resolveRef 驗過，一起 ship）：**
+- (r2) 新版 validFrom `2025-06-24` → `2025-06-04`（30pt；舊末見 2025-05-02）。
+- (r2) GOT v3 `2026-03-13` → `2026-02-02`。
+- (r2) r-GT 拆兩版：舊 M8-61,F5-36 @1900 + 新 M<55,F<38 @2025-06-04。
+- (r2) TSAT validFrom `2026-03-31` → `1900`（穩定 M15-50,F12-45）。
+- (r3) 鐵代謝/腫瘤指數（parser 增強補抓 116 筆）：Fe 舊33-193@1900+新M65-175,F50-170；
+  TIBC 加舊250-400@1900+新→2025-06-04；AFP 加舊<8.8@1900+新→2025-06-04；
+  **CEA 修正** 1.73→穩定5.0@1900；Ferritin 加 vhyl 穩定@1900。
+- node --check 通過，CAT.length=93。
 
-**下一個 thread 第一件事:** 開 Claude Code 跑 round-2 brief 的 release/sync/push（push 前問 YC）。
+**下一個 thread 第一件事:** 開 Claude Code 跑 release brief（round-2+3 一起）的 release/sync/push（push 前問 YC）。
 
 ## 1. 已完成
 - vhyl refHistory 時間維重做 round-1：catalog.js → release + viewer/reporter sync + push（33 測試）。Notion Done。
