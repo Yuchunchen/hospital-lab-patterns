@@ -4,6 +4,24 @@ Chronological log of pattern catalog changes. Newest entries on top.
 
 ---
 
+## 2026-06-24（round-4）— vhtt cohort ref harvest（19 病人 × 全歷史 1,761 報告）
+
+- 作者:claude（Cowork）。範圍:catalog.js（資料）。延續本日未 ship 的 working-tree delta。
+- **方法**:Claude in Chrome 跑 vhtt 19 病人全歷史 opdweb 完整報告（1,761 份，背景 self-driving harness，序列+節流，errors=0），ref-anchored 解析聚合（inline left/top 座標還原絕對定位 div）。harvest 落盤 `vhtt_ref_harvest_2026-06-24.csv` + 提議 `vhtt_refHistory_proposal_2026-06-24.md`（workspace root，ref-only 無病人值）。
+- **核心結論**:vhtt ref **時間穩定**，無玉里式全院改版（41 analyte 除 CK 外皆單版本）→ 全部 validFrom `1900-01-01` migration base。
+- **落地（machine:'vhtt'，22 筆）**:
+  - **修正既有 11 筆 validFrom**（2026-05-28 / 06-18 觸發日 → 1900-01-01）:Hb / Platelet / GOT / GPT / RGT / ALP / LDL / GluAC / BUN / CREAT / Fe。harvest 獨立重現 2026-05-28 cross-ref 那批值，一字不差（互相驗證）。Fe(x2) / RGT(x1) obs 少，source 已註明證據薄。
+  - **新增 11 筆 @1900**:Albumin 3.5-5.0 / Ca 8.6-10.3 / CHOL 0-200 / Cl 98-107 / HCT 男39-53女33-47 / HDLC >40 / MCV 79-99 / Na 136-145 / TP 6.0-8.3 / TG 0-150 / TIBC 男134-415女120-480。
+- **排除 / 未落**:
+  - 尿液混血清（CL / CREAT / NA 的 24hr 尿版，meq/day · mmol/day · 80-220(24hr)）→ 排除，不污染血清 test_id。
+  - DC 五分類（Lymph / Mono / Eos / Baso）catalog 明定 display-only（YC 2026-06-18）→ 不加 ref。
+  - catalog 無對應 id（CK / CKMB / LDH / AMYLASE / Cu / Zn / Globulin / MICROALBUMIN / MCH / MCHC / RDW）→ 無法落。CK 偵測到 2026-01 改性別分版（M:62-287;F:45-163，x2）但需先新增 CK entry（大半徑，另開）。
+  - cohort 未涵蓋（WBC / K / P / UA尿酸 / Ferritin / iPTH / TBIL）→ 維持 universal。
+- vhtt machine 筆數 14 → 25。
+- **待 Claude Code**:與本日 round-2 / round-3 working-tree delta **一起** release（`npm run release`）+ viewer/reporter `sync-patterns` + push（push 前問 YC）。
+
+---
+
 ## 2026-06-24（深夜 round-3）— 鐵代謝 / 腫瘤指數補抓（parser 增強）
 
 - 作者:claude（Cowork）。範圍:catalog.js（資料）。與 round-2 同屬一個未 ship 的 working-tree delta。
