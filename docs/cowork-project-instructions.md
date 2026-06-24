@@ -7,7 +7,7 @@
 帳號設定沒同步、或要在新機器快速重建環境，這份檔案就是 single source of
 truth。修改 project instructions 後**請同步更新本檔**，才不會 drift。
 
-**最後同步：** 2026-06-23（加「完整報告／原始報告」opdweb 取閱 trigger；§1.0 paste 追蹤兩台重置 ⏳，下次 boot 重貼）
+**最後同步：** 2026-06-24（加「沒開立判定原則」— 判 test 沒做一律以完整報告內文為準、勿憑 order name/searchItem/預覽；§1.0 paste 追蹤兩台重置 ⏳，下次 boot 重貼）
 
 ---
 
@@ -64,6 +64,8 @@ All public on github.com/Yuchunchen.
 - <vhyl|vhtt>/<chartno> ref-scan               → SOP C-crawl（整張報告掃所有可抓 ref → 逐筆提議）
 - <chartno> <test> 完整報告 ／ 原始報告        → 開 opdweb 完整報告（ernode 列取 hidden ORDAPNO → OpdOrderReport.aspx）回原文（檢查值＋ref）；**純取閱、不自動提議 ref**（要落 ref 再用上面 `… ref` / `ref-scan`）。order 不明 → 先問
 - 把 <test_id> 從 viewer/reporter 拿掉         → SOP E
+
+**沒開立判定原則（established 2026-06-24）：** test「沒抓到 / missing / 沒開立」**不可**只憑 ernode worklist 的 order name / `searchItem` / 截斷 value 預覽判定；一律以 opdweb 完整報告**內文**為準（鐵代謝 Fe/TIBC/Ferritin/TSAT/UIBC、生化 panel 常把多項 co-bundle 在同一張報告，`searchItem=0` ≠ 沒做）→ fallback 開報告解析。細節見 PROJECT_CONTEXT § 9「沒開立 / 漏抓判定原則」。
 
 **SOP C parser（ref range 三維 refHistory，2026-05-28 Order 5.0）：** 含「ref range
 改成」keyword → 第二 token 帶 `vhyl/`/`vhtt/` 前綴=machine-specific（末加一筆
