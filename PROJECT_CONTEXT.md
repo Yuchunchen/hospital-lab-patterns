@@ -712,8 +712,15 @@ flow**，不要再問是 SOP A、B、F——自己選對。
   - 從第 1 頁開始，逐頁 `get_page_text` 掃描所有 order name
   - 直到最後一頁（頁面顯示「X 之 Y」可判斷總頁數）或找到目標 order
   - 理由：searchItem 有時因 order name 格式不一致而漏（如含空格、縮寫、中英混雜）
-- 確認掃完全部頁面仍找不到 → 該病人確實沒做過該 test，請使用者換病人
+- 確認掃完全部頁面仍找不到 order → **仍不可直接判「沒做」**（見下方「沒開立判定原則」）；要確認進過相關完整報告內文都沒有，才換病人
 - 翻頁參數：`&offset=N`，N 從 1 起（offset=0 會回 400 error）
+
+**沒開立 / 漏抓判定原則（established 2026-06-24，vhtt+vhyl 反覆踩坑）：**
+判一個 test「做沒做 / 有沒有值」有**兩層失敗**都會造成假性「沒開立」，要分清楚：
+
+- **Layer 1 — discovery（要不要開那張報告）**：ernode worklist 只給 *order 名* + *截斷 value 預覽*。一個 analyte 被 co-bundle 進別的 order（名稱沒列它）就會被漏。**鐵代謝 Fe/TIBC/Ferritin/TSAT/UIBC 常同一張完整報告；生化 panel 把 K/P/UA… 包一起。** 故 `searchItem=0`、order 名沒命中、預覽沒看到，**都不等於沒做**。
+- **Layer 2 — parser（報告開了卻沒解析到）**：positional 報告版面怪癖會跳過 analyte — panel 前綴 `CBC: WBC`、單字母名 K/P、名與 ref off-by-row、子字串碰撞（`磷`碰`磷酸酶`）、免疫法 header 版面（Ferritin/CEA/AFP 名在 `檢驗項目:`、ref 在 `生物參考區間/NORMAL RANGE`）。
+- **原則**：判定**一律以 opdweb 完整報告「內文」為準**，不可只憑 worklist order name / `searchItem` / 預覽判沒做。找不到先 fallback 逐張開相關完整報告解析（panel 一張含多項）；parser 漏抓時用中文名錨定 + 同/鄰列最近 range-ref（見 `vhtt_ref_gapfill_findings_2026-06-24.md` 的 targeted parser）。
 
 **輸出格式**（讓使用者好貼進 Claude Code）：
 
