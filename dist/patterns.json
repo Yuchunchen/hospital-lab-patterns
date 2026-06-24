@@ -1,6 +1,6 @@
 {
   "version": "0.4.0",
-  "synced_at": "2026-06-24T09:56:27.723Z",
+  "synced_at": "2026-06-24T15:40:20.057Z",
   "catalog": [
     {
       "id": "WBC",
@@ -119,8 +119,8 @@
           "refHiM": 18.3,
           "refLoF": 11.3,
           "refHiF": 15.3,
-          "validFrom": "2026-05-28",
-          "source": "YC SOP C 觸發 2026-05-28 cross-reference 12 chart batch — see docs/cross-reference-vhtt-2026-05-28.md"
+          "validFrom": "1900-01-01",
+          "source": "time-dim rescan 2026-06-24 cohort(19pt)確認穩定單版 2020→2026 未改;原 2026-05-28 觸發日修為 migration base — see docs/cross-reference-vhtt-2026-05-28.md"
         },
         {
           "machine": "vhyl",
@@ -174,6 +174,17 @@
           "refHiF": 47,
           "validFrom": "1900-01-01",
           "source": "time-dim rescan 2026-06-24 (穩定單版,2021→2026 未改;原誤標 2026-03-31)"
+        },
+        {
+          "machine": "vhtt",
+          "refLo": 33,
+          "refHi": 53,
+          "refLoM": 39,
+          "refHiM": 53,
+          "refLoF": 33,
+          "refHiF": 47,
+          "validFrom": "1900-01-01",
+          "source": "auto-crawl cohort 2026-06-24 (19pt 男39-53 女33-47 穩定)"
         }
       ]
     },
@@ -208,6 +219,13 @@
           "refHi": 96,
           "validFrom": "1900-01-01",
           "source": "time-dim rescan 2026-06-24 (穩定單版,2021→2026 未改;原誤標 2026-03-31)"
+        },
+        {
+          "machine": "vhtt",
+          "refLo": 79,
+          "refHi": 99,
+          "validFrom": "1900-01-01",
+          "source": "auto-crawl cohort 2026-06-24 (19pt 穩定單版 2020→2026)"
         }
       ]
     },
@@ -242,8 +260,8 @@
           "machine": "vhtt",
           "refLo": 120,
           "refHi": 320,
-          "validFrom": "2026-05-28",
-          "source": "YC SOP C 觸發 2026-05-28 cross-reference 12 chart batch — see docs/cross-reference-vhtt-2026-05-28.md"
+          "validFrom": "1900-01-01",
+          "source": "time-dim rescan 2026-06-24 cohort(19pt)確認穩定單版 2020→2026 未改;原 2026-05-28 觸發日修為 migration base — see docs/cross-reference-vhtt-2026-05-28.md"
         },
         {
           "machine": "vhyl",
@@ -357,6 +375,13 @@
           "refHi": 8.3,
           "validFrom": "2025-06-04",
           "source": "time-dim rescan 2026-06-24 玉里新 ref(earliest 2025-06-04;原誤標 2026-03-31;30pt（full cohort）)"
+        },
+        {
+          "machine": "vhtt",
+          "refLo": 6,
+          "refHi": 8.3,
+          "validFrom": "1900-01-01",
+          "source": "auto-crawl cohort 2026-06-24 (19pt 穩定;PROTEIN x1 異版捨)"
         }
       ]
     },
@@ -400,6 +425,13 @@
           "refHi": 5.2,
           "validFrom": "2025-06-04",
           "source": "time-dim rescan 2026-06-24 玉里新 ref(earliest 2025-06-04;原誤標 2026-03-31;30pt（full cohort）)"
+        },
+        {
+          "machine": "vhtt",
+          "refLo": 3.5,
+          "refHi": 5,
+          "validFrom": "1900-01-01",
+          "source": "auto-crawl cohort 2026-06-24 (19pt 穩定單版 2020→2026)"
         }
       ]
     },
@@ -432,8 +464,8 @@
           "machine": "vhtt",
           "refLo": 13,
           "refHi": 39,
-          "validFrom": "2026-05-28",
-          "source": "YC SOP C 觸發 2026-05-28 cross-reference 12 chart batch — see docs/cross-reference-vhtt-2026-05-28.md"
+          "validFrom": "1900-01-01",
+          "source": "time-dim rescan 2026-06-24 cohort(19pt)確認穩定單版 2020→2026 未改;原 2026-05-28 觸發日修為 migration base — see docs/cross-reference-vhtt-2026-05-28.md"
         },
         {
           "machine": "vhyl",
@@ -497,8 +529,8 @@
           "refHiM": 52,
           "refLoF": 7,
           "refHiF": 52,
-          "validFrom": "2026-05-28",
-          "source": "YC SOP C 觸發 2026-05-28 cross-reference 12 chart batch — see docs/cross-reference-vhtt-2026-05-28.md (vhtt 印 universal 7-52,inline 性別 mirror 是為了 suppress outer hiM:45/hiF:34 fallback)"
+          "validFrom": "1900-01-01",
+          "source": "time-dim rescan 2026-06-24 cohort(19pt)確認穩定單版;原 2026-05-28 觸發日修為 migration base (vhtt 印 universal 7-52,inline 性別 mirror 是為了 suppress outer hiM:45/hiF:34 fallback)"
         },
         {
           "machine": "vhyl",
@@ -554,8 +586,8 @@
           "machine": "vhtt",
           "refLo": 9,
           "refHi": 64,
-          "validFrom": "2026-06-18",
-          "source": "YC cross-reference 2026-06-18 — chartno 000015165F r-GT(TT) 正式報告印 9-64 IU/L(無性別分項)"
+          "validFrom": "1900-01-01",
+          "source": "time-dim rescan 2026-06-24 cohort 僅 1 筆觀測(2025-12-16),證據薄;validFrom 用 migration base 取代觸發日 2026-06-18 — chartno 000015165F r-GT(TT) 9-64 IU/L(無性別分項)"
         },
         {
           "machine": "vhyl",
@@ -608,8 +640,8 @@
           "machine": "vhtt",
           "refLo": 34,
           "refHi": 104,
-          "validFrom": "2026-05-28",
-          "source": "YC SOP C 觸發 2026-05-28 cross-reference 12 chart batch — see docs/cross-reference-vhtt-2026-05-28.md"
+          "validFrom": "1900-01-01",
+          "source": "time-dim rescan 2026-06-24 cohort(19pt)確認穩定單版 2020→2026 未改;原 2026-05-28 觸發日修為 migration base — see docs/cross-reference-vhtt-2026-05-28.md"
         },
         {
           "machine": "vhyl",
@@ -748,6 +780,13 @@
           "refHi": 200,
           "validFrom": "1900-01-01",
           "source": "time-dim rescan 2026-06-24 (穩定單版,2021→2026 未改;原誤標 2026-03-31)"
+        },
+        {
+          "machine": "vhtt",
+          "refLo": 0,
+          "refHi": 200,
+          "validFrom": "1900-01-01",
+          "source": "auto-crawl cohort 2026-06-24 (19pt 穩定;CHOL+T.CHOL 同值 0-200)"
         }
       ]
     },
@@ -796,6 +835,13 @@
           "refLoF": 50,
           "validFrom": "2025-06-04",
           "source": "time-dim rescan 2026-06-24 玉里新 ref(earliest 2025-06-04;原誤標 2026-03-31;30pt（full cohort）)"
+        },
+        {
+          "machine": "vhtt",
+          "refLo": 40,
+          "refHi": null,
+          "validFrom": "1900-01-01",
+          "source": "auto-crawl cohort 2026-06-24 (19pt 單邊 >40 穩定)"
         }
       ]
     },
@@ -829,8 +875,8 @@
           "machine": "vhtt",
           "refLo": 0,
           "refHi": 140,
-          "validFrom": "2026-05-28",
-          "source": "YC SOP C 觸發 2026-05-28 cross-reference 12 chart batch — see docs/cross-reference-vhtt-2026-05-28.md"
+          "validFrom": "1900-01-01",
+          "source": "time-dim rescan 2026-06-24 cohort(19pt)確認穩定單版 2020→2026 未改;原 2026-05-28 觸發日修為 migration base — see docs/cross-reference-vhtt-2026-05-28.md"
         },
         {
           "machine": "vhyl",
@@ -872,6 +918,13 @@
           "refHi": 150,
           "validFrom": "1900-01-01",
           "source": "time-dim rescan 2026-06-24 (穩定單版,2021→2026 未改;原誤標 2026-03-31)"
+        },
+        {
+          "machine": "vhtt",
+          "refLo": 0,
+          "refHi": 150,
+          "validFrom": "1900-01-01",
+          "source": "auto-crawl cohort 2026-06-24 (19pt 穩定單版 2020→2026)"
         }
       ]
     },
@@ -905,8 +958,8 @@
           "machine": "vhtt",
           "refLo": 74,
           "refHi": 106,
-          "validFrom": "2026-05-28",
-          "source": "YC SOP C 觸發 2026-05-28 cross-reference 12 chart batch — see docs/cross-reference-vhtt-2026-05-28.md"
+          "validFrom": "1900-01-01",
+          "source": "time-dim rescan 2026-06-24 cohort(19pt)確認穩定單版 2020→2026 未改(AC:前綴/單位格式變體已收斂);原 2026-05-28 觸發日修為 migration base — see docs/cross-reference-vhtt-2026-05-28.md"
         },
         {
           "machine": "vhyl",
@@ -1002,8 +1055,8 @@
           "refHiM": 25,
           "refLoF": 7,
           "refHiF": 25,
-          "validFrom": "2026-05-28",
-          "source": "YC SOP C 觸發 2026-05-28 cross-reference 12 chart batch — see docs/cross-reference-vhtt-2026-05-28.md (vhtt 印 universal 7-25,inline 性別 mirror 是為了 suppress outer hiM:20.6/hiF:18.7 fallback)"
+          "validFrom": "1900-01-01",
+          "source": "time-dim rescan 2026-06-24 cohort(19pt)確認穩定單版;原 2026-05-28 觸發日修為 migration base (vhtt 印 universal 7-25,inline 性別 mirror 是為了 suppress outer hiM:20.6/hiF:18.7 fallback)"
         },
         {
           "machine": "vhyl",
@@ -1130,8 +1183,8 @@
           "refHiM": 1.3,
           "refLoF": 0.6,
           "refHiF": 1.2,
-          "validFrom": "2026-05-28",
-          "source": "YC SOP C 觸發 2026-05-28 cross-reference 12 chart batch — see docs/cross-reference-vhtt-2026-05-28.md"
+          "validFrom": "1900-01-01",
+          "source": "time-dim rescan 2026-06-24 cohort(19pt)確認穩定單版 2020→2026 未改(血清;尿Cr排除);原 2026-05-28 觸發日修為 migration base — see docs/cross-reference-vhtt-2026-05-28.md"
         },
         {
           "machine": "vhyl",
@@ -1366,6 +1419,13 @@
           "refHi": 145,
           "validFrom": "1900-01-01",
           "source": "time-dim rescan 2026-06-24 (穩定單版,2021→2026 未改;原誤標 2026-03-31)"
+        },
+        {
+          "machine": "vhtt",
+          "refLo": 136,
+          "refHi": 145,
+          "validFrom": "1900-01-01",
+          "source": "auto-crawl cohort 2026-06-24 (19pt 血清 穩定;尿Na排除)"
         }
       ]
     },
@@ -1434,6 +1494,13 @@
           "refHi": 107,
           "validFrom": "1900-01-01",
           "source": "time-dim rescan 2026-06-24 (穩定單版,2021→2026 未改;原誤標 2026-03-31)"
+        },
+        {
+          "machine": "vhtt",
+          "refLo": 98,
+          "refHi": 107,
+          "validFrom": "1900-01-01",
+          "source": "auto-crawl cohort 2026-06-24 (19pt 血清 穩定;尿Cl排除)"
         }
       ]
     },
@@ -1475,6 +1542,13 @@
           "refHi": 10.2,
           "validFrom": "2025-06-04",
           "source": "time-dim rescan 2026-06-24 玉里新 ref(earliest 2025-06-04;原誤標 2026-03-31;30pt（full cohort）)"
+        },
+        {
+          "machine": "vhtt",
+          "refLo": 8.6,
+          "refHi": 10.3,
+          "validFrom": "1900-01-01",
+          "source": "auto-crawl cohort 2026-06-24 (19pt 穩定單版 2020→2026)"
         }
       ]
     },
@@ -1610,8 +1684,8 @@
           "refHiM": 175,
           "refLoF": 50,
           "refHiF": 175,
-          "validFrom": "2026-05-28",
-          "source": "YC SOP C 觸發 2026-05-28 cross-reference 12 chart batch — see docs/cross-reference-vhtt-2026-05-28.md + 委外:新南海 (vhtt 印 universal 50-175,inline 性別 mirror 是為了 suppress outer loM:65/hiF:170 fallback)"
+          "validFrom": "1900-01-01",
+          "source": "time-dim rescan 2026-06-24 cohort 僅 2 筆觀測(2025-09-20),證據薄;validFrom 用 migration base 取代觸發日 2026-05-28 + 委外:新南海 (vhtt 印 universal 50-175,inline 性別 mirror 是為了 suppress outer loM:65/hiF:170 fallback)"
         },
         {
           "machine": "vhyl",
@@ -1687,6 +1761,17 @@
           "refHiF": 410,
           "validFrom": "2025-06-04",
           "source": "time-dim rescan 2026-06-24 玉里新 TIBC(M135-485,F119-410;earliest 2025-07-17;30pt;原誤標 2026-06-01)"
+        },
+        {
+          "machine": "vhtt",
+          "refLo": 120,
+          "refHi": 480,
+          "refLoM": 134,
+          "refHiM": 415,
+          "refLoF": 120,
+          "refHiF": 480,
+          "validFrom": "1900-01-01",
+          "source": "auto-crawl cohort 2026-06-24 (19pt 男134-415 女120-480;同 universal)"
         }
       ]
     },
