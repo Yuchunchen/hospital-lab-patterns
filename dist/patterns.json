@@ -1,6 +1,6 @@
 {
   "version": "0.4.0",
-  "synced_at": "2026-06-23T23:56:20.119Z",
+  "synced_at": "2026-06-24T08:27:58.619Z",
   "catalog": [
     {
       "id": "WBC",
@@ -355,8 +355,8 @@
           "machine": "vhyl",
           "refLo": 6.4,
           "refHi": 8.3,
-          "validFrom": "2025-06-24",
-          "source": "time-dim rescan 2026-06-24 玉里新 ref(earliest 2025-06-24;原誤標 2026-03-31;3pt)"
+          "validFrom": "2025-06-04",
+          "source": "time-dim rescan 2026-06-24 玉里新 ref(earliest 2025-06-04;原誤標 2026-03-31;30pt（full cohort）)"
         }
       ]
     },
@@ -398,8 +398,8 @@
           "machine": "vhyl",
           "refLo": 3.5,
           "refHi": 5.2,
-          "validFrom": "2025-06-24",
-          "source": "time-dim rescan 2026-06-24 玉里新 ref(earliest 2025-06-24;原誤標 2026-03-31;3pt)"
+          "validFrom": "2025-06-04",
+          "source": "time-dim rescan 2026-06-24 玉里新 ref(earliest 2025-06-04;原誤標 2026-03-31;30pt（full cohort）)"
         }
       ]
     },
@@ -450,15 +450,15 @@
           "machine": "vhyl",
           "refLo": 11,
           "refHi": 34,
-          "validFrom": "2025-06-24",
+          "validFrom": "2025-06-04",
           "source": "time-dim rescan 2026-06-24 玉里 GOT v2(2025-06-24→2025-12-26)"
         },
         {
           "machine": "vhyl",
           "refLo": 5,
           "refHi": 34,
-          "validFrom": "2026-03-13",
-          "source": "time-dim rescan 2026-06-24 玉里 GOT v3(2026-03-13→;原誤標 2026-03-31)"
+          "validFrom": "2026-02-02",
+          "source": "time-dim rescan 2026-06-24 玉里 GOT v3(2026-02-02→;30pt full cohort;原誤標 2026-03-31)"
         }
       ]
     },
@@ -517,8 +517,8 @@
           "refHi": 45,
           "refHiM": 45,
           "refHiF": 34,
-          "validFrom": "2025-06-24",
-          "source": "time-dim rescan 2026-06-24 玉里新 ref(earliest 2025-06-24;原誤標 2026-03-31;3pt)"
+          "validFrom": "2025-06-04",
+          "source": "time-dim rescan 2026-06-24 玉里新 ref(earliest 2025-06-04;原誤標 2026-03-31;30pt（full cohort）)"
         }
       ]
     },
@@ -565,8 +565,17 @@
           "refHiM": 61,
           "refLoF": 5,
           "refHiF": 36,
-          "validFrom": "2022-11-29",
-          "source": "auto-crawl 000012885I 2026-06-23"
+          "validFrom": "1900-01-01",
+          "source": "time-dim rescan 2026-06-24 玉里舊 r-GT(M8-61,F5-36;末見 2025-04-10;30pt)"
+        },
+        {
+          "machine": "vhyl",
+          "refLo": null,
+          "refHi": 55,
+          "refHiM": 55,
+          "refHiF": 38,
+          "validFrom": "2025-06-04",
+          "source": "time-dim rescan 2026-06-24 玉里新 r-GT(M<55,F<38;earliest 2025-06-16;30pt full cohort)"
         }
       ]
     },
@@ -621,8 +630,8 @@
           "refHiM": 116,
           "refLoF": 46,
           "refHiF": 122,
-          "validFrom": "2025-06-24",
-          "source": "time-dim rescan 2026-06-24 玉里新 ref(earliest 2025-06-24;3pt;前單掃 012885I 誤為 2025-09-22)"
+          "validFrom": "2025-06-04",
+          "source": "time-dim rescan 2026-06-24 玉里新 ref(earliest 2025-06-04;30pt（full cohort）;前單掃 012885I 誤為 2025-09-22)"
         }
       ]
     },
@@ -662,8 +671,8 @@
           "machine": "vhyl",
           "refLo": 0.2,
           "refHi": 1.2,
-          "validFrom": "2025-06-24",
-          "source": "time-dim rescan 2026-06-24 玉里新 ref(earliest 2025-06-24;原誤標 2026-03-31;3pt)"
+          "validFrom": "2025-06-04",
+          "source": "time-dim rescan 2026-06-24 玉里新 ref(earliest 2025-06-04;原誤標 2026-03-31;30pt（full cohort）)"
         }
       ]
     },
@@ -703,8 +712,8 @@
           "machine": "vhyl",
           "refLo": 0,
           "refHi": 0.5,
-          "validFrom": "2025-06-24",
-          "source": "time-dim rescan 2026-06-24 玉里新 ref(earliest 2025-06-24;原誤標 2026-03-31;3pt)"
+          "validFrom": "2025-06-04",
+          "source": "time-dim rescan 2026-06-24 玉里新 ref(earliest 2025-06-04;原誤標 2026-03-31;30pt（full cohort）)"
         }
       ]
     },
@@ -785,8 +794,8 @@
           "refHi": null,
           "refLoM": 40,
           "refLoF": 50,
-          "validFrom": "2025-06-24",
-          "source": "time-dim rescan 2026-06-24 玉里新 ref(earliest 2025-06-24;原誤標 2026-03-31;3pt)"
+          "validFrom": "2025-06-04",
+          "source": "time-dim rescan 2026-06-24 玉里新 ref(earliest 2025-06-04;原誤標 2026-03-31;30pt（full cohort）)"
         }
       ]
     },
@@ -910,8 +919,8 @@
           "machine": "vhyl",
           "refLo": 74,
           "refHi": 100,
-          "validFrom": "2025-06-24",
-          "source": "time-dim rescan 2026-06-24 玉里新 ref(earliest 2025-06-24;原誤標 2026-03-31;3pt)"
+          "validFrom": "2025-06-04",
+          "source": "time-dim rescan 2026-06-24 玉里新 ref(earliest 2025-06-04;原誤標 2026-03-31;30pt（full cohort）)"
         }
       ]
     },
@@ -1016,8 +1025,8 @@
           "refLoF": 7,
           "refHiF": 18.7,
           "ageMax": 49,
-          "validFrom": "2025-06-24",
-          "source": "time-dim rescan 2026-06-24 玉里新 BUN <50y(earliest 2025-06-24;原誤標 2026-03-31)"
+          "validFrom": "2025-06-04",
+          "source": "time-dim rescan 2026-06-24 玉里新 BUN <50y(earliest 2025-06-04;原誤標 2026-03-31)"
         },
         {
           "machine": "vhyl",
@@ -1028,8 +1037,8 @@
           "refLoF": 9.8,
           "refHiF": 20.1,
           "ageMin": 50,
-          "validFrom": "2025-06-24",
-          "source": "time-dim rescan 2026-06-24 玉里新 BUN >=50y(earliest 2025-06-24;原誤標 2026-03-31)"
+          "validFrom": "2025-06-04",
+          "source": "time-dim rescan 2026-06-24 玉里新 BUN >=50y(earliest 2025-06-04;原誤標 2026-03-31)"
         }
       ]
     },
@@ -1143,8 +1152,8 @@
           "refHiM": 1.2,
           "refLoF": 0.5,
           "refHiF": 1,
-          "validFrom": "2025-06-24",
-          "source": "time-dim rescan 2026-06-24 玉里新 ref(earliest 2025-06-24;原誤標 2026-03-31;3pt)"
+          "validFrom": "2025-06-04",
+          "source": "time-dim rescan 2026-06-24 玉里新 ref(earliest 2025-06-04;原誤標 2026-03-31;30pt（full cohort）)"
         }
       ]
     },
@@ -1205,8 +1214,8 @@
           "refHiM": 7.7,
           "refLoF": 2.5,
           "refHiF": 6.2,
-          "validFrom": "2025-06-24",
-          "source": "time-dim rescan 2026-06-24 玉里新 ref(earliest 2025-06-24;原誤標 2026-03-31;3pt)"
+          "validFrom": "2025-06-04",
+          "source": "time-dim rescan 2026-06-24 玉里新 ref(earliest 2025-06-04;原誤標 2026-03-31;30pt（full cohort）)"
         }
       ]
     },
@@ -1464,8 +1473,8 @@
           "machine": "vhyl",
           "refLo": 8.4,
           "refHi": 10.2,
-          "validFrom": "2025-06-24",
-          "source": "time-dim rescan 2026-06-24 玉里新 ref(earliest 2025-06-24;原誤標 2026-03-31;3pt)"
+          "validFrom": "2025-06-04",
+          "source": "time-dim rescan 2026-06-24 玉里新 ref(earliest 2025-06-04;原誤標 2026-03-31;30pt（full cohort）)"
         }
       ]
     },
@@ -1681,8 +1690,8 @@
           "refHiM": 50,
           "refLoF": 12,
           "refHiF": 45,
-          "validFrom": "2026-03-31",
-          "source": "auto-crawl ref-scan 30pt 2026-06-24"
+          "validFrom": "1900-01-01",
+          "source": "time-dim rescan 2026-06-24 (穩定 M15-50,F12-45,2021→2026 未改;30pt full cohort;原誤標 2026-03-31)"
         }
       ]
     },
