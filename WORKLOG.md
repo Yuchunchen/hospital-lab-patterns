@@ -4,6 +4,28 @@ Chronological log of pattern catalog changes. Newest entries on top.
 
 ---
 
+## 2026-06-24（深夜 round-3）— 鐵代謝 / 腫瘤指數補抓（parser 增強）
+
+- 作者:claude（Cowork）。範圍:catalog.js（資料）。與 round-2 同屬一個未 ship 的 working-tree delta。
+- **起因**:YC 指出 TIBC/Fe/Ferritin/AFP/CEA 這批有做，但 round-2 聚合「全無」是**parser 漏抓**:
+  免疫法報告（CEA/AFP/Ferritin）analyte 名在 header（`檢驗項目:`）、ref 在 `生物參考區間/NORMAL RANGE`
+  或 inline `(<=5.0)`；`<=` 沒被 isRef 命中；`ug/dl` 不在 UNIT 表 → Fe/TIBC ref 走錯 analyte。
+- **修法**:增強 parser（單項免疫法走 header 名 + REFERENCE/NORMAL RANGE/inline 括號 ref；
+  isRef 加 `<=`/`>=`；UNIT 加 ug/dl）→ 跨 30 病人鎖定 iron/tumor order（116 筆報告，errors=0）重抓。
+- **落地**（同 2025-06-04 全店邊界）:
+  - **Fe**（原無 vhyl 筆）:舊 33-193 @1900 + 新 M65-175,F50-170 @2025-06-04。
+  - **TIBC**:加舊 250-400 @1900；新 M135-485,F119-410 validFrom 2026-06-01 → 2025-06-04。
+  - **AFP**:加舊 <8.8 @1900；新 0.89-8.78 validFrom 2026-06-10 → 2025-06-04。
+  - **CEA**:**修正** — 前 30-scan 把值 1.73 誤當 ref；30pt n25 一致 `<=5.0` → 改穩定 refHi 5.0 @1900。
+  - **Ferritin**:加 vhyl 穩定 M21.81-274.66,F4.63-204 @1900（原僅靠 outer fallback）。
+  - **TSAT**:round-2 已設穩定 1900（M15-50,F12-45），確認無誤。
+- 驗證(resolveRef real-file，全過):Fe 2024 M→{33,193}／2026 M→{65,175}；TIBC 2024→{250,400}／2026→{135,485}；
+  AFP 2024→{,8.8}／2026→{0.89,8.78}；CEA→{,5}；Ferritin F→{4.63,204}。node --check 通過，CAT.length=93。
+- 待 Claude Code:與 round-2 **一起** release/sync/push（brief 已併入 round-2 release brief）。
+- 備註:PSA 也順手抓到（舊 <=4.0 + 新 0.70-1.48），但不在本次 catalog 範圍，未動。
+
+---
+
 ## 2026-06-24（深夜 round-2）— 時間維 exhaustive 30/30 完成 + 邊界收斂修正
 
 - 作者:claude（Cowork，接續同日時間維重做）。範圍:catalog.js（資料）。停 working tree，git 交 Claude Code。

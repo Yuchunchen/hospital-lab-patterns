@@ -1,6 +1,6 @@
 {
   "version": "0.4.0",
-  "synced_at": "2026-06-24T08:27:58.619Z",
+  "synced_at": "2026-06-24T09:56:27.723Z",
   "catalog": [
     {
       "id": "WBC",
@@ -1612,6 +1612,28 @@
           "refHiF": 175,
           "validFrom": "2026-05-28",
           "source": "YC SOP C 觸發 2026-05-28 cross-reference 12 chart batch — see docs/cross-reference-vhtt-2026-05-28.md + 委外:新南海 (vhtt 印 universal 50-175,inline 性別 mirror 是為了 suppress outer loM:65/hiF:170 fallback)"
+        },
+        {
+          "machine": "vhyl",
+          "refLo": 33,
+          "refHi": 193,
+          "refLoM": 33,
+          "refHiM": 193,
+          "refLoF": 33,
+          "refHiF": 193,
+          "validFrom": "1900-01-01",
+          "source": "time-dim rescan 2026-06-24 玉里舊 Fe(33-193 無性別,inline mirror suppress 外層;末見 2025-04-26)"
+        },
+        {
+          "machine": "vhyl",
+          "refLo": 50,
+          "refHi": 175,
+          "refLoM": 65,
+          "refHiM": 175,
+          "refLoF": 50,
+          "refHiF": 170,
+          "validFrom": "2025-06-04",
+          "source": "time-dim rescan 2026-06-24 玉里新 Fe(M65-175,F50-170;earliest 2025-07-17;30pt iron-panel 增強 parser)"
         }
       ]
     },
@@ -1646,14 +1668,25 @@
         },
         {
           "machine": "vhyl",
+          "refLo": 250,
+          "refHi": 400,
+          "refLoM": 250,
+          "refHiM": 400,
+          "refLoF": 250,
+          "refHiF": 400,
+          "validFrom": "1900-01-01",
+          "source": "time-dim rescan 2026-06-24 玉里舊 TIBC(250-400 無性別,inline mirror;末見 2025-04-26)"
+        },
+        {
+          "machine": "vhyl",
           "refLo": 119,
           "refHi": 485,
           "refLoM": 135,
           "refHiM": 485,
           "refLoF": 119,
           "refHiF": 410,
-          "validFrom": "2026-06-01",
-          "source": "auto-crawl ref-scan 30pt 2026-06-24 (iron panel;validFrom 近似)"
+          "validFrom": "2025-06-04",
+          "source": "time-dim rescan 2026-06-24 玉里新 TIBC(M135-485,F119-410;earliest 2025-07-17;30pt;原誤標 2026-06-01)"
         }
       ]
     },
@@ -1739,6 +1772,17 @@
           "refHi": 274.66,
           "validFrom": "1900-01-01",
           "source": "migration 起點 — universal ref 既有值"
+        },
+        {
+          "machine": "vhyl",
+          "refLo": 4.63,
+          "refHi": 274.66,
+          "refLoM": 21.81,
+          "refHiM": 274.66,
+          "refLoF": 4.63,
+          "refHiF": 204,
+          "validFrom": "1900-01-01",
+          "source": "time-dim rescan 2026-06-24 (穩定 M21.81-274.66,F4.63-204,2021→2026 未改;30pt n9)"
         }
       ]
     },
@@ -1903,10 +1947,17 @@
         },
         {
           "machine": "vhyl",
+          "refLo": null,
+          "refHi": 8.8,
+          "validFrom": "1900-01-01",
+          "source": "time-dim rescan 2026-06-24 玉里舊 AFP(<8.8;末見 2025-04-10)"
+        },
+        {
+          "machine": "vhyl",
           "refLo": 0.89,
           "refHi": 8.78,
-          "validFrom": "2026-06-10",
-          "source": "auto-crawl ref-scan 30pt 2026-06-24 (000023800G AFP 報告)"
+          "validFrom": "2025-06-04",
+          "source": "time-dim rescan 2026-06-24 玉里新 AFP(0.89-8.78;earliest 2025-06-17;30pt;原誤標 2026-06-10)"
         }
       ]
     },
@@ -1938,9 +1989,9 @@
         {
           "machine": "vhyl",
           "refLo": null,
-          "refHi": 1.73,
-          "validFrom": "2026-06-01",
-          "source": "auto-crawl ref-scan 30pt 2026-06-24 (000117706G CEA 報告 <1.73;validFrom 近似)"
+          "refHi": 5,
+          "validFrom": "1900-01-01",
+          "source": "time-dim rescan 2026-06-24 (穩定 <=5.0,2021→2026 未改;30pt n25;修正:前 30-scan 把值 1.73 誤當 ref)"
         }
       ]
     },
