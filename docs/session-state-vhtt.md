@@ -9,7 +9,7 @@
 
 **Last wrap**: 2026-06-24(台北時間 /「結案」— vhtt ref range 大工程 + gap-fill 調查收尾)
 **Last session type**: Cowork(env sync + 重貼 project instructions + Notion 同步 + cohort ref harvest round-4 + gap-fill round-5)
-**Last action**: catalog.js 落本日 vhtt refHistory(round-4 22 筆 + round-5 4 筆);WORKLOG round-4/5 已寫;harvest CSV / proposal / gapfill findings 落 workspace root;Notion(開機 SOP § 1.0 vhtt 已重貼 ✅ + TASK_BRIEF Dashboard「vhtt cohort ref harvest」Done + 工作流演變紀錄 1 筆)。**⚠️ 本日 round-2/3/4/5 catalog delta 全在 working tree — push 狀態待 git 確認**。
+**Last action**: 本日 ref 大工程全 push(catalog round-2/3/4/5 + viewer/reporter sync);Notion 同步完(§1.0 / TASK_BRIEF Dashboard「vhtt cohort ref harvest」Done + 「P/Ferritin gap-fill」Open / 工作流演變 ×3)。最後加「**沒開立判定原則**」SOP(canonical instructions + PROJECT_CONTEXT §9,docs-only push 完)→ §1.0 兩台 reset ⏳。**vhtt 已重貼 ✅(2026-06-24);⚠️ vhyl 下次 boot 待重貼 canonical**。
 
 ## 1. 本 session 完成(vhtt ref range 大工程)
 
