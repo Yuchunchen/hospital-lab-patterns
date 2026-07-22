@@ -53,7 +53,7 @@ const CATALOG = [
     ] },
 
   { id:'Hb',
-    pattern: /(?:Hb|HGB):\s*([<>]?\s*[\d.]+)/,
+    pattern: /(?:Hb|HGB|HB):\s*([<>]?\s*[\d.]+)/,
     displayName:'血色素 (Hemoglobin)', shortLabel:'Hb',
     unit:'g/dL', category:'血液',
     ref:'男 14–18，女 12–16 g/dL',
@@ -94,7 +94,7 @@ const CATALOG = [
     ] },
 
   { id:'Platelet',
-    pattern: /(?:Platelet|PLATE):\s*([<>]?\s*[\d.]+)/,
+    pattern: /(?:Platelet|PLATE|PLT):\s*([<>]?\s*[\d.]+)/,
     displayName:'血小板 (Platelet)', shortLabel:'PLT',
     unit:'×10³/µL', category:'血液',
     ref:'150–400 ×10³/µL',
