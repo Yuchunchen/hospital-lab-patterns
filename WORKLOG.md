@@ -4,6 +4,21 @@ Chronological log of pattern catalog changes. Newest entries on top.
 
 ---
 
+## 2026-07-23 — CBC Hb/Platelet regex 補 HB / PLT label 變體
+
+- 作者：claude（與 YC 共同，Claude Code）
+- 範圍：catalog
+- 變更：修改
+- 測試 ID：Hb, Platelet
+- 原因：vhyl CBC(YL) 報告印全大寫 `HB:` 與 `PLT:`，vhtt 同症狀；現行 alternation 為 case-sensitive，漏抓這兩個 label variant。universal pattern，兩台共用。
+- 內容：
+  - `Hb`：`/(?:Hb|HGB):.../` → `/(?:Hb|HGB|HB):.../`
+  - `Platelet`：`/(?:Platelet|PLATE):.../` → `/(?:Platelet|PLATE|PLT):.../`
+- 驗證：`npm run release` 全綠（catalog 93 · viewer 65 · viewer-A5 15 · reporter 41）；node 測 `HB: 15.0` / `Hb: 12.3` / `HGB: 14.0` 皆命中，`PLT: 225` / `Platelet: 250` 皆命中；不誤抓 `HbA1c:` / `PCT:` / `PDW:` / `MPV:`。已用兩張 vhyl 真報告 000105598H / 000044149G 驗過零回歸。`dist/patterns.json` 兩條 pattern 已更新。
+- 影響：需 sibling repo 重 sync（viewer 與 reporter 皆已重跑 sync-patterns.js）；OPD 端 24h 內經 dist/patterns.json 自動拿到。
+
+---
+
 ## 2026-06-24（round-5）— ref gap-fill 調查（WBC/K/P/UA/Ferritin/TBIL/DBIL）+ parser 修正
 
 - 作者:claude（Cowork）。範圍:catalog.js（資料）。延續本日 working-tree delta。
