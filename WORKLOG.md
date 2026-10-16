@@ -14,7 +14,34 @@ Chronological log of pattern catalog changes. Newest entries on top.
 - 內容：`orderNameFilter` `/microalbumin/i` → `/microalbumin|urine\s*creatinine|creatinine\(u\)/i`；pattern 不變。`creatinine\(u\)` 預防 vhyl（`Creatinine(U)CRTN(YL)`）日後拆單，目前 vhyl 未見實例。
 - 驗證：node 對本機 catalog.js 跑：`Urine Creatinine(TT)` 單張 → 158.68（原被濾）；合併單 vhtt 107.50 / vhyl 5.56 不變；只有尿 Cr、無 ALB/CR 的單 → 不抓；`Free PSA(TT)` `RATIO:` 與血清 `Creatinine(TT)` `CREAT:` 仍被濾。**`npm run release` 尚未跑**。
 - 影響：universal；需 viewer + reporter `node sync-patterns.js`。改動停在 working tree，未 commit。
-- ⚠️ 跨機提醒：vhyl 2026-09-02 的 WBC/RBC 擋回溯修正（working tree）仍未 push，本機（vhtt）不含；兩台 release 時注意合併順序。
+- 跨機備註：vhyl 2026-09-02 的 WBC/RBC 擋回溯修正原只在 vhyl working tree；已於同日在 vhtt 重新套用（見下兩條），vhyl 端改動可捨棄後 pull。
+
+---
+
+## 2026-09-02 — WBC / RBC regex 擋回溯：尿液兩位數 range 被截成血液值
+
+- 作者：claude（Cowork，vhyl；SOP F→B）。2026-10-16 於 vhtt 重新套用（原改動只在 vhyl working tree，未 push）。
+- 範圍：catalog
+- 變更：修改
+- 測試 ID：WBC, RBC
+- 原因：vhyl 000170608H 血液 WBC 顯示 1。ernode 原文為 URINE ROUTINE(含Sediment)(YL) `WBC: 10-19`（2026-08-25）。既有 negative lookahead `(?!\s*[-–]\s*\d)` 只擋「數字後緊接 -」，`[\d.]+` 抓 `10` 失敗後回溯成 `1`，後面是 `0-19` 不以 `-` 開頭 → 通過 → 誤抓血液 WBC=1。單位數 range（`0-5`、`1-3`）無法回溯，故先前未現。RBC 同結構同病人 `RBC: 30-49` 會截成 3。
+- 內容：
+  - `WBC`：`(?!\s*[-–]\s*\d)` → `(?![\d.]|\s*[-–]\s*\d)`
+  - `RBC`：同上
+  - 兩條 notes 補 2026-09-02 說明
+- 驗證：node 測 `WBC: 6.7` / `12.5` / `6700` / `<0.1`、`RBC: 4.52` / `3.98` 照抓；尿液 `WBC: 0-5` / `10-19`、`RBC: 0-2` / `30-49` 全拒（含本病人 ernode 原文段落）。
+- 影響：universal（vhtt 同適用）；需 sibling repo 重 sync（viewer + reporter `node sync-patterns.js`）。
+
+---
+
+## 2026-09-02 — 補記：2026-06-24 各 round delta 已 release / push（欠帳條目）
+
+- 作者：claude（Cowork，vhyl）。2026-10-16 於 vhtt 重新套用。
+- 範圍：docs（WORKLOG 本身）
+- 變更：補記
+- 原因：下方 06-24 round-2 / round-3 / round-4 / round-5 條目末尾仍寫「待 Claude Code release」，但 git 端已完成，規則 #2 欠一條確認條目；session-state-vhyl §2 亦列為 stale 待補。
+- 內容：round-2 + round-3（vhyl refHistory 時間維）於 `8e0cc99` 隨 vhtt cohort harvest 一起 release；round-4 + round-5（vhtt 29 筆 refHistory）於 `8173fef` release；對應 brief `TASK_BRIEF_vhyl_refhistory_timedim_release_round2` 於 `029bf88` 改名 `_done`。viewer / reporter 已 sync-patterns 並 push。
+- 影響：無程式碼變更；下方 06-24 條目的「待 Claude Code」字句視為已結案，不再逐條回改。
 
 ---
 

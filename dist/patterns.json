@@ -1,12 +1,12 @@
 {
   "version": "0.4.0",
-  "synced_at": "2026-10-16T04:25:08.804Z",
+  "synced_at": "2026-10-16T04:28:52.145Z",
   "catalog": [
     {
       "id": "WBC",
       "pattern": {
         "__regex": [
-          "WBC:\\s*([<>]?\\s*[\\d.]+)(?!\\s*[-–]\\s*\\d)",
+          "WBC:\\s*([<>]?\\s*[\\d.]+)(?![\\d.]|\\s*[-–]\\s*\\d)",
           ""
         ]
       },
@@ -20,7 +20,7 @@
       "hi": 11,
       "lo": 4,
       "normalize": "wbcCount",
-      "notes": "Negative lookahead in pattern rejects urine routine \"WBC: 0-5\". Normalize handles /µL (e.g. 6700) → ×10³/µL (6.7).",
+      "notes": "Negative lookahead in pattern rejects urine routine \"WBC: 0-5\". Normalize handles /µL (e.g. 6700) → ×10³/µL (6.7). 2026-09-02: lookahead 加 (?![\\d.]) 擋回溯 — vhyl 000170608H 尿液 \"WBC: 10-19\" 原被回溯截成血液 WBC=1（單位數 range 如 0-5 無法回溯所以先前沒現）。",
       "refHistory": [
         {
           "machine": "*",
@@ -49,7 +49,7 @@
       "id": "RBC",
       "pattern": {
         "__regex": [
-          "\\bRBC:\\s*([<>]?\\s*[\\d.]+)(?!\\s*[-–]\\s*\\d)",
+          "\\bRBC:\\s*([<>]?\\s*[\\d.]+)(?![\\d.]|\\s*[-–]\\s*\\d)",
           ""
         ]
       },
@@ -66,7 +66,7 @@
       "hiF": 5.5,
       "lo": 3.7,
       "hi": 6.2,
-      "notes": "Negative lookahead rejects urine routine \"RBC: 0-2/HPF\" ranges (2026-05-12, parallel to WBC). vhyl 000012148C surfaced URINE ROUTINE(YL) \"RBC: 0-2\" being captured as blood RBC=0.",
+      "notes": "Negative lookahead rejects urine routine \"RBC: 0-2/HPF\" ranges (2026-05-12, parallel to WBC). vhyl 000012148C surfaced URINE ROUTINE(YL) \"RBC: 0-2\" being captured as blood RBC=0. 2026-09-02: 同 WBC 加 (?![\\d.]) 擋回溯（同病人 000170608H 尿液 \"RBC: 30-49\" 會被截成 3）。",
       "refHistory": [
         {
           "machine": "*",
