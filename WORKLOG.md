@@ -4,6 +4,20 @@ Chronological log of pattern catalog changes. Newest entries on top.
 
 ---
 
+## 2026-10-16 — UACR orderNameFilter 補 Urine Creatinine order（vhtt 拆單）
+
+- 作者：claude（Cowork，vhtt；SOP F→B）
+- 範圍：catalog
+- 變更：修改
+- 測試 ID：UACR
+- 原因：vhtt 000036059I viewer 的 UACR 最新值停在 107.50（115/04/23）。ernode 顯示 115/07/17 起 Microalbumin 與 Urine Creatinine 拆成兩張 order：`ALB/CR: 158.68` 印在 `Urine Creatinine(TT)`，`Urine Microalbumin(TT)` 只有 `mALB: 6.03`。既有 `orderNameFilter: /microalbumin/i`（為擋 Free PSA `RATIO:` 而設）把 Creatinine 那張整張濾掉。原始數據正確（6.03 / 38 × 1000 = 158.68）。
+- 內容：`orderNameFilter` `/microalbumin/i` → `/microalbumin|urine\s*creatinine|creatinine\(u\)/i`；pattern 不變。`creatinine\(u\)` 預防 vhyl（`Creatinine(U)CRTN(YL)`）日後拆單，目前 vhyl 未見實例。
+- 驗證：node 對本機 catalog.js 跑：`Urine Creatinine(TT)` 單張 → 158.68（原被濾）；合併單 vhtt 107.50 / vhyl 5.56 不變；只有尿 Cr、無 ALB/CR 的單 → 不抓；`Free PSA(TT)` `RATIO:` 與血清 `Creatinine(TT)` `CREAT:` 仍被濾。**`npm run release` 尚未跑**。
+- 影響：universal；需 viewer + reporter `node sync-patterns.js`。改動停在 working tree，未 commit。
+- ⚠️ 跨機提醒：vhyl 2026-09-02 的 WBC/RBC 擋回溯修正（working tree）仍未 push，本機（vhtt）不含；兩台 release 時注意合併順序。
+
+---
+
 ## 2026-07-23 — CBC Hb/Platelet regex 補 HB / PLT label 變體
 
 - 作者：claude（與 YC 共同，Claude Code）

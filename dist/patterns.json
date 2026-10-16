@@ -1,6 +1,6 @@
 {
   "version": "0.4.0",
-  "synced_at": "2026-07-22T22:43:31.663Z",
+  "synced_at": "2026-10-16T04:25:08.804Z",
   "catalog": [
     {
       "id": "WBC",
@@ -1324,7 +1324,7 @@
       },
       "orderNameFilter": {
         "__regex": [
-          "microalbumin",
+          "microalbumin|urine\\s*creatinine|creatinine\\(u\\)",
           "i"
         ]
       },
