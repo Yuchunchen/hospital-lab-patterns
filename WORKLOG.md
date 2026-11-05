@@ -4,6 +4,21 @@ Chronological log of pattern catalog changes. Newest entries on top.
 
 ---
 
+## 2026-11-05 — CREAT / eGFR 加 orderNameFilter 排除尿液單（尿 Cr 誤抓 → eGFR = 0）
+
+- 作者：claude（Cowork，vhtt；SOP F→B）
+- 範圍：catalog
+- 變更：修改
+- 測試 ID：CREAT、eGFR
+- 原因：vhtt 000053564I（M/72）viewer eGFR 顯示 0。ernode 115/10/29 同日兩張單：`BUN(TT),NA(TT),K(TT),Creatinine(TT) BLOOD` → `Creatinine(serum): 0.9`；`腎利先鋒計畫 Urine Creatinine(TT) URINE` → `CREAT: 101`（尿 Cr）。CREAT / eGFR 共用 pattern 的 `CREAT:` alternation 抓到尿 Cr，同日 dedup 留下 101 → CKD-EPI ≈ 0.3 → `Math.round` 成 0（正確值 0.9 → 91）。同類風險：`Urine total protein` 單的 `T.PROT/CREAT:` 也會被同 pattern 命中。
+- 內容：CREAT、eGFR 兩 entry 各加 `orderNameFilter: /^(?!.*(?:urine|creatinine\(u\))).*/i`（排除醫令名含 urine 或 vhyl `Creatinine(U)` 者；空醫令名照常通過）；pattern 不變。
+- 驗證：node 對修改後 catalog.js 兩 entry 各 6 案全過——vhtt 尿 Cr 單 / `T.PROT/CREAT` / 合併式 Microalbumin 單 / vhyl `Creatinine(U)CRTN(YL)` → 不抓；vhtt 血清 0.9、空醫令名 → 照抓。`npm run release`（雲端 main 副本）validate 全過、93 catalog；`test:refhistory` 33/33；viewer / reporter `sync-patterns` 試跑皆帶出新 filter。本機 `npm run release` 已補跑（Claude Code，validate 全過、93 catalog）。
+- 影響：universal；需 viewer + reporter `node sync-patterns.js`。
+- 未驗證：vhyl 血清 Cr 醫令名稱未實測（假設不含 "urine"）。
+- ⚠️ reporter 不吃 `orderNameFilter`：`hospital-lab-data.html` `extractLabValues` 只跑 `test.pattern`，從未檢查 `orderNameFilter`（只有 subpage `orderNameMatch`）→ 本修正**只修 viewer**（`report.js` / `dashboard.js` 有吃）；reporter 端 CREAT/eGFR 仍會混入尿 Cr，UACR / FreePSA 既有 filter 在 reporter 亦未生效。另開 brief（Claude Code；動 extraction 須顧 BUN_pre/BUN_post 的 `/,/`、`/^BUN$/` filter 與 resolveBUN 互動）。
+
+---
+
 ## 2026-10-16 — UACR orderNameFilter 補 Urine Creatinine order（vhtt 拆單）
 
 - 作者：claude（Cowork，vhtt；SOP F→B）
@@ -13,7 +28,7 @@ Chronological log of pattern catalog changes. Newest entries on top.
 - 原因：vhtt 000036059I viewer 的 UACR 最新值停在 107.50（115/04/23）。ernode 顯示 115/07/17 起 Microalbumin 與 Urine Creatinine 拆成兩張 order：`ALB/CR: 158.68` 印在 `Urine Creatinine(TT)`，`Urine Microalbumin(TT)` 只有 `mALB: 6.03`。既有 `orderNameFilter: /microalbumin/i`（為擋 Free PSA `RATIO:` 而設）把 Creatinine 那張整張濾掉。原始數據正確（6.03 / 38 × 1000 = 158.68）。
 - 內容：`orderNameFilter` `/microalbumin/i` → `/microalbumin|urine\s*creatinine|creatinine\(u\)/i`；pattern 不變。`creatinine\(u\)` 預防 vhyl（`Creatinine(U)CRTN(YL)`）日後拆單，目前 vhyl 未見實例。
 - 驗證：node 對本機 catalog.js 跑：`Urine Creatinine(TT)` 單張 → 158.68（原被濾）；合併單 vhtt 107.50 / vhyl 5.56 不變；只有尿 Cr、無 ALB/CR 的單 → 不抓；`Free PSA(TT)` `RATIO:` 與血清 `Creatinine(TT)` `CREAT:` 仍被濾。**`npm run release` 尚未跑**。
-- 影響：universal；需 viewer + reporter `node sync-patterns.js`。改動停在 working tree，未 commit。
+- 影響：universal；需 viewer + reporter `node sync-patterns.js`。
 - 跨機備註：vhyl 2026-09-02 的 WBC/RBC 擋回溯修正原只在 vhyl working tree；已於同日在 vhtt 重新套用（見下兩條），vhyl 端改動可捨棄後 pull。
 
 ---

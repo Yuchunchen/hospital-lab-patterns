@@ -1,6 +1,6 @@
 {
   "version": "0.4.0",
-  "synced_at": "2026-10-16T04:28:52.145Z",
+  "synced_at": "2026-11-05T10:40:16.007Z",
   "catalog": [
     {
       "id": "WBC",
@@ -1176,6 +1176,12 @@
           "i"
         ]
       },
+      "orderNameFilter": {
+        "__regex": [
+          "^(?!.*(?:urine|creatinine\\(u\\))).*",
+          "i"
+        ]
+      },
       "displayName": "肌酸酐 (Creatinine, Cr)",
       "shortLabel": "Cr",
       "unit": "mg/dL",
@@ -1298,6 +1304,12 @@
       "pattern": {
         "__regex": [
           "(?:Creatinine\\(serum\\)|CREAT):\\s*([<>]?\\s*[\\d.]+)",
+          "i"
+        ]
+      },
+      "orderNameFilter": {
+        "__regex": [
+          "^(?!.*(?:urine|creatinine\\(u\\))).*",
           "i"
         ]
       },

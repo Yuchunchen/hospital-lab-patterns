@@ -401,8 +401,14 @@ const CATALOG = [
     meaning:'透析後 BUN — 通常 6–7，與 BUN_pre 配對計算 URR',
     notes:'Filter selects orders where orderName is exactly "BUN" (standalone post-dialysis draw).' },
 
+  // 2026-11-05：vhtt 腎利先鋒計畫 `Urine Creatinine(TT) URINE` 單印 `CREAT: 101`
+  // （尿 Cr），被 `CREAT:` alternation 誤抓；同日 dedup 蓋掉血清值 → eGFR 算成 0。
+  // `orderNameFilter` 排除尿液單（urine / vhyl `Creatinine(U)`）；同時擋掉
+  // `Urine total protein` 的 `T.PROT/CREAT:`。實例：vhtt 000053564I 115/10/29。
+  // eGFR entry 共用同一 pattern，須同步帶同一 filter。
   { id:'CREAT',
     pattern: /(?:Creatinine\(serum\)|CREAT):\s*([<>]?\s*[\d.]+)/i,
+    orderNameFilter: /^(?!.*(?:urine|creatinine\(u\))).*/i,
     displayName:'肌酸酐 (Creatinine, Cr)', shortLabel:'Cr',
     unit:'mg/dL', category:'腎功能',
     ref:'男 0.6–1.2，女 0.5–1.0 mg/dL',
@@ -434,6 +440,7 @@ const CATALOG = [
 
   { id:'eGFR',
     pattern: /(?:Creatinine\(serum\)|CREAT):\s*([<>]?\s*[\d.]+)/i,
+    orderNameFilter: /^(?!.*(?:urine|creatinine\(u\))).*/i,   // 同 CREAT：排除尿液單（2026-11-05）
     computed:'eGFR',
     displayName:'腎絲球過濾率 (eGFR)', shortLabel:'eGFR',
     unit:'mL/min/1.73m²', category:'腎功能',
