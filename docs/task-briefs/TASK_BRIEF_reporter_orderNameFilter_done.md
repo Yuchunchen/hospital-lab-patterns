@@ -1,5 +1,7 @@
 # TASK_BRIEF_reporter_orderNameFilter
 
+> **完成 2026-11-05（Claude Code）**：patterns `4bbee93`、viewer `9bdadcb`、reporter `444ccb7`，皆已 push main。BUN 採程式端豁免（YC 選）。T1–T4、T6 node fixture 通過（T6 reporter eGFR 留一位小數 = 90.7，viewer 才 round 成 91）；T5 不適用（UACR/FreePSA 不在 reporter `LAB_TESTS`）；**T7 真機未驗**（YC 同意先改 _done）。另發現 CKD html 七項（BUN/Urine*/UPCR/UACR）從未抽值，未修，見 reporter WORKLOG 同日條目。
+
 > Cowork → Claude Code 交付。reporter 抽值層補上 catalog `orderNameFilter` 支援。
 > 建立日期：2026-11-05（vhtt Cowork）。來源：SOP F→B 偵錯 vhtt `[病歷號]` eGFR = 0。
 > 執行：**Claude Code**（reporter `core/` 邏輯改動 + 兩個 build 產物 + 回歸驗證，大半徑）。
