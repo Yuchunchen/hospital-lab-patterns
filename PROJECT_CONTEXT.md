@@ -5,7 +5,7 @@
 > architecture, paths, commands, marker names — that any thread might need
 > to look up but doesn't need crammed into every prompt.
 >
-> When in doubt about anything in this file, the per-repo `CLAUDE.md` is
+> When in doubt about anything in this file, the per-repo `AGENTS.md` is
 > authoritative for that repo, and `hospital-lab-patterns/WORKLOG.md` is
 > authoritative for project-wide decisions.
 
@@ -247,7 +247,7 @@ OPD handout（popup → A4 報表）之外，viewer 另有一個**獨立視窗**
 - **LLM 設定 modal**：provider / model / apiKey 存 `chrome.storage.local`（本機，不同步雲端）。
 - **classic-script 共用 global scope**：所有 top-level 宣告一律 `CXR_` / `cxr` 前綴，
   避開 `mapping.js` 的 `CATALOG`、`patterns-computed.js` 的 `HELPERS` 等既有 const
-  （新檔不能 top-level `const` 撞名，否則整檔 SyntaxError；參見 viewer CLAUDE.md）。
+  （新檔不能 top-level `const` 撞名，否則整檔 SyntaxError；參見 viewer AGENTS.md）。
 
 ---
 
@@ -473,7 +473,7 @@ CLAUDE CODE  (PowerShell, 從 workspace root)
 COWORK
   └─ 驗收 → 跨 repo 所有 phase 都 push 完之後:
             1. 改名加 _done 後綴，搬到 hospital-lab-patterns/docs/task-briefs/
-            2. 更新 CLAUDE.md（若架構/行為變了）+ PROJECT_CONTEXT.md（加 milestone）
+            2. 更新 AGENTS.md（若架構/行為變了）+ PROJECT_CONTEXT.md（加 milestone）
             3. 與當輪最後一個 commit 同一輪做掉
             → 計畫下一步
 ```
@@ -484,7 +484,7 @@ COWORK
 - **地點**：統一集中到 `hospital-lab-patterns/docs/task-briefs/`（三個 repo 共用）。
 - **方法**：若 brief 原在 patterns repo，用 `git mv` 保留 rename history；
   若原在 viewer/reporter（gitignored），直接搬檔案到 patterns 再 `git add`。
-- **分層更新**：每次完成 brief 時更新 CLAUDE.md + PROJECT_CONTEXT.md；
+- **分層更新**：每次完成 brief 時更新 AGENTS.md + PROJECT_CONTEXT.md；
   `docs/` 其餘文件（pattern-spec、learning-workflow 等）留到 major revision 再整批校正。
 
 ### Pattern-learning shortcut
@@ -524,7 +524,7 @@ Get-Date -Format yyyy-MM-dd
 |---|---|
 | Operating rules (must-obey) | Cowork Custom Instructions |
 | Project facts (this file) | `PROJECT_CONTEXT.md` (workspace root) |
-| Per-repo architecture & don'ts | `<repo>/CLAUDE.md` |
+| Per-repo architecture & don'ts | `<repo>/AGENTS.md`（`CLAUDE.md` 以 `@AGENTS.md` 匯入） |
 | Project decision history | `hospital-lab-patterns/WORKLOG.md` |
 | Per-repo change history | `<repo>/WORKLOG.md` |
 | What changed last commit | `git log -1` |
@@ -1126,7 +1126,7 @@ Claude 行為規則分三塊,canonical source 都在 git,**不在 Notion**(避�
 |---|---|---|
 | 強制規則 #1–#7 | workflow 守則(WORKLOG / push / brief 改名 / 跨 repo 副作用 / Notion 同步) | Cowork app UI + `docs/cowork-project-instructions.md`(canonical snapshot) |
 | 思考規則 #8–#11 | Cowork mode 思考行為(暴露假設 + session 開始 git pull / brief 成功標準 + 測試清單 / 多步驟複述狀態 / 靜默失敗明示) | 同上(2026-05-19 加入) |
-| Coding behavior contract A–C | 寫程式時的行為契約(外科修改 / 矛盾模式不混用 / 新增前讀 caller) | 三個 repo CLAUDE.md 各自一份(內容同步) |
+| Coding behavior contract A–C | 寫程式時的行為契約(外科修改 / 矛盾模式不混用 / 新增前讀 caller) | 三個 repo AGENTS.md 各自一份(內容同步) |
 
 ### 篩選原則
 
@@ -1151,7 +1151,7 @@ Claude 行為規則分三塊,canonical source 都在 git,**不在 Notion**(避�
 
 ### Notion 處理
 
-Notion「🛠 開機 SOP」page **不放規則內文**,只在頁首 pointer 一行:「Behavior rules canonical: patterns/CLAUDE.md + cowork-project-instructions.md(git)」。理由:Notion 在本架構是狀態鏡像,把規則寫在 Notion 等於多一個 source,衝突時就 drift。
+Notion「🛠 開機 SOP」page **不放規則內文**,只在頁首 pointer 一行:「Behavior rules canonical: patterns/AGENTS.md + cowork-project-instructions.md(git)」。理由:Notion 在本架構是狀態鏡像,把規則寫在 Notion 等於多一個 source,衝突時就 drift。
 
 ---
 

@@ -4,6 +4,17 @@ Chronological log of pattern catalog changes. Newest entries on top.
 
 ---
 
+## 2026-11-10 — 規則檔改名 AGENTS.md，CLAUDE.md 改為匯入
+
+- 作者：claude（Claude 桌面對話連結 VHYL；YC 2026-11-10 指示由 Claude 完成）
+- 變更：修改
+- 範圍：docs（repo 規則檔）
+- 測試 ID：無（未改 pattern）
+- 原因：Codex 只讀 AGENTS.md，原規則只在 CLAUDE.md，Codex 看不到。依 Claude Code 官方 memory 文件：共用規則寫 AGENTS.md，CLAUDE.md 以 `@AGENTS.md` 匯入，Claude 不會重複載入。
+- 內容：`git mv CLAUDE.md AGENTS.md`，規則內文未改，只把「三個 repo CLAUDE.md 共用同一份」改為 AGENTS.md；新 CLAUDE.md 只有 `@AGENTS.md`。 PROJECT_CONTEXT.md 指向規則檔的 7 處參照改為 AGENTS.md。
+- 驗證：`npm run validate` 通過；Claude Code 在本 repo 啟動時載入 CLAUDE.md＋AGENTS.md。
+- 影響：viewer、reporter 同日做同樣改名；不需重 sync，OPD 無影響。
+
 ## 2026-11-05 — CREAT / eGFR 加 orderNameFilter 排除尿液單（尿 Cr 誤抓 → eGFR = 0）
 
 - 作者：claude（Cowork，vhtt；SOP F→B）
